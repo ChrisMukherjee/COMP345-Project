@@ -1,3 +1,11 @@
 # OS-specific junk #
 .DS_Store
 Thumbs.db
+
+# Visual Studio extras #
+.sln
+.opensdf
+.sdf
+.suo
+.vcxproj
+.filters
