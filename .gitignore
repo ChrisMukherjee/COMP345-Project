@@ -9,3 +9,6 @@ Thumbs.db
 .suo
 .vcxproj
 .filters
+
+# Windows Executables #
+.exe
