@@ -3,12 +3,28 @@
 Thumbs.db
 
 # Visual Studio extras #
-.sln
-.opensdf
-.sdf
-.suo
-.vcxproj
-.filters
+*.sln
+*.sdf
+*.opensdf
+*.suo
+*.vcxproj
+*.filters
 
 # Windows Executables #
-.exe
+*.exe
+
+# Generic C++ stuff #
+
+# Compiled Object files #
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries #
+*.so
+*.dylib
+
+# Compiled Static libraries #
+*.lai
+*.la
+*.a
