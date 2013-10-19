@@ -9,7 +9,7 @@ public:
 	// Constructor
 	map(int w, int h);
 	// Destructor
-//	~map();
+	~map();
 	bool setCell(int x, int y, char a);
 	void output();
 	bool validate();
@@ -23,6 +23,5 @@ private:
 	int height;
 	int width;
 	char onCell;
-	bool hasS;
-	bool hasE;
+	int startX, startY, endX, endY;
 };

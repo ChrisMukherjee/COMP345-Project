@@ -18,50 +18,65 @@ int main() {
 	map testMap = map(userWidth, userHeight);
 
 	while (1) {
+		// Output map so user can see his/her changes
 		testMap.output();
+		// Reset variable to false
 		bool checkValid = false;
+		bool completed = false;
 
 		while (!checkValid) {
+			char editChar = ' ';
 			int editWidth = 0;
 			int editHeight = 0;
-			char editChar = ' ';
+
+			cout << endl << "Options:" << endl << " | : Vertical Wall" << endl << " - : Horizontal Wall" << endl << " S : Start" << endl << " E : End" << endl << " C : Chest" << endl << " M : Monster" << endl << " = : Empty Space" << endl;
+			cout << endl << "You can also enter Q to quit and discard your map, or V to validate and save your map." << endl;
+			cout << endl << "Enter an acceptable character: ";
+			cin >> editChar;
+
+			// If user enters Q, quit program
+			if (editChar == 'Q')
+				return 0;
+
+			// If user enters V, exit loop and run validation code
+			if (editChar == 'V') {
+				completed = true;
+				break;
+			}
 
 			do {
 				cout << endl << "Enter the horizontal index of the cell you wish to edit: ";
 				cin >> editWidth;
-				if (editWidth > (testMap.getWidth()-1))
+				// Make sure the index is valid
+				if (editWidth > (testMap.getWidth()-1) || editWidth < 0)
 					cout << "Invalid width! Please try again." << endl;
 			}
-			while (editWidth > (testMap.getWidth()-1));
+			while (editWidth > (testMap.getWidth()-1) || editWidth < 0);
 
 			do {
 				cout << endl << "Enter the vertical index of the cell you wish to edit: ";
 				cin >> editHeight;
-				if (editHeight > (testMap.getHeight()-1))
+				// Make sure the index is valid
+				if (editHeight > (testMap.getHeight()-1) || editHeight < 0)
 					cout << "Invalid height! Please try again." << endl;
 			}
-			while (editHeight > (testMap.getHeight()-1));
+			while (editHeight > (testMap.getHeight()-1) || editHeight < 0);
 
-			cout << endl << "Options:" << endl << " | = Vertical Wall" << endl << " - = Horizontal Wall" << endl << " S = Start" << endl << " E = End" << endl << " C = Chest" << endl << " M = Monster" << endl;
-			cout << endl << "You can also enter Q to quit and discard your map, or V to validate and save your map." << endl;
-			cout << endl << "Enter the acceptable char you wish to place in this position: ";
-			cin >> editChar;
+			cout << endl << endl;
 
-			if (editChar == 'Q')
-				return 0;
-
-			if (editChar == 'V')
-				break;
-
+			// Run setCell method
 			checkValid = testMap.setCell(editWidth, editHeight, editChar);
 		}
 		
-		if (testMap.validate()) {
-			cout << "Map successfully created! Press enter to continue..." << endl;
-			break;
+		// Run validation method and output message
+		if (completed) {
+			if (testMap.validate()) {
+				cout << endl << "Map successfully created! Press enter to continue..." << endl << endl;
+				break;
+			}
+			else
+				cout << endl << "Sorry, this map is invalid. Please review it and fix any errors." << endl << endl << endl;
 		}
-		else
-			cout << "This map is invalid. Please review it and fix any errors." << endl;
 	}
 
 	cin.get();
