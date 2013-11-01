@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2013-10-31T16:32:52
+# Project created by QtCreator 2013-10-31T21:56:09
 #
 #-------------------------------------------------
 
@@ -8,16 +8,16 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = DNDGame
+TARGET = DnD_Game
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    gamewindow.cpp
+    splashdialog.cpp
 
 HEADERS  += mainwindow.h \
-    gamewindow.h
+    splashdialog.h
 
 FORMS    += mainwindow.ui \
-    gamewindow.ui
+    splashdialog.ui
