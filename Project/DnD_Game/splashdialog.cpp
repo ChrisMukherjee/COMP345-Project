@@ -21,3 +21,10 @@ void SplashDialog::on_loadButton_clicked()
     w->show();
     this->close();
 }
+
+void SplashDialog::on_newButton_clicked()
+{
+    m = new MapCreator();
+    m->show();
+    this->close();
+}

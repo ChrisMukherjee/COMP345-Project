@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "mainwindow.h"
+#include "mapcreator.h"
 
 namespace Ui {
 class SplashDialog;
@@ -19,9 +20,12 @@ public:
 private slots:
     void on_loadButton_clicked();
 
+    void on_newButton_clicked();
+
 private:
     Ui::SplashDialog *ui;
     MainWindow *w;
+    MapCreator *m;
 };
 
 #endif // SPLASHDIALOG_H

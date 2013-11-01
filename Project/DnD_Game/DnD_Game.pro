@@ -14,10 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    splashdialog.cpp
+    splashdialog.cpp \
+    mapcreator.cpp
 
 HEADERS  += mainwindow.h \
-    splashdialog.h
+    splashdialog.h \
+    mapcreator.h
 
 FORMS    += mainwindow.ui \
-    splashdialog.ui
+    splashdialog.ui \
+    mapcreator.ui
