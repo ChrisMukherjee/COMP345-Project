@@ -22,6 +22,8 @@ private slots:
 
     void on_newButton_clicked();
 
+    void on_mapButton_clicked();
+
 private:
     Ui::SplashDialog *ui;
     MainWindow *w;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>377</width>
-    <height>184</height>
+    <width>238</width>
+    <height>283</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,43 +16,74 @@
   <widget class="QPushButton" name="loadButton">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>130</y>
-     <width>75</width>
-     <height>23</height>
+     <x>60</x>
+     <y>170</y>
+     <width>111</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
     <string>Load Game</string>
    </property>
   </widget>
-  <widget class="QLabel" name="welcomeText">
+  <widget class="QLabel" name="titleText">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>10</y>
-     <width>321</width>
-     <height>121</height>
+     <x>10</x>
+     <y>30</y>
+     <width>221</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Welcome to &lt;/span&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; font-style:italic; color:#ff0000;&quot;&gt;Dungeon Crawler!&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Choose one of the options below to continue:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; font-style:italic; color:#ff0000;&quot;&gt;Dungeon Crawler!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QPushButton" name="newButton">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>130</y>
-     <width>75</width>
-     <height>23</height>
+     <x>60</x>
+     <y>120</y>
+     <width>111</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
     <string>New Game...</string>
    </property>
   </widget>
+  <widget class="QLabel" name="welcomeText">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Welcome to...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="mapButton">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>220</y>
+     <width>111</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Map Creator</string>
+   </property>
+  </widget>
  </widget>
+ <tabstops>
+  <tabstop>newButton</tabstop>
+  <tabstop>loadButton</tabstop>
+  <tabstop>mapButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

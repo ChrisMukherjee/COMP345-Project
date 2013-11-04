@@ -9,12 +9,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 }
 
-MainWindow::MainWindow(QWidget *parent, char x) :
+MainWindow::MainWindow(char x, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QString mapName = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("TXT Files (*.txt)"));
+    if (x == 'l') {
+        QString mapName = QFileDialog::getOpenFileName(this, tr("Load Game"), "/", tr("GAME Files (*.gam)"));
+    }
 }
 
 MainWindow::~MainWindow()
@@ -29,10 +31,10 @@ void MainWindow::on_actionE_xit_triggered()
 
 void MainWindow::on_action_Load_triggered()
 {
-    QString mapName = QFileDialog::getOpenFileName(this, tr("Open File"), "/", tr("TXT Files (*.txt)"));
+    QString mapName = QFileDialog::getOpenFileName(this, tr("Load Game"), "/", tr("GAME Files (*.gam)"));
 }
 
 void MainWindow::on_action_Save_triggered()
 {
-    QString mapName = QFileDialog::getSaveFileName(this, tr("Save File"), "/", tr("TXT Files (*.txt)"));
+    QString mapName = QFileDialog::getSaveFileName(this, tr("Save Game"), "/", tr("GAME Files (*.gam)"));
 }

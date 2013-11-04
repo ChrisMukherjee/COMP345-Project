@@ -16,13 +16,19 @@ SplashDialog::~SplashDialog()
 
 void SplashDialog::on_loadButton_clicked()
 {
-    char x = 'l';
-    w = new MainWindow(0, x);
+    w = new MainWindow('l');
     w->show();
     this->close();
 }
 
 void SplashDialog::on_newButton_clicked()
+{
+    w = new MainWindow();
+    w->show();
+    this->close();
+}
+
+void SplashDialog::on_mapButton_clicked()
 {
     m = new MapCreator();
     m->show();

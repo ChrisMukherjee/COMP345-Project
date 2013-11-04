@@ -13,7 +13,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    explicit MainWindow(QWidget *parent = 0, char x = 'l');
+    explicit MainWindow(char x, QWidget *parent = 0);
     ~MainWindow();
 
 private slots:
