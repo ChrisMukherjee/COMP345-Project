@@ -65,7 +65,7 @@ Grid:: ~Grid()
 {
 	for (int i = 0; i < height; ++i)
 	{
-		delete grid[i];
+		delete[] grid[i];
 	}
 	delete grid;
 }
