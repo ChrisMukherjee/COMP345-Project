@@ -1,0 +1,25 @@
+﻿Build started 11/4/2013 5:10:19 PM.
+     1>Project "C:\Users\Steven\Documents\Visual Studio 2012\Projects\TEST MAPS\TEST MAPS\TEST MAPS.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Grid.cpp
+         Grid.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Steven\Documents\Visual Studio 2012\Projects\TEST MAPS\Debug\TEST MAPS.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Steven\Documents\Visual Studio 2012\Projects\TEST MAPS\Debug\TEST MAPS.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Steven\Documents\Visual Studio 2012\Projects\TEST MAPS\Debug\TEST MAPS.lib" /MACHINE:X86 Debug\Cell.obj
+         Debug\Character.obj
+         Debug\CharacterObserver.obj
+         Debug\Dice.obj
+         Debug\Driver.obj
+         Debug\Fighter.obj
+         Debug\Grid.obj
+         Debug\GridContent.obj
+         Debug\GridObsrver.obj
+         Debug\InputEvent.obj
+         Debug\InputManager.obj
+         Debug\Item.obj
+         Debug\Observable.obj
+         TEST MAPS.vcxproj -> C:\Users\Steven\Documents\Visual Studio 2012\Projects\TEST MAPS\Debug\TEST MAPS.exe
+     1>Done Building Project "C:\Users\Steven\Documents\Visual Studio 2012\Projects\TEST MAPS\TEST MAPS\TEST MAPS.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.14
