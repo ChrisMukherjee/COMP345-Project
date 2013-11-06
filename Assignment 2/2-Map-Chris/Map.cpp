@@ -306,25 +306,11 @@ string Map::output() {
 	return sstream.str();
 }
 
-// Start the game once the map has been created
+// Start the game (place the character on the map) once the map has been created
 void Map::playGame()
 {
-	if (mapArr[startX+1][startY] == '=') {
-		playerX = startX+1;
-		playerY = startY;
-	}
-	else if (mapArr[startX][startY-1] == '=') {
-		playerX = startX;
-		playerY = startY-1;
-	}
-	else if (mapArr[startX-1][startY] == '=') {
-		playerX = startX-1;
-		playerY = startY;
-	}
-	else if (mapArr[startX][startY+1] == '=') {
-		playerX = startX;
-		playerY = startY+1;
-	}
+	playerX = startX;
+	playerY = startY;
 	mapArr[playerX][playerY] = '&';
 }
 
@@ -347,12 +333,21 @@ bool Map::move(char direction)
 
 	// Moveable location
 	if (mapArr[tmpX][tmpY] == '=') {
+		// Reset Start cell if moving from start
+		if(playerX == startX && playerY == startY)
+			mapArr[playerX][playerY] = 'S';
 		playerX = tmpX;
 		playerY = tmpY;
 	}
 	// Moved onto End cell
-	else if (mapArr[tmpX][tmpY] == 'E')
+	else if (mapArr[tmpX][tmpY] == 'E') {
+		playerX = tmpX;
+		playerY = tmpY;
+		onCell = mapArr[playerX][playerY];
+		mapArr[playerX][playerY] = '&';
+		notify();
 		return true;
+	}
 
 	onCell = mapArr[playerX][playerY];
 	mapArr[playerX][playerY] = '&';

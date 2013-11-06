@@ -2,14 +2,18 @@
 // By: Christopher Mukherjee
 
 #include <iostream>
+#include <vector>
 #include "map.h"
 #include "MapObserver.h"
+#include "InputManager.h"
+#include "windows.h"
 using namespace std;
 
 int main() {
 	int userHeight = 0;
 	int userWidth = 0;
 	char choice;
+	bool end = false;
 
 	do {
 		cout << endl << "Would you like to create a (n)ew map," << endl << "or use an auto-generated (t)est map to get right into the game?" << endl << "n = new" << endl << "t = test map" << endl << "Enter a character: ";
@@ -83,15 +87,23 @@ int main() {
 					testMap.playGame();
 					MapObserver obs(&testMap);
 
-					cout << endl << "Map successfully created! Use w, a, s, d to move your character. You must press the enter key after each move." << endl << endl;
+					cout << endl << "Map successfully created! Use the arrow keys or w, a, s, d to move your character." << endl << endl;
 					// Output map
 					cout << testMap.output();
 
-					char dir;
-					bool end = false;
-					while (end == false) {
-						cin >> dir;
-						end = testMap.move(dir);
+					vector<InputEvent> events;
+					// Map w, a, s, d keypresses to Input Events
+					events.push_back(InputEvent("w", VK_UP));
+					events.push_back(InputEvent("s", VK_DOWN));
+					events.push_back(InputEvent("a", VK_LEFT));
+					events.push_back(InputEvent("d", VK_RIGHT));
+					//This one should always be last
+					events.push_back(InputEvent("q", VK_ESCAPE));
+
+					string dir;
+					while (end == false || dir != "q") {
+						dir = InputManager::getInput(events);
+						end = testMap.move(dir.at(0));
 					}
 
 					break;
@@ -108,19 +120,35 @@ int main() {
 		testMap.playGame();
 		MapObserver obs(&testMap);
 
-		cout << endl << "Use w, a, s, d to move your character. You must press the enter key after each move." << endl << endl;
+		cout << endl << "Use the arrow keys or w, a, s, d to move your character." << endl << endl;
 		// Output map
 		cout << testMap.output();
 
-		char dir;
-		bool end = false;
-		while (end == false) {
-			cin >> dir;
-			end = testMap.move(dir);
+		vector<InputEvent> events;
+		// Map w, a, s, d keypresses to Input Events
+		events.push_back(InputEvent("w", 0x57));
+		events.push_back(InputEvent("s", 0x53));
+		events.push_back(InputEvent("a", 0x41));
+		events.push_back(InputEvent("d", 0x44));
+		// Map arrow keypresses to Input Events
+		events.push_back(InputEvent("w", VK_UP));
+		events.push_back(InputEvent("s", VK_DOWN));
+		events.push_back(InputEvent("a", VK_LEFT));
+		events.push_back(InputEvent("d", VK_RIGHT));
+		//This one should always be last
+		events.push_back(InputEvent("q", VK_ESCAPE));
+
+		string dir;
+		while (end == false && dir != "q") {
+			dir = InputManager::getInput(events);
+			end = testMap.move(dir.at(0));
 		}
 	}
 
-	cout << endl << "You have reached the End! Thank you for playing. Press enter to exit...";
+	if (end == true)
+		cout << endl << "You have reached the End! Thank you for playing. Press enter to exit..." << endl;
+	else
+		cout << endl << "Thank you for playing. Press enter to exit..." << endl;
 
 	cin.get();
 	cin.get();
