@@ -170,6 +170,26 @@ void Grid:: setOccu(GridContent* gc)
 
 
 }
+
+void Grid::setMonster()
+{
+	int i,j;
+
+	cout<<"\nEnter a vertical index ";
+	cin>> j;
+
+	cout<<"Enter a horizontal index ";
+	cin>> i;
+
+	if(grid[i][j].currentState == Cell::state::EMPTY)
+	{
+		grid[i][j].setState(Cell::state::MONSTER);
+	}
+	else
+		cout<<"\nSorry that tile is already occupied\n";
+
+
+}
 void Grid:: setWalls()
 {
 	int i,j;
@@ -342,7 +362,6 @@ bool Grid::saveMap(std::string filename)
 			f << std::endl;
 		} 
 		f.close();
-		puts("successful map save");
 		return true;
 	}
 	else

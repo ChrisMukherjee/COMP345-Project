@@ -10,7 +10,8 @@ public:
 		START,
 		EXIT,
 		EMPTY,
-		OCCUPIED
+		OCCUPIED,
+		MONSTER
 	};
 	
 	Cell(GridContent* gc = nullptr, state = EMPTY);

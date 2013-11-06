@@ -216,32 +216,39 @@ void makeMap()
 		}while(yesOrNo=='Y' || yesOrNo=='y');
 	}
 
-	//OCCUPIED!
-	//std::cout<<"\n\n-Would you like to add some OCCUPIED cells? (Y/N)";
-	//std::cin>>yesOrNo;
+	//Monster!
+	std::cout<<"\n\n-Would you like to add some MONSTERS? (Y/N)";
+	std::cin>>yesOrNo;
 
-	//if(yesOrNo == 'Y' || yesOrNo == 'y')
-	//{
-	//	do{
+	if(yesOrNo == 'Y' || yesOrNo == 'y')
+	{
+		do{
 
-	//		map->setOccu();
-	//		std::cout<<map->output()<<std::endl;
+			map->setMonster();
+			std::cout<<map->output()<<std::endl;
 
-	//		std::cout<<"\nDo you want to add more OCCUPIED tiles? (Y/N) ";
-	//		std::cin>>yesOrNo;
+			std::cout<<"\nDo you want to add more MONSTERS? (Y/N) ";
+			std::cin>>yesOrNo;
 
-	//	}while(yesOrNo=='Y' || yesOrNo=='y');
-	//}
+		}while(yesOrNo=='Y' || yesOrNo=='y');
+	}
 	//**********************************************************************************
 
 
 	if( map->isValid())
 	{
-		std::cout << "Congratulations, your map is valid.\n";
-		puts("Please enter filename to save your map:");
+		std::cout << "\n\nCongratulations, your map is valid.";
+		puts("\n\nPlease enter filename to save your map:");
 		std::string filename;
 		std::cin >> filename;
-		map->saveMap(filename);
+		if (map->saveMap(filename))
+		{
+			puts("\n\Save seccessful!");
+		}
+		else
+		{
+			puts("\n\nSomething during the save process went wrong!");
+		}
 
 		//Basically, if this map is valid, it should SAVE to a folder designated
 		//for saved maps, that can loaded upon pressing play on the main menu.

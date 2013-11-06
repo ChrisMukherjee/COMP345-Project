@@ -17,6 +17,7 @@ public:
 
 	void setWalls();
 	void setOccu(GridContent* gc);
+	void setMonster();
 	void setStart();
 	void setEnd();
 	void startGame(Character* c);
