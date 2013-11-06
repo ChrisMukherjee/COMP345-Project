@@ -6,10 +6,10 @@
 class ContainerObserver : public Observer
 {
 private:
-	Backpack *subject;
+	Container *subject;
 
 public:
-	ContainerObserver(Backpack& c);
+	ContainerObserver(Container &c);
 	virtual ~ContainerObserver();
 	virtual void update(Subject* modsubject);
 	void displayInventory();

@@ -319,10 +319,11 @@ void Equippable::setWisBoost(int wbst)
 Equippable::Equippable(string nm, ItemType itype)
 {
 	cout << "Generating equippable item..." << endl;
+	cout << endl;
 	setName(nm);
 	setIType(itype);
 	setItemID(equipIDCTR++);
-	
+	cout << nm << endl;
 	cout << "Equip ID: " << getItemID() << endl;
 
 
@@ -447,53 +448,56 @@ Equippable::Equippable(string nm, ItemType itype)
 
 //------------CONTAINER CLASS-------------------//
 
-Backpack::Backpack(string nm)
+Container::Container(string nm)
 {
-	cout << "Generating a Backpack..." << endl;
+	cout << "Generating a Container... " << nm << endl;
 	setName(nm);
+
+	vector<Equippable> containervector;
 }
 
-void Backpack::addEQtoBP(Equippable eqp)
+void Container::addEQtoContainer(Equippable eqp)
 {
-	cout << "Inserting " << eqp.getName() << " into your inventory." << endl;
-	eqpInventory.push_back(eqp);
+	cout << "Inserting " << eqp.getName() << " to " << Container::getName() << "." << endl;
+	containervector.push_back(eqp);
 
 	notify();
 
 };
 
-//void Backpack::addCOtoBP(Consumable cns){};
+//void Container::addCOtoBP(Consumable cns){};
 
-void Backpack::remEQfromBP(int id)
+void Container::remEQfromContainer(int id)
 {
 	
 
 	int remCTR = 0;
 
-	for (int i = 0; i < eqpInventory.size(); i++)
+	for (int i = 0; i < containervector.size(); i++)
 	{
-		if (eqpInventory[i].getItemID() == id)
+		if (containervector[i].getItemID() == id)
 		{
-			cout << "Removing " << eqpInventory[i].getName() << " from your inventory." << endl;
-			eqpInventory.erase(eqpInventory.begin() + i);
+			cout << "Removing " << containervector[i].getName() << " from " << Container::getName() << "." << endl;
+			containervector.erase(containervector.begin() + i);
 			remCTR++;
 		}
 		if (remCTR != 0)
 			break;
 	}
-	
+	//cout << "NOT BROKEN YET. PAUSING..." << endl;
+	//system("pause");
 	notify();
 }
 
-Equippable Backpack::getEQfromBP(int id)
+Equippable Container::getEQfromContainer(int id)
 {
 	int getCTR = 0;
 
-	for (int i = 0; i < eqpInventory.size(); i++)
+	for (int i = 0; i < containervector.size(); i++)
 	{
-		if (eqpInventory[i].getItemID() == id)
+		if (containervector[i].getItemID() == id)
 		{
-			return eqpInventory[i];
+			return containervector[i];
 			getCTR++;
 		}
 		
@@ -503,18 +507,21 @@ Equippable Backpack::getEQfromBP(int id)
 
 }
 
-string Backpack::output()
+string Container::output()
 {
 	ostringstream streamer;
 
-	if (eqpInventory.size() == 0)
-		cout << "Container is empty." << endl;
-	else
+	if (containervector.size() != 0)
 	{
-		for (int i = 0; i < eqpInventory.size(); i++)
+		//cout << "CONTAINER VECTOR SIZE IS NOT 0" << endl;
+		for (int i = 0; i < containervector.size(); i++)
 		{
-			streamer << eqpInventory[i].getName() << " : " << endl;
+			streamer << ": " << containervector[i].getName() << " :" << endl;
+			//cout << "ITERATING THROUGH VECTOR TO OUTPUT ITEMS" << endl;
 		}
 		return streamer.str();
 	}
+
+	else
+		return Container::getName() + " is empty.\n";
 }

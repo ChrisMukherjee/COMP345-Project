@@ -104,35 +104,30 @@ private:
 
 
 
-class Container
-{
-	//Need to think of relation between backpack and items in the dungeons..? (Thinking for the future of the project)
-
-};
-
-
-class Backpack : public Container, public Item, public Subject
+class Container : public Item, public Subject
 {
 public:
 
 
-	void addEQtoBP(Equippable eqp);
+	void addEQtoContainer(Equippable eqp);
 	//void addCONtoBP();
 
-	void remEQfromBP(int id);
-	
-	Equippable getEQfromBP(int id);
+	void remEQfromContainer(int id);
 
-	Backpack(string nm);
+	Equippable getEQfromContainer(int id);
+
+	Container(string nm);
 
 	string output();
 
-	
+
 
 
 private:
-	vector<Equippable> eqpInventory;
-	//vector<Consumable> cnsInventory;
+	vector<Equippable> containervector;
 
 };
+
+
+
 

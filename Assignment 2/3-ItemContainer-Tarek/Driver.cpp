@@ -13,62 +13,43 @@ int main()
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 
-	/*
-	//DICE ROLL TESTING!
-	cout << roll(2) << endl;
-	cout << roll(2) << endl;
-	cout << roll(2) << endl;
-	cout << roll(2) << endl;
-	cout << roll(2) << endl;
-	cout << roll(2) << endl;
-	cout << roll(2) << endl;
-	cout << roll(2) << endl;
+	
+	cout << endl;
+
+	Container playerInventory("Player Inventory");
+
+	Container chest1("Chest");
+	
+	cout << endl;
+
+	ContainerObserver piObserver(playerInventory);
+
+	ContainerObserver ch1Observer(chest1);
+
+	cout << endl;
+
 	system("pause");
 	
-	if (roll(2) == 1)
-		cout << "0" << endl;
-	else
-		cout << roll(5) << endl;
-	system("pause");
-	if (roll(2) == 1)
-		cout << "0" << endl;
-	else
-		cout << roll(5) << endl;
-	system("pause");
-	if (roll(2) == 1)
-		cout << "0" << endl;
-	else
-		cout << roll(5) << endl;
-	system("pause");
-	if (roll(2) == 1)
-		cout << "0" << endl;
-	else
-		cout << roll(5) << endl;
-	system("pause");
-	if (roll(2) == 1)
-		cout << "0" << endl;
-	else
-		cout << roll(5) << endl;
-	system("pause");
-	*/
-	
-	Backpack pi("Player Inventory");
-
-	ContainerObserver playerinventoryobserver(pi);
-
-	system("pause");
+	cout << endl;
 
 
+	Equippable axe("Dagger of Stabbing", Equippable::WEAPON);
 
-	Equippable axe("Greataxe", Equippable::WEAPON);
+	cout << endl;
 
 	cout << "ATK BOOST: " << axe.getAtkBoost() << endl;
 	cout << "DMG BOOST: " << axe.getDmgBoost() << endl;
 	
-	system("pause");
+	cout << endl;
 
-	pi.addEQtoBP(axe);
+	system("pause");
 	
+	cout << endl;
+
+	playerInventory.addEQtoContainer(axe);
+	
+	cout << endl;
+
 	system("pause");
 
 	cout << endl;
@@ -76,89 +57,36 @@ int main()
 
 
 
-	Equippable sword("Greatsword", Equippable::WEAPON);
+	Equippable sword("Maul of Smashing", Equippable::WEAPON);
 
-	system("pause");
+	cout << endl;
 
 	cout << "ATK BOOST: " << sword.getAtkBoost() << endl;
 	cout << "DMG BOOST: " << sword.getDmgBoost() << endl;
 
+	cout << endl;
+
 	system("pause");
 
-	pi.addEQtoBP(sword);
+	cout << endl;
+
+	chest1.addEQtoContainer(sword);
 	
+	cout << endl;
+
 	system("pause");
 
-	pi.remEQfromBP(1001);
+	chest1.remEQfromContainer(1001);
 	
+	cout << endl;
+
 	system("pause");
 
+	playerInventory.remEQfromContainer(1000);
 
-	/*
-	------------------------------------------------------------
+	cout << endl;
 
-	int dicetest = roll(5);
-	cout << dicetest << endl;
-	dicetest = roll(5);
-	cout << dicetest << endl;
-	dicetest = roll(6);
-	cout << dicetest << endl;
-	dicetest = roll(6);
-	cout << dicetest << endl;
 	system("pause");
-	
-	
-	//Item creation
-
-	cout << "Creating a weapon (Dagger of Stabbing) , shield, and armor with random attributes..." << endl;
-
-	Equippable sword = Equippable("Dagger of Stabbing", Equippable::WEAPON);
-	cout << endl;
-	Equippable shield = Equippable("Shield of Defending", Equippable::SHIELD);
-	cout << endl;
-	Equippable armor = Equippable("Armor of Death Prevention", Equippable::ARMOR);
-	cout << endl;
-	
-	cout << "Armor stat of shield: " << shield.getArmBoost() << endl;
-	
-
-
-
-	Equippable::getAllEnchantments(sword);
-	cout << endl;
-	Equippable::getAllEnchantments(shield);
-	cout << endl;
-	Equippable::getAllEnchantments(armor);
-	cout << endl;
-
-	
-
-	cout << "Creating a Backpack...Items will be pushed in and out of it, demonstrating the use of the Observer patterns." << endl;
-
-	Backpack PlayerInventory = Backpack("Abnormally Large Bag");
-
-	cout << "Showing the current contents of player inventory..." << endl;
-
-	PlayerInventory.output();
-
-	cout << "Adding Dagger of Stabbing to the inventory and displaying" << endl;
-	
-	PlayerInventory.addEQtoBP(sword);
-
-	PlayerInventory.output();
-
-	cout << "Adding Shield of Defending to the inventory and displaying" << endl;
-
-	PlayerInventory.addEQtoBP(shield);
-
-	PlayerInventory.output();
-
-	cout << "Adding Armor of Death Prevention to the inventory and displaying" << endl;
-
-	PlayerInventory.addEQtoBP(armor);
-
-	PlayerInventory.output();
-	*/
 	
 
 	return (0);
