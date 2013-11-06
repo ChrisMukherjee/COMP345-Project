@@ -2,21 +2,22 @@
 
 #include <iostream>
 #include <vector>
-#include <sstream>
 
 #include "Item.h"
 #include "Dice.h"
 #include "Observable.h"
-#include "GridContent.h"
+#include "Cell.h"
 
 // A Character is a class for all characters in the game
-class Character : public Observable,public GridContent
+class Character :
+	public Observable,
+	public GridContent
 {
 
 public:
 
-	//Constructor and destructor
-	Character(std::string name = "Default Name", int level = 1);
+	// Constructor and destructor
+	Character(std::string name, int level);
 	virtual ~Character();
 
 	// Equips an item into a specified slot. If it's a ring, it will automatically equip in ring slot 1. If you want
@@ -33,6 +34,12 @@ public:
 	std::string invToString();
 	std::string otherAttributesToString();
 	std::string goldToString();
+
+	// Save the Character to text file
+	bool saveCharacter(std::string filename);
+
+	// Load a Character from text file
+	bool loadCharacter(std::string filename);
 
 
 protected:

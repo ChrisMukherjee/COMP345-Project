@@ -1,13 +1,15 @@
 #include "Character.h"
 
+#include <sstream>
+#include <fstream>
+
 // **********PUBLIC MEMBER FUNCTIONS**********//
 
-//Assign and initialize all the data members
-Character::Character(std::string name, int level) 
+// Assign and initialize all the data members
+Character::Character(std::string name, int level) :
+	level(level),
+	name(name)
 {
-	Character::level = level;
-	Character::name = name;
-
 	assignAbilityScores();
 }
 
@@ -19,7 +21,7 @@ Character::~Character()
 	}
 }
 
-//Ringslot is defaulted to 1
+// Ringslot is defaulted to 1
 void Character::equip(Item& item, int ringSlot)
 {
 	//Make sure the item to be equiped is not a misc. item
@@ -50,9 +52,7 @@ void Character::equip(Item& item, int ringSlot)
 	{
 		std::cout << "You cannot equip " << item.name << ".\n";
 	}
-
 	notify();
-
 }
 
 void Character::unequip(int slotToUnequip)
@@ -148,10 +148,92 @@ std::string Character::goldToString()
 	return "Gold: " + std::to_string(gold) + "\n";
 }
 
+bool Character::saveCharacter(std::string filename)
+{
+	std::ofstream f(filename, std::ios::out);
+
+	if (f.is_open())
+	{
+		f << name << std::endl
+			<< level << std::endl
+			<< baseStr << std::endl
+			<< baseDex << std::endl
+			<< baseCon << std::endl
+			<< baseInt << std::endl
+			<< baseWis << std::endl
+			<< baseCha << std::endl
+			<< effStr << std::endl
+			<< effDex << std::endl
+			<< effCon << std::endl
+			<< effInt << std::endl
+			<< effWis << std::endl
+			<< effCha << std::endl
+			<< modStr << std::endl
+			<< modDex << std::endl
+			<< modCon << std::endl
+			<< modInt << std::endl
+			<< modWis << std::endl
+			<< modCha << std::endl
+			<< ac << std::endl
+			<< attackBonus << std::endl
+			<< dmgBonus << std::endl
+			<< maxHP << std::endl
+			<< curHP << std::endl
+			<< gold << std::endl;
+		f.close();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+// Load a character from file
+bool Character::loadCharacter(std::string filename)
+{
+	std::ifstream f(filename, std::ios::in);
+
+	if (f.is_open())
+	{
+		f >> name;
+		f >> level;
+		f >> baseStr;
+		f >> baseDex;
+		f >> baseCon;
+		f >> baseInt;
+		f >> baseWis;
+		f >> baseCha;
+		f >> effStr;
+		f >> effDex;
+		f >> effCon;
+		f >> effInt;
+		f >> effWis;
+		f >> effCha;
+		f >> modStr;
+		f >> modDex;
+		f >> modCon;
+		f >> modInt;
+		f >> modWis;
+		f >> modCha;
+		f >> ac;
+		f >> attackBonus;
+		f >> dmgBonus;
+		f >> maxHP;
+		f >> curHP;
+		f >> gold;
+		f.close();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 
 //**********PRIVATE MEMBER FUNCTIONS**********//
 
-//Rolls 4d6 and chooses the best three rolls
+// Rolls 4d6 and chooses the best three rolls
 int Character::generateAbilityScore()
 {
 	int rolls[4];
@@ -180,13 +262,13 @@ int Character::generateAbilityScore()
 
 }
 
-//Based on DnD rules
+// Based on DnD rules
 int Character::calcModifier(int base)
 {
 	return static_cast<int>(floor((base - 10) / 2));
 }
 
-//Used by constructor to initialize and assign data members
+// Used by constructor to initialize and assign data members
 void Character::assignAbilityScores()
 {
 	baseStr = effStr = generateAbilityScore();

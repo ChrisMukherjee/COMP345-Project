@@ -15,7 +15,7 @@
 
 using namespace std;
 
-int main()
+int main2()
 {
 	int width;
 	int height;
