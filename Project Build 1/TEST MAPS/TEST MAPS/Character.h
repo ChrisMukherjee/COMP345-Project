@@ -27,6 +27,9 @@ public:
 	// Unequips an item and places it in your inventory
 	void unequip(int slotToUnequip);
 
+	void pickUp(Item& item);
+	void drop(Item* item);
+
 	// String representations of Character Sheet, equiped items, inv etc...
 	std::string characterSheetToString();
 	std::string attributesToString();

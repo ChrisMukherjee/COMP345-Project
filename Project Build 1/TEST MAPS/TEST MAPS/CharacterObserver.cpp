@@ -22,7 +22,7 @@ void CharacterObserver::update(Observable* o)
 {
 	if (subject == o)
 	{
-		std::cout << "****************Update " + name + "****************" << std::endl
+		std::cout << "**************** Character Sheet ****************" << std::endl
 			<< subject->characterSheetToString();
 	}
 }

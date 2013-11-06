@@ -27,8 +27,8 @@ void Character::equip(Item& item, int ringSlot)
 	//Make sure the item to be equiped is not a misc. item
 	if(item.slot != Item::ItemSlot::MISC)
 	{
-		//Each thing you equip is also placed in inventory
-		inv.push_back(&item);
+		//Each thing you equip is also placed in inventory i.e. picked up
+		pickUp(item);
 
 		//If it's a ring and you specify you want it in ringSlot 2, we do this special case
 		if(item.slot == Item::ItemSlot::RING && ringSlot == 2)
@@ -52,7 +52,7 @@ void Character::equip(Item& item, int ringSlot)
 	{
 		std::cout << "You cannot equip " << item.name << ".\n";
 	}
-	notify();
+	//notify(); //This should be uncommented when we have a GUI
 }
 
 void Character::unequip(int slotToUnequip)
@@ -66,7 +66,27 @@ void Character::unequip(int slotToUnequip)
 			slot[slotToUnequip] = NULL;
 		}
 	}
-	notify();
+	//notify(); //This should be uncommented when we have a GUI
+}
+
+void Character::pickUp(Item& item)
+{
+	inv.push_back(&item);
+	//notify(); //This should be uncommented when we have a GUI
+}
+
+void Character::drop(Item* item)
+{
+	for (size_t i = 0; i < inv.size(); ++i)
+	{
+		if (item == inv[i])
+		{
+			inv.erase(inv.begin() + i);
+			inv.shrink_to_fit();
+			delete item;
+			break; //Found the thing to delete, no need to keep iterating.
+		}
+	}
 }
 
 

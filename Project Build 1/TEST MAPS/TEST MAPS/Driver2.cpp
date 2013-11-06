@@ -44,7 +44,7 @@ int main()
 		do
 		{
 			response = static_cast<int>(_getch()) - 48; // Get the int value of the character pressed
-		} while (response < 1 || response > 4); //Make sure either 1, 2, or 3 was pressed
+		} while (response < 1 || response > 4); //Make sure either 1, 2, 3 or 4 was pressed
 
 		switch (response)
 		{
@@ -59,7 +59,7 @@ int main()
 			break;
 		case 4:
 			quit = true;
-			puts("Thanks for playing!\n\n");
+			puts("\n\nThanks for playing!\n\n");
 			break;
 		} 
 	} while(!quit);
@@ -82,7 +82,8 @@ void play()
 
 	map->startGame(player);
 
-	GridObserver obs(map);
+	GridObserver gObs(map);
+	CharacterObserver cObs(*player);
 
 	std:: vector <InputEvent> events;
 	events.push_back(InputEvent("up",VK_UP));
@@ -90,6 +91,7 @@ void play()
 	events.push_back(InputEvent("left",VK_LEFT));
 	events.push_back(InputEvent("right",VK_RIGHT));
 	events.push_back(InputEvent("character",0x43));
+	events.push_back(InputEvent("map", 0x4d));
 	events.push_back(InputEvent("quit",VK_ESCAPE));
 
 	std::string move;
@@ -103,6 +105,10 @@ void play()
 		if (move == "character")
 		{
 			player->notify();
+		}
+		else if (move == "map")
+		{
+			map->notify();
 		}
 		else
 		{
@@ -243,7 +249,7 @@ void makeMap()
 		std::cin >> filename;
 		if (map->saveMap(filename))
 		{
-			puts("\n\Save seccessful!");
+			puts("\n\nSave seccessful!");
 		}
 		else
 		{
