@@ -2,6 +2,8 @@
 #define MAPCREATOR_H
 
 #include <QMainWindow>
+#include <QtGui>
+#include <QtCore>
 
 namespace Ui {
 class MapCreator;
@@ -14,6 +16,7 @@ class MapCreator : public QMainWindow
 public:
     explicit MapCreator(QWidget *parent = 0);
     ~MapCreator();
+    void populateMap(int w, int h);
 
 private slots:
     void on_action_Open_triggered();
@@ -26,6 +29,8 @@ private slots:
 
 private:
     Ui::MapCreator *ui;
+    int height;
+    int width;
 };
 
 #endif // MAPCREATOR_H

@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="toolTip">
-   <string>Maximum 20</string>
+   <string/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="goButton">
@@ -93,7 +93,18 @@
     </property>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
-      <widget class="QGraphicsView" name="graphicsView"/>
+      <widget class="QLabel" name="label1">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label2">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -107,10 +118,10 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string>Maximum = 20</string>
+     <string>Min = 3, Max = 20</string>
     </property>
     <property name="minimum">
-     <number>1</number>
+     <number>3</number>
     </property>
     <property name="maximum">
      <number>20</number>
@@ -126,10 +137,10 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string>Maximum = 20</string>
+     <string>Min = 3, Max = 20</string>
     </property>
     <property name="minimum">
-     <number>1</number>
+     <number>3</number>
     </property>
     <property name="maximum">
      <number>20</number>
