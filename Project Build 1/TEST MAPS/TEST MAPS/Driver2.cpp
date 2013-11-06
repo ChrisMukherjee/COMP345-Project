@@ -124,7 +124,11 @@ void createCharacter()
 	std::cin >> level;
 
 	player = new Fighter(name, level);
-	playerLoaded = true;
+
+	puts("Please enter filename to save new character:");
+	std::string filename;
+	std::cin >> filename;
+	player->saveCharacter(filename);
 }
 
 
