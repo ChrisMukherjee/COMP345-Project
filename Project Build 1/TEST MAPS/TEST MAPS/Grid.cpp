@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include "Grid.h"
+#include <fstream>
 
 using namespace std;
 
@@ -317,4 +318,85 @@ void Grid:: move(string direction)
 	notify();	
 
 }
+
+bool Grid::saveMap(std::string filename)
+{
+	std::ofstream f(filename, std::ios::out);
+
+	if (f.is_open())
+	{
+		f << height << std::endl << width << std::endl;
+
+		for (int i = 0; i < height; ++i)
+		{
+			for (int j = 0; j < width; j++)
+			{
+				if (grid[i][j].currentState == Cell::state::EMPTY)
+				{
+					f << '.' << " "; //Special case for empty cells, to help with loading
+				}
+				else{
+					f << grid[i][j].image << " ";
+				}
+			}
+			f << std::endl;
+		} 
+		f.close();
+		puts("successful map save");
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Grid::loadMap(std::string filename)
+{
+	std::ifstream f(filename, std::ios::in);
+
+	if (f.is_open())
+	{
+		int height, width;
+		f >> height >> width;
+		grid = new Cell*[width];
+
+		for (int i=0; i < width; i++)
+		{
+			grid[i] = new Cell[height];
+		}
+
+		for (int i = 0; i < height; ++i)
+		{
+			for (int j = 0; j < width; j++)
+			{
+				char temp;
+				f >> temp;
+				switch (temp)
+				{
+				case '.':
+					grid[i][j].setState(Cell::state::EMPTY);
+					break;
+				case 'S':
+					grid[i][j].setState(Cell::state::START);
+					break;
+				case 'E':
+					grid[i][j].setState(Cell::state::EXIT);
+					break;
+				case '#':
+					grid[i][j].setState(Cell::state::WALL);
+				}
+			}
+		}
+		f.close();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+
+
 

@@ -7,7 +7,6 @@
 #include <string>
 
 #include "Windows.h"
-#include "dirent.h"
 
 #include "E:\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\GridObserver.h"
 #include "E:\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\InputManager.h"
@@ -22,6 +21,7 @@ void loadMap();
 void makeMap();
 
 Fighter* player;
+Grid* map;
 bool playerLoaded = false;
 bool mapLoaded = false;
 
@@ -59,6 +59,7 @@ int main()
 			break;
 		case 4:
 			quit = true;
+			puts("Thanks for playing!\n\n");
 			break;
 		} 
 	} while(!quit);
@@ -73,8 +74,42 @@ void play()
 		puts("\n\nNo character is loaded yet...");
 		loadCharacter();
 	}
+	if(!mapLoaded)
+	{
+		puts("\n\nNo map is loaded yet...");
+		loadMap();
+	}
 
-	std::cout << "\n" << player->characterSheetToString();
+	map->startGame(player);
+
+	GridObserver obs(map);
+
+	std:: vector <InputEvent> events;
+	events.push_back(InputEvent("up",VK_UP));
+	events.push_back(InputEvent("down",VK_DOWN));
+	events.push_back(InputEvent("left",VK_LEFT));
+	events.push_back(InputEvent("right",VK_RIGHT));
+	events.push_back(InputEvent("character",0x43));
+	events.push_back(InputEvent("quit",VK_ESCAPE));
+
+	std::string move;
+
+	//loops allowing for user to move player around the map
+	//each move calls notify() and thus updating the map
+	do
+	{
+		std::cout<< "your turn! \n";
+		move = InputManager :: getInput(events);
+		if (move == "character")
+		{
+			player->notify();
+		}
+		else
+		{
+			map->move(move);
+		}
+	}while( move != "quit");
+
 	puts("Press any key to return to main menu...\n\n");
 	_getch();
 }
@@ -124,7 +159,7 @@ void makeMap()
 	std::cin>>height;
 	std::cout<<"\n\n";
 
-	Grid map = Grid(height,width);
+	map = new Grid(height,width);
 
 	std::cout<<"\nRemeber that,\n\n" 
 		<<"\t-The vertical indices start at 0 increasing from top to bottom\n"
@@ -145,14 +180,14 @@ void makeMap()
 	std::cin>>yesOrNo;
 
 	if(yesOrNo=='Y' || yesOrNo=='y')
-		map.setStart();
+		map->setStart();
 
 
 	std::cout<<"\n\n-Would you like to place the EXIT tile? (Y/N) ";
 	std::cin>>yesOrNo;
 
 	if(yesOrNo=='y' || yesOrNo=='Y')
-		map.setEnd();
+		map->setEnd();
 	//**********************************************************************************
 
 
@@ -168,8 +203,8 @@ void makeMap()
 	{
 		do{
 
-			map.setWalls();
-			std::cout<<map.output()<<std::endl;
+			map->setWalls();
+			std::cout<<map->output()<<std::endl;
 
 			std::cout<<"\nDo you want to add more WALLS? (Y/N) ";
 			std::cin>>yesOrNo;
@@ -185,8 +220,8 @@ void makeMap()
 	//{
 	//	do{
 
-	//		map.setOccu();
-	//		std::cout<<map.output()<<std::endl;
+	//		map->setOccu();
+	//		std::cout<<map->output()<<std::endl;
 
 	//		std::cout<<"\nDo you want to add more OCCUPIED tiles? (Y/N) ";
 	//		std::cin>>yesOrNo;
@@ -196,9 +231,14 @@ void makeMap()
 	//**********************************************************************************
 
 
-	if( map.isValid())
+	if( map->isValid())
 	{
 		std::cout << "Congratulations, your map is valid.\n";
+		puts("Please enter filename to save your map:");
+		std::string filename;
+		std::cin >> filename;
+		map->saveMap(filename);
+
 		//Basically, if this map is valid, it should SAVE to a folder designated
 		//for saved maps, that can loaded upon pressing play on the main menu.
 	}
@@ -209,4 +249,19 @@ void makeMap()
 		//Shouldn't exit, just maybe display a message that will allow you to 
 		//retry?
 	}
+}
+
+void loadMap()
+{
+	std::string filename;
+	puts("\n\nPlease enter filename of the map you'd like to load:");
+	std::cin >> filename;
+	map = new Grid();
+	if (!map->loadMap(filename))
+	{
+		puts("Could not load, generating new map...");
+		makeMap();
+	}
+	std::cout << map->output();
+	mapLoaded = true;
 }

@@ -21,6 +21,9 @@ public:
 	void setEnd();
 	void startGame(Character* c);
 	void move(std::string direction);
+
+	bool saveMap(std::string filename);
+	bool loadMap(std::string filename);
 	
 	std:: string output();
 	
