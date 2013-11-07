@@ -16,39 +16,19 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     splashdialog.cpp \
     mapcreator.cpp \
-    Dice.cpp \
-    CharacterObserver.cpp \
-    Character.cpp \
-    Cell.cpp \
-    Item.cpp \
-    InputManager.cpp \
-    InputEvent.cpp \
-    GridContent.cpp \
-    Grid.cpp \
-    Fighter.cpp \
-    Observable.cpp \
-    GridObserver.cpp
+    clicklabel.cpp \
+    maphelpdialog.cpp
 
 HEADERS  += mainwindow.h \
     splashdialog.h \
     mapcreator.h \
-    Dice.h \
-    CharacterObserver.h \
-    Character.h \
-    Cell.h \
-    Item.h \
-    InputManager.h \
-    InputEvent.h \
-    GridObserver.h \
-    GridContent.h \
-    Grid.h \
-    Fighter.h \
-    Observer.h \
-    Observable.h
+    clicklabel.h \
+    maphelpdialog.h
 
 FORMS    += mainwindow.ui \
     splashdialog.ui \
-    mapcreator.ui
+    mapcreator.ui \
+    maphelpdialog.ui
 
 RESOURCES += \
     images.qrc

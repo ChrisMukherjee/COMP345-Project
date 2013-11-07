@@ -32,6 +32,13 @@ void Cell::setImage()
 	case Cell::OCCUPIED:
 		image = gc->image;
 		break;
+	case Cell::MONSTER:
+		image = 'M';
+		gc = 0;
+		break;
+	case Cell::CHEST:
+		image = 'C';
+		break;
 	}
 }
 
