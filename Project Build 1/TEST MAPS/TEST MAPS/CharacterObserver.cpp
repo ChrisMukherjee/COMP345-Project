@@ -22,6 +22,7 @@ void CharacterObserver::update(Observable* o)
 {
 	if (subject == o)
 	{
+		system("CLS");
 		std::cout << "**************** Character Sheet ****************" << std::endl
 			<< subject->characterSheetToString();
 	}

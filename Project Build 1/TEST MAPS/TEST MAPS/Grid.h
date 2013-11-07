@@ -15,16 +15,15 @@ public:
 	bool isValid();
 	
 
-	void setWalls();
-	void setOccu(GridContent* gc);
-	void setMonster();
-	void setStart();
-	void setEnd();
+	bool setCell(int w, int h, char x);
 	void startGame(Character* c);
-	void move(std::string direction);
+	bool move(std::string direction);
 
-	bool saveMap(std::string filename);
-	bool loadMap(std::string filename);
+	bool saveMap();
+	static Grid* loadMap();
+	// Accessor Functions
+	int getWidth() { return width; };
+	int getHeight() { return height; };
 	
 	std:: string output();
 	

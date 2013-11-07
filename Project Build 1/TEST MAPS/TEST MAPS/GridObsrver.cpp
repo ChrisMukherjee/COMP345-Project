@@ -22,5 +22,6 @@ void GridObserver:: update(Observable* theChangedSubject)
 
 void GridObserver:: draw()
 {
+	system("CLS");
 	std:: cout<< subject->output();
 }

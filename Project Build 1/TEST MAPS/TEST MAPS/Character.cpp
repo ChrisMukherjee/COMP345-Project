@@ -22,35 +22,27 @@ Character::~Character()
 }
 
 // Ringslot is defaulted to 1
-void Character::equip(Item& item, int ringSlot)
+void Character::equip(Equippable& item, int ringSlot)
 {
-	//Make sure the item to be equiped is not a misc. item
-	if(item.slot != Item::ItemSlot::MISC)
-	{
-		//Each thing you equip is also placed in inventory i.e. picked up
-		pickUp(item);
+	//Each thing you equip is also placed in inventory i.e. picked up
+	pickUp(&item);
 
-		//If it's a ring and you specify you want it in ringSlot 2, we do this special case
-		if(item.slot == Item::ItemSlot::RING && ringSlot == 2)
-		{
-			if(slot[7] != NULL)
-			{
-				unequip(7); //Unequips the second ring slot
-			}
-			slot[7] = &item;
-		}
-		else
-		{
-			if(slot[item.slot] != NULL)
-			{
-				unequip( item.slot );
-			}
-			slot[item.slot] = &item;
-		}
-	}
-	else //Trying to equip a misc. item - Impossible
+	//If it's a ring and you specify you want it in ringSlot 2, we do this special case
+	if(item.getIType() == Equippable::ItemType::RING && ringSlot == 2)
 	{
-		std::cout << "You cannot equip " << item.name << ".\n";
+		if(slot[7] != NULL)
+		{
+			unequip(7); //Unequips the second ring slot
+		}
+		slot[7] = &item;
+	}
+	else
+	{
+		if(slot[item.getIType()] != NULL)
+		{
+			unequip( item.getIType() );
+		}
+		slot[item.getIType()] = &item;
 	}
 	//notify(); //This should be uncommented when we have a GUI
 }
@@ -69,9 +61,9 @@ void Character::unequip(int slotToUnequip)
 	//notify(); //This should be uncommented when we have a GUI
 }
 
-void Character::pickUp(Item& item)
+void Character::pickUp(Item* item)
 {
-	inv.push_back(&item);
+	inv.push_back(item);
 	//notify(); //This should be uncommented when we have a GUI
 }
 
@@ -128,7 +120,7 @@ std::string Character::equipedToString()
 	{
 		if( slot[i] != NULL)
 		{
-			sstm << "\t" << slot[i]->name << std::endl;
+			sstm << "\t" << slot[i]->getName() << std::endl;
 		}
 	}
 
@@ -144,7 +136,7 @@ std::string Character::invToString()
 	{
 		if( inv[i] != NULL )
 		{
-			sstm << "\t" << inv[i]->name << std::endl;
+			sstm << "\t" << inv[i]->getName() << std::endl;
 		}
 	}
 

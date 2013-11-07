@@ -14,5 +14,6 @@ public:
 	virtual ~Fighter();
 
 	//Method to assign class (e.g. Fighter) specific data members
-	void assignOtherAttributes();
+	virtual void assignOtherAttributes();
+	virtual void levelUp();
 };

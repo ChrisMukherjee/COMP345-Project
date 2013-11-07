@@ -23,9 +23,31 @@ void Fighter::assignOtherAttributes()
 
 	dmgBonus = modStr;
 
-	slot = std::vector<Item*>(8);
+	slot = std::vector<Equippable*>(8);
 
 	inv = std::vector<Item*>();
 
 	gold = 0;
 }
+
+void Fighter::levelUp()
+{
+	maxHP += HP_PER_LEVEL;
+	curHP = maxHP;
+	effStr = ++baseStr;
+	effDex = ++baseDex;
+	effCon = ++baseCon;
+	effInt = ++baseInt;
+	effWis = ++baseWis;
+	effCha = ++baseCha;
+
+	modStr = calcModifier(effStr);
+	modDex = calcModifier(effDex);
+	modCon = calcModifier(effCon);
+	modInt = calcModifier(effInt);
+	modWis = calcModifier(effWis);
+	modCha = calcModifier(effCha);
+
+	level++;
+}
+

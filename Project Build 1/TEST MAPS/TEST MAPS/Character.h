@@ -22,12 +22,12 @@ public:
 
 	// Equips an item into a specified slot. If it's a ring, it will automatically equip in ring slot 1. If you want
 	// to equip it in the other slot, you must specify ring slot 2
-	void equip(Item& item, int ringSlot = 1);
+	void equip(Equippable& item, int ringSlot = 1);
 
 	// Unequips an item and places it in your inventory
 	void unequip(int slotToUnequip);
 
-	void pickUp(Item& item);
+	void pickUp(Item* item);
 	void drop(Item* item);
 
 	// String representations of Character Sheet, equiped items, inv etc...
@@ -43,6 +43,9 @@ public:
 
 	// Load a Character from text file
 	bool loadCharacter(std::string filename);
+
+	// Level a character!!
+	virtual void levelUp() = 0;
 
 
 protected:
@@ -98,7 +101,7 @@ protected:
 	// 6. Boots
 	// 7. Ring
 	// 8. Misc
-	std::vector<Item*> slot;
+	std::vector<Equippable*> slot;
 
 	// Inventory - for unequiped items that he picks up
 	std::vector<Item*> inv;
@@ -109,10 +112,10 @@ protected:
 	// Personalisations - Name, age, weight, etc...
 	std::string name;
 
-private:
 	// Calculates the ability score modifier
 	int calcModifier(int baseStat);
 
+private:
 	// Generate a random ability score between two bounds
 	int generateAbilityScore();
 

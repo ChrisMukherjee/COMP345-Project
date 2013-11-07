@@ -36,6 +36,9 @@ void Cell::setImage()
 		image = 'M';
 		gc = 0;
 		break;
+	case Cell::CHEST:
+		image = 'C';
+		break;
 	}
 }
 

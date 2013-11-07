@@ -8,11 +8,11 @@
 
 #include "Windows.h"
 
-#include "E:\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\GridObserver.h"
-#include "E:\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\InputManager.h"
-#include "E:\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\Grid.h"
-#include "E:\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\Fighter.h"
-#include "E:\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\CharacterObserver.h"
+#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\GridObserver.h"
+#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\InputManager.h"
+#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\Grid.h"
+#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\Fighter.h"
+#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\CharacterObserver.h"
 
 void play();
 void loadCharacter();
@@ -31,6 +31,7 @@ int main()
 
 	do
 	{
+		system("CLS");
 		puts("*****************");
 		Sleep(350);
 		puts("****Main Menu****");
@@ -58,6 +59,7 @@ int main()
 			createCharacter();
 			break;
 		case 4:
+			system("CLS");
 			quit = true;
 			puts("\n\nThanks for playing!\n\n");
 			break;
@@ -69,6 +71,7 @@ int main()
 
 void play()
 {
+	system("CLS");
 	if(!playerLoaded)
 	{
 		puts("\n\nNo character is loaded yet...");
@@ -95,7 +98,7 @@ void play()
 	events.push_back(InputEvent("quit",VK_ESCAPE));
 
 	std::string move;
-
+	bool onExit = false;
 	//loops allowing for user to move player around the map
 	//each move calls notify() and thus updating the map
 	do
@@ -112,9 +115,22 @@ void play()
 		}
 		else
 		{
-			map->move(move);
+			onExit = map->move(move);
 		}
-	}while( move != "quit");
+		if (onExit)
+		{
+			system("CLS");
+			player->levelUp();
+			puts("Congratulations! You have beaten the level. Your character increases in strength!");
+			std::cout << '\a';
+			Sleep(2500);
+			player->notify();
+			Sleep(2500);
+			mapLoaded = false;
+			playerLoaded = false;
+		}
+
+	}while( move != "quit" && !onExit);
 
 	puts("Press any key to return to main menu...\n\n");
 	_getch();
@@ -122,6 +138,7 @@ void play()
 
 void createCharacter()
 {
+	system("CLS");
 	std::string name;
 	int level;
 	puts("\n\nPlease enter a name:");
@@ -140,6 +157,7 @@ void createCharacter()
 
 void loadCharacter()
 {
+	system("CLS");
 	std::string filename;
 	puts("\n\nPlease enter filename of the character you'd like to load:");
 	std::cin >> filename;
@@ -154,14 +172,13 @@ void loadCharacter()
 
 void makeMap()
 {
+	system("CLS");
 	int width, height;
-	char yesOrNo;
 	std::cout<<"\n\n---------DUNGEONS & DRAGONS------------\n"
 		<<"--------------MAP CREATOR--------------\n\n\n";
 
 
 	//*************Promting the user for the map dimensions*****************************
-	std::cout<<"**************STEP 1*******************\n";
 	std::cout<<"Please enter the Width of the map: ";
 	std::cin>>width;
 
@@ -169,116 +186,93 @@ void makeMap()
 	std::cin>>height;
 	std::cout<<"\n\n";
 
-	map = new Grid(height,width);
+	map = new Grid(width, height);
 
-	std::cout<<"\nRemeber that,\n\n" 
-		<<"\t-The vertical indices start at 0 increasing from top to bottom\n"
-		<<"\t-The horizontal indices start at 0 increasing from left to right\n"
-		<<"\nAlso,\n\n"
-		<<"\t 'S' -> start   'E' -> Exit\n" 
-		<<"\t '#' -> Wall    '!' -> Occupied\n"  
-		<<"\t '@' -> Player  '-' -> Free\n";
-	//**********************************************************************************
+	while (1) {
+		// Output map so user can see his/her changes
+		system("CLS");
+		std::cout << map->output();
+		bool checkValid = false;
 
+		while (!checkValid) {
+			char editChar = ' ';
+			int editWidth = 0;
+			int editHeight = 0;
+			// Reset variable to false
+			bool completed = false;
+			bool validate = false;
 
+			std::cout << std::endl << "Options:" << std::endl << " # : Wall" << std::endl << " S : Start" << std::endl << " E : End" << std::endl << " C : Chest" << std::endl << " M : Monster" << std::endl << " . : Empty Space" << std::endl;
+			std::cout << std::endl << "You can also enter Q to quit and discard your map, V to validate your map, or K to validate and keep your map." << std::endl;
+			std::cout << std::endl << "Enter an acceptable character: ";
+			std::cin >> editChar;
 
+			// If user enters Q, quit program
+			if (editChar == 'Q' || editChar == 'q')
+				return;
 
+			// If user enters V, run validation code
+			if (editChar == 'V' || editChar == 'v') {
+				validate = true;
+			}
 
-	//****************The user places the start & exit points***************************
-	std::cout<<"\n\n\n**************STEP 2*******************\n";
-	std::cout<<"-Would you like to place the START tile? (Y/N) ";
-	std::cin>>yesOrNo;
+			// If user enters S, run validation code and save
+			if (editChar == 'K' || editChar == 'k') {
+				validate = true;
+				completed = true;
+			}
 
-	if(yesOrNo=='Y' || yesOrNo=='y')
-		map->setStart();
+			// Run validation method and output message if user requests
+			if (validate) {
+				if (map->isValid())
+				{
+					puts("\nCongrats, your map is valid!");
+					if (completed) {
+						map->saveMap();
+						return;
+					}
+				}
+				else
+				{
+					std::cout << std::endl << "Sorry, this map is invalid. Please review it and fix any errors." << std::endl << std::endl << std::endl;
+				}
+			}
+			else {
+				do {
+					std::cout << std::endl << "Enter the horizontal index of the cell you wish to edit: ";
+					std::cin >> editWidth;
+					// Make sure the index is valid
+					if (editWidth > (map->getWidth()-1) || editWidth < 0)
+						std::cout << "Invalid width! Please try again." << std::endl;
+				}
+				while (editWidth > (map->getWidth()-1) || editWidth < 0);
 
+				do {
+					std::cout << std::endl << "Enter the vertical index of the cell you wish to edit: ";
+					std::cin >> editHeight;
+					// Make sure the index is valid
+					if (editHeight > (map->getHeight()-1) || editHeight < 0)
+						std::cout << "Invalid height! Please try again." << std::endl;
+				}
+				while (editHeight > (map->getHeight()-1) || editHeight < 0);
 
-	std::cout<<"\n\n-Would you like to place the EXIT tile? (Y/N) ";
-	std::cin>>yesOrNo;
+				std::cout << std::endl << std::endl;
 
-	if(yesOrNo=='y' || yesOrNo=='Y')
-		map->setEnd();
-	//**********************************************************************************
-
-
-
-	//********In this step the user places all necessary walls & occupied tiles*********
-	std::cout<<"\n\n**************STEP 3*******************\n";
-
-	//WALLS!
-	std::cout<<"-Would you like to add some WALLS? (Y/N) ";
-	std::cin>>yesOrNo;
-
-	if(yesOrNo == 'Y' || yesOrNo == 'y')
-	{
-		do{
-
-			map->setWalls();
-			std::cout<<map->output()<<std::endl;
-
-			std::cout<<"\nDo you want to add more WALLS? (Y/N) ";
-			std::cin>>yesOrNo;
-
-		}while(yesOrNo=='Y' || yesOrNo=='y');
-	}
-
-	//Monster!
-	std::cout<<"\n\n-Would you like to add some MONSTERS? (Y/N)";
-	std::cin>>yesOrNo;
-
-	if(yesOrNo == 'Y' || yesOrNo == 'y')
-	{
-		do{
-
-			map->setMonster();
-			std::cout<<map->output()<<std::endl;
-
-			std::cout<<"\nDo you want to add more MONSTERS? (Y/N) ";
-			std::cin>>yesOrNo;
-
-		}while(yesOrNo=='Y' || yesOrNo=='y');
-	}
-	//**********************************************************************************
-
-
-	if( map->isValid())
-	{
-		std::cout << "\n\nCongratulations, your map is valid.";
-		puts("\n\nPlease enter filename to save your map:");
-		std::string filename;
-		std::cin >> filename;
-		if (map->saveMap(filename))
-		{
-			puts("\n\nSave seccessful!");
+				// Run setCell method
+				checkValid = map->setCell(editWidth, editHeight, editChar);
+			}
 		}
-		else
-		{
-			puts("\n\nSomething during the save process went wrong!");
-		}
-
-		//Basically, if this map is valid, it should SAVE to a folder designated
-		//for saved maps, that can loaded upon pressing play on the main menu.
+	}
+}
+void loadMap()
+{
+	map = Grid::loadMap();
+	if (map == NULL)
+	{
+		puts("Could not load, returning to main menu...");
 	}
 	else
 	{
-		std::cout<<"\n\nUnfortunatley the map you have designed is not valid,\n";
-		//exit(EXIT_FAILURE);
-		//Shouldn't exit, just maybe display a message that will allow you to 
-		//retry?
+		mapLoaded = true;
 	}
-}
-
-void loadMap()
-{
-	std::string filename;
-	puts("\n\nPlease enter filename of the map you'd like to load:");
-	std::cin >> filename;
-	map = new Grid();
-	if (!map->loadMap(filename))
-	{
-		puts("Could not load, generating new map...");
-		makeMap();
-	}
-	std::cout << map->output();
-	mapLoaded = true;
 }

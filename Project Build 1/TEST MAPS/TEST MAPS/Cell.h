@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GridContent.h"
+#include "Item.h"
 class Cell
 {
 public:
@@ -11,7 +12,8 @@ public:
 		EXIT,
 		EMPTY,
 		OCCUPIED,
-		MONSTER
+		MONSTER,
+		CHEST
 	};
 	
 	Cell(GridContent* gc = nullptr, state = EMPTY);
@@ -22,6 +24,7 @@ public:
 
 	state currentState;
 	GridContent* gc;
+	Item* it;
 	char image;
 
 

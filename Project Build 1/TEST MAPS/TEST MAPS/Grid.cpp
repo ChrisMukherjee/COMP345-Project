@@ -2,27 +2,40 @@
 #include <sstream>
 #include "Grid.h"
 #include <fstream>
+#include "windows.h"
+#include "Fighter.h"
 
 using namespace std;
 
 //Default Constructor
 Grid::Grid()
 {
-	height = 5;
-	width  = 5;
+	height = 5+2;
+	width  = 5+2;
 
-	grid = new Cell*[5];
 
-	for(int i=0; i<5; i++)
-		grid[i] = new Cell[5];
+	grid = new Cell*[width];
+
+	for(int i=0; i<width; i++)
+		grid[i] = new Cell[height];
 
 	for(int x=0; x<width; x++)
 		for(int y=0; y<height; y++)
 			grid[x][y] = Cell(NULL, Cell::state::EMPTY);
 
+	// Set up initial walls around
+	for (int i = 0; i < width; i++) {
+		grid[i][0].setState(Cell::WALL);
+		grid[i][height-1].setState(Cell::WALL);
+	}
+	for (int i = 0; i < height; i++) {
+		grid[0][i].setState(Cell::WALL);
+		grid[width-1][i].setState(Cell::WALL);
+	}
+
 	startX=0;
-	startY=height-1;
-	endX=width-1;
+	startY=height-2;
+	endX=width-2;
 	endY=0;
 
 	playerX = startX;
@@ -35,31 +48,33 @@ Grid::Grid()
 }
 
 //Constructor
-Grid::Grid(int h, int w)
+Grid::Grid(int w, int h)
 {
-	height = h;
-	width  = w;
+	height = h+2;
+	width  = w+2;
+	startX = -1;
+	startY = -1;
+	endX = -1;
+	endY = -1;
 
-	grid = new Cell*[w];
+	grid = new Cell*[width];
 
-	for(int i=0; i<w; i++)
-		grid[i] = new Cell[h];
+	for(int i=0; i<width; i++)
+		grid[i] = new Cell[height];
 
 	for(int x=0; x<width; x++)
 		for(int y=0; y<height; y++)
 			grid[x][y] = Cell(NULL, Cell::state::EMPTY);
 
-	startX=0;
-	startY=height-1;
-	endX=width-1;
-	endY=0;
-
-	playerX=startX;
-	playerY=startY;
-
-	grid[startX][startY] = Cell(NULL, Cell::state::START);
-	grid[endX][endY] = Cell(NULL, Cell::state::EXIT);
-
+	// Set up initial walls around
+	for (int i = 0; i < width; i++) {
+		grid[i][0].setState(Cell::WALL);
+		grid[i][height-1].setState(Cell::WALL);
+	}
+	for (int i = 0; i < height; i++) {
+		grid[0][i].setState(Cell::WALL);
+		grid[width-1][i].setState(Cell::WALL);
+	}
 }
 //destructor
 Grid:: ~Grid()
@@ -74,6 +89,12 @@ Grid:: ~Grid()
 //Validation method
 bool Grid:: isValid()
 {
+	if (startX == -1 || startY == -1 || endX == -1 || endY == -1) {
+		cout << endl << "Your map must have one (S)tart cell and one (E)nd cell.";
+		Sleep(2000);
+		return false;
+	}
+
 	//Using ideas from "the right hand rule" for maze travesal this method runs through the map
 	//ensuring that the exit tile is always accesible from the start tile.
 	int i = startX, j=startY;
@@ -149,100 +170,130 @@ bool Grid:: isValid()
 //Since each type of tile has diiferent idetifiers on the map i decide to implement 
 //a method for each
 
-
-void Grid:: setOccu(GridContent* gc)
-{
-	int i,j;
-
-	cout<<"\nEnter a vertical index ";
-	cin>> j;
-
-	cout<<"Enter a horizontal index ";
-	cin>> i;
-
-	if(grid[i][j].currentState == Cell::state::EMPTY)
-	{
-		grid[i][j].setState(Cell::state::OCCUPIED);
-		grid[i][j].gc = gc;
+// Set cells to user defined value
+bool Grid::setCell(int x, int y, char a) {
+	// Cannot edit the corners of the map
+	if ((x == 0 || x == width-1) && (y == 0 || y == height-1)) {
+		// Print out helpful error message
+		cout << endl << "Sorry, you cannot edit the corners of the map." << endl;
+		return false;
 	}
-	else
-		cout<<"\nSorry that tile is already occupied\n";
-
-
-}
-
-void Grid::setMonster()
-{
-	int i,j;
-
-	cout<<"\nEnter a vertical index ";
-	cin>> j;
-
-	cout<<"Enter a horizontal index ";
-	cin>> i;
-
-	if(grid[i][j].currentState == Cell::state::EMPTY)
-	{
-		grid[i][j].setState(Cell::state::MONSTER);
+	// Start and End are added in a special way
+	// Must make sure to only have one Start
+	else if (a == 'S') {
+		if (startX != -1 || startY != -1) {
+			if ((startX == 0 || startX == width-1) || (startY == 0 || startY == height-1))
+				grid[startX][startY].setState(Cell::state::WALL);
+			else
+				grid[startX][startY].setState(Cell::state::EMPTY);
+		}
+		grid[x][y].setState(Cell::state::START);
+		startX = x;
+		startY = y;
+		return true;
 	}
-	else
-		cout<<"\nSorry that tile is already occupied\n";
-
-
-}
-void Grid:: setWalls()
-{
-	int i,j;
-
-	cout<<"\nEnter a vertical index ";
-	cin>> j;
-
-	cout<<"Enter a horizontal index ";
-	cin>> i;
-
-	if(grid[i][j].currentState == Cell::state::EMPTY)
-		grid[i][j].setState(Cell::state::WALL);
-	else 
-		cout<<"\nSorry that tile is already occupied\n";
-}
-void Grid:: setStart()
-{
-
-
-	grid[startX][startY].setState(Cell::state::EMPTY);
-
-
-	cout<<"\nEnter a vertical index ";
-	cin>> startY;
-
-	cout<<"Enter a horizontal index ";
-	cin>> startX;
-
-	playerX=startX;
-	playerY=startY;
-
-	grid[startX][startY].setState(Cell::state::START);
-
-}
-void Grid:: setEnd()
-{
-	grid[endX][endY].setState(Cell::state::EMPTY);
-
-	cout<<"\nEnter a vertical index ";
-	cin>> endY;
-
-	cout<<"Enter a horizontal index ";
-	cin>> endX;	
-
-	grid[endX][endY].setState(Cell::state::EXIT);
-}
+	// Must make sure to only have one End
+	else if (a == 'E') {
+		if (endX != -1 || endY != -1) {
+			if ((endX == 0 || endX == width-1) || (endY == 0 || endY == height-1))
+				grid[endX][endY].setState(Cell::state::WALL);
+			else
+				grid[endX][endY].setState(Cell::state::EMPTY);
+		}
+		grid[x][y].setState(Cell::state::EXIT);
+		endX = x;
+		endY = y;
+		return true;
+	}
+	// Can only add doors or walls to the edges
+	else if ((x == 0 || x == width-1) || (y == 0 || y == height-1)) {
+		if (a == '#') {
+			// Reset Start and End locations, if replacing one
+			if (grid[x][y].currentState == Cell::START) {
+				startX = -1;
+				startY = -1;
+			}
+			if (grid[x][y].currentState == Cell::EXIT) {
+				endX = -1;
+				endY = -1;
+			}
+			grid[x][y].setState(Cell::state::WALL);
+		}
+		else {
+			// Print out helpful error message
+			cout << endl << "Invalid character! You can only add a (S)tart cell, an (E)nd cell, or walls (#) to the edges of the map." << endl;
+			return false;
+		}
+		return true;
+	}
+	// Any other acceptable character can be added in the map
+	else if (a == '#') {
+		// Reset Start and End locations, if replacing one
+		if (grid[x][y].currentState == Cell::START) {
+			startX = -1;
+			startY = -1;
+		}
+		if (grid[x][y].currentState == Cell::EXIT) {
+			endX = -1;
+			endY = -1;
+		}
+		grid[x][y].setState(Cell::state::WALL);
+		return true;
+	}
+	else if (a == '.') {
+		// Reset Start and End locations, if replacing one
+		if (grid[x][y].currentState == Cell::START) {
+			startX = -1;
+			startY = -1;
+		}
+		if (grid[x][y].currentState == Cell::EXIT) {
+			endX = -1;
+			endY = -1;
+		}
+		grid[x][y].setState(Cell::state::EMPTY);
+		return true;
+	}
+	else if (a == 'C') {
+		// Reset Start and End locations, if replacing one
+		if (grid[x][y].currentState == Cell::START) {
+			startX = -1;
+			startY = -1;
+		}
+		if (grid[x][y].currentState == Cell::EXIT) {
+			endX = -1;
+			endY = -1;
+		}
+		grid[x][y].setState(Cell::state::CHEST);
+		return true;
+	}
+	else if (a == 'M') {
+		// Reset Start and End locations, if replacing one
+		if (grid[x][y].currentState == Cell::START) {
+			startX = -1;
+			startY = -1;
+		}
+		if (grid[x][y].currentState == Cell::EXIT) {
+			endX = -1;
+			endY = -1;
+		}
+		grid[x][y].setState(Cell::state::MONSTER);
+		return true;
+	}
+	else {
+		// Print out helpful error message
+		cout << endl << "Invalid character! Please enter an acceptable character." << endl;
+		return false;
+	}
+	return true;
+};
 
 void Grid:: startGame(Character* c)
 {
 	grid[startX][startY].gc = c;
 	grid[startX][startY].setState(Cell::state::OCCUPIED);
+	playerX = startX;
+	playerY = startY;
 	this->output();
-
 }
 
 
@@ -267,7 +318,7 @@ string Grid:: output()
 	return sstm.str();
 }
 
-void Grid:: move(string direction)
+bool Grid:: move(string direction)
 {
 	//std::cout << (playerY < height);
 
@@ -297,6 +348,11 @@ void Grid:: move(string direction)
 			grid[playerX][playerY].gc = temp;
 			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
 		}
+		else if (grid[playerX][playerY-1].currentState == Cell::state::CHEST)
+		{
+			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
+			grid[playerX][playerY-1].currentState = Cell::state::EMPTY;
+		}
 	}
 
 	else if(direction== "right")
@@ -308,6 +364,11 @@ void Grid:: move(string direction)
 			grid[playerX][playerY].gc = temp;
 			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
 		}
+		else if (grid[playerX+1][playerY].currentState == Cell::state::CHEST)
+		{
+			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
+			grid[playerX+1][playerY].currentState = Cell::state::EMPTY;
+		}
 	}
 
 	else if(direction== "down")
@@ -317,6 +378,11 @@ void Grid:: move(string direction)
 			playerY=playerY+1;
 			grid[playerX][playerY].gc = temp;
 			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
+		}
+		else if (grid[playerX][playerY+1].currentState == Cell::state::CHEST)
+		{
+			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
+			grid[playerX][playerY+1].currentState = Cell::state::EMPTY;
 		}
 	}
 
@@ -329,34 +395,48 @@ void Grid:: move(string direction)
 			grid[playerX][playerY].gc = temp;
 			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
 		}
+		else if (grid[playerX-1][playerY].currentState == Cell::state::CHEST)
+		{
+			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
+			grid[playerX-1][playerY].currentState = Cell::state::EMPTY;
+		}
 	}
 	//*************************************************
 
 	grid[playerX][playerY].gc = temp;
 	grid[playerX][playerY].setState(Cell::state::OCCUPIED);
 
-	notify();	
+	notify();
 
+
+	if (playerX == endX && playerY == endY)
+	{
+		return true;
+	}
+	return false;
 }
 
-bool Grid::saveMap(std::string filename)
+bool Grid::saveMap()
 {
+	std::string filename;
+	puts("\n\nPlease enter filename of the map you'd like to save:");
+	std::cin >> filename;
 	std::ofstream f(filename, std::ios::out);
 
 	if (f.is_open())
 	{
-		f << height << std::endl << width << std::endl;
+		f << width << std::endl << height << std::endl;
 
 		for (int i = 0; i < height; ++i)
 		{
-			for (int j = 0; j < width; j++)
+			for (int j = 0; j < width; ++j)
 			{
-				if (grid[i][j].currentState == Cell::state::EMPTY)
+				if (grid[j][i].currentState == Cell::state::EMPTY)
 				{
 					f << '.' << " "; //Special case for empty cells, to help with loading
 				}
 				else{
-					f << grid[i][j].image << " ";
+					f << grid[j][i].image << " ";
 				}
 			}
 			f << std::endl;
@@ -370,19 +450,25 @@ bool Grid::saveMap(std::string filename)
 	}
 }
 
-bool Grid::loadMap(std::string filename)
+Grid* Grid::loadMap()
 {
+	std::string filename;
+	puts("\n\nPlease enter filename of the map you'd like to load:");
+	std::cin >> filename;
 	std::ifstream f(filename, std::ios::in);
 
 	if (f.is_open())
 	{
-		int height, width;
-		f >> height >> width;
-		grid = new Cell*[width];
+		int width, height;
+		f >> width >> height;
+
+		Grid* map = new Grid(width - 2, height - 2);
+
+		map->grid = new Cell*[width];
 
 		for (int i=0; i < width; i++)
 		{
-			grid[i] = new Cell[height];
+			map->grid[i] = new Cell[height];
 		}
 
 		for (int i = 0; i < height; ++i)
@@ -394,25 +480,37 @@ bool Grid::loadMap(std::string filename)
 				switch (temp)
 				{
 				case '.':
-					grid[i][j].setState(Cell::state::EMPTY);
+					map->grid[j][i].setState(Cell::state::EMPTY);
 					break;
 				case 'S':
-					grid[i][j].setState(Cell::state::START);
+					map->grid[j][i].setState(Cell::state::START);
+					map->startX = j;
+					map->startY = i;
 					break;
 				case 'E':
-					grid[i][j].setState(Cell::state::EXIT);
+					map->grid[j][i].setState(Cell::state::EXIT);
+					map->endX = j;
+					map->endY = i;
 					break;
 				case '#':
-					grid[i][j].setState(Cell::state::WALL);
+					map->grid[j][i].setState(Cell::state::WALL);
+					break;
+				case 'M':
+					map->grid[j][i].setState(Cell::state::MONSTER);
+					break;
+				case 'C':
+					map->grid[j][i].setState(Cell::state::CHEST);
+					map->grid[j][i].it = new Equippable("Swrod", Equippable::WEAPON);
+					break;
 				}
 			}
 		}
 		f.close();
-		return true;
+		return map;
 	}
 	else
 	{
-		return false;
+		return NULL;
 	}
 
 }
