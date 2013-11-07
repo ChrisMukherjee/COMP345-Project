@@ -21,13 +21,16 @@ public:
     ~MapCreator();
     void populateMap(int w, int h);
     void addCells();
+    void setupDefaults();
+    void deleteMap();
+    bool validateMap();
 
 private slots:
     void on_action_Open_triggered();
 
     void on_actionE_xit_triggered();
 
-    void on_action_Save_triggered();
+    bool on_action_Save_triggered();
 
     void on_goButton_clicked();
 
@@ -37,6 +40,8 @@ private slots:
 
     void change_selected();
 
+    void on_action_New_triggered();
+
 private:
     Ui::MapCreator *ui;
     int height;
@@ -44,6 +49,7 @@ private:
     char selectType;
     int startPos, endPos;
     QList<ClickLabel*> map;
+    QList<char> mapChars;
 };
 
 #endif // MAPCREATOR_H
