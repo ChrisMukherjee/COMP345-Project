@@ -8,11 +8,11 @@
 
 #include "Windows.h"
 
-#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\GridObserver.h"
-#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\InputManager.h"
-#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\Grid.h"
-#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\Fighter.h"
-#include "C:\Users\Aiden\Documents\Google Drive\School\Fall 2013\COMP 345 - C++\COMP345-Project\Project Build 1\TEST MAPS\TEST MAPS\CharacterObserver.h"
+#include "GridObserver.h"
+#include "InputManager.h"
+#include "Grid.h"
+#include "Fighter.h"
+#include "CharacterObserver.h"
 
 void play();
 void loadCharacter();
