@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>wall.png</file>
+        <file>enddoor.png</file>
+        <file>startdoor.png</file>
+        <file>chest.png</file>
+        <file>chest_empty.png</file>
+        <file>mud.png</file>
+        <file>rat.png</file>
+    </qresource>
+</RCC>
