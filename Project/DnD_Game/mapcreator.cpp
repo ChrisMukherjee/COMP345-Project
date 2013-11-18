@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QWidget>
 #include <QLabel>
+#include <QGridLayout>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -60,25 +61,46 @@ void MapCreator::on_actionE_xit_triggered()
             if (!on_action_Save_triggered()) {
                 return;
             }
+            deleteMap();
+            this->close();
         }
         else if (warn == QMessageBox::Cancel) {
             return;
         }
+        else if (warn == QMessageBox::No) {
+            deleteMap();
+            this->close();
+        }
     }
-    deleteMap();
-    this->close();
 }
 
 void MapCreator::on_action_Open_triggered()
 {
-    QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), "/", tr("MAP Files (*.dcmap)"));
+    // If user has edited map opened
+    if (!map.empty()) {
+        // Display warning about unsaved map
+        QMessageBox::StandardButton warn = QMessageBox::warning(this, "Save Map?", "Do you want to save the changes you have made to the current map?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
+        if (warn == QMessageBox::Yes) {
+            if (!on_action_Save_triggered()) {
+                return;
+            }
+            deleteMap();
+            QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), "/", tr("MAP Files (*.dcmap)"));
+        }
+        else if (warn == QMessageBox::Cancel) {
+            return;
+        }
+        else if (warn == QMessageBox::No) {
+            deleteMap();
+            QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), "/", tr("MAP Files (*.dcmap)"));
+        }
+    }
 }
 
 bool MapCreator::on_action_Save_triggered()
 {
     if (validateMap()) {
         QString mapName = QFileDialog::getSaveFileName(this, tr("Save Map"), "/", tr("MAP Files (*.dcmap)"));
-        qDebug()<<mapName;
         std::string fileName = mapName.toStdString();
         std::ofstream f(fileName, std::ios::out);
         if (f.is_open())
@@ -115,13 +137,17 @@ void MapCreator::on_action_New_triggered()
             if (!on_action_Save_triggered()) {
                 return;
             }
+            deleteMap();
+            setupDefaults();
         }
         else if (warn == QMessageBox::Cancel) {
             return;
         }
+        else if (warn == QMessageBox::No) {
+            deleteMap();
+            setupDefaults();
+        }
     }
-    deleteMap();
-    setupDefaults();
 }
 
 void MapCreator::on_goButton_clicked()
@@ -204,7 +230,6 @@ void MapCreator::on_action_Help_triggered()
 void MapCreator::map_label_clicked()
 {
     int index = QObject::sender()->objectName().toInt();
-    qDebug()<<index;
     if (index == 0 || index == width-1 || index == map.size()-1 || index == map.size()-width) {
         return;
     }
@@ -371,9 +396,17 @@ void MapCreator::deleteMap()
     while (!map.isEmpty()) {
         map.removeLast();
     }
+    while (!mapChars.isEmpty()) {
+        mapChars.removeLast();
+    }
     // Delete all cells
-    while (ui->gridLayout->count()) {
-        QLayoutItem * item = ui->gridLayout->takeAt(0);
+    while (QLayoutItem* item = ui->gridLayout->takeAt(0))
+    {
+        if (QWidget* widget = item->widget()) {
+            ui->gridLayout->removeWidget(widget);
+            delete widget;
+        }
+        ui->gridLayout->removeItem(item);
         delete item;
     }
 }
@@ -387,72 +420,73 @@ bool MapCreator::validateMap()
 
     //Using ideas from "the right hand rule" for maze travesal this method runs through the map
     //ensuring that the exit tile is always accesible from the start tile.
-    int index = startPos;
-    int i = (index-j)/width;
-    int j = index - (i*width);
-    char** visited = new char*[width];
+    //    int index = startPos;
+    //    int i, j;
+    //    i = (index-j)/width;
+    //    j = index - (i*width);
+    //    char** visited = new char*[width];
 
-    for(int c=0; c<width; c++)
-        visited[c] = new char[height];
+    //    for(int c=0; c<width; c++)
+    //        visited[c] = new char[height];
 
-    visited[i][j] = 'v';
+    //    visited[i][j] = 'v';
 
-//    do
-//    {
-//        //goes to the right cell if possible
-//        if (index <= width || index%width == 0 || (index+1)%width == 0 || index >= (map.size()-width)) {
+    //    do
+    //    {
+    //        //goes to the right cell if possible
+    //        if (index <= width || index%width == 0 || (index+1)%width == 0 || index >= (map.size()-width)) {
 
-//            if((index+1)%width != 0 && (mapChars.at(index+1) == '.' || mapChars.at(index+1) == 'E') && visited[i+1][j] != 'v' && visited[i+1][j] != 'd')
-//        {
-//            i++;
-//            index = ((i+1)*width)+j;
-//            visited[i][j]='v';
-//        }
+    //            if((index+1)%width != 0 && (mapChars.at(index+1) == '.' || mapChars.at(index+1) == 'E') && visited[i+1][j] != 'v' && visited[i+1][j] != 'd')
+    //        {
+    //            i++;
+    //            index = ((i+1)*width)+j;
+    //            visited[i][j]='v';
+    //        }
 
-//        //otherwise goes up 1 cell, if possible
-//        else if(j-1>=0 && (grid[i][j-1].currentState == Cell::state:: EMPTY|| grid[i][j-1].currentState ==Cell::state:: EXIT) && visited[i][j-1] != 'v' && visited[i][j-1] != 'T')
-//        {
-//            j--;
-//            visited[i][j] = 'v';
-//        }
+    //        //otherwise goes up 1 cell, if possible
+    //        else if(j-1>=0 && (grid[i][j-1].currentState == Cell::state:: EMPTY|| grid[i][j-1].currentState ==Cell::state:: EXIT) && visited[i][j-1] != 'v' && visited[i][j-1] != 'T')
+    //        {
+    //            j--;
+    //            visited[i][j] = 'v';
+    //        }
 
-//        //otherwise goes left 1 cell, if possible
-//        else if(i-1>=0 && (grid[i-1][j].currentState == Cell::state:: EMPTY||grid[i-1][j].currentState ==Cell::state:: EXIT) && visited[i-1][j] != 'v' && visited[i-1][j] != 'T')
-//        {
-//            i--;
-//            visited[i][j] = 'v';
-//        }
+    //        //otherwise goes left 1 cell, if possible
+    //        else if(i-1>=0 && (grid[i-1][j].currentState == Cell::state:: EMPTY||grid[i-1][j].currentState ==Cell::state:: EXIT) && visited[i-1][j] != 'v' && visited[i-1][j] != 'T')
+    //        {
+    //            i--;
+    //            visited[i][j] = 'v';
+    //        }
 
-//        //otherwise goes down 1 cell, if possible
-//        else if(j+1<height && (grid[i][j+1].currentState == Cell::state:: EMPTY ||grid[i][j+1].currentState == Cell::state:: EXIT) && visited[i][j+1] !='v' && visited[i][j+1] != 'T')
-//        {
-//            j++;
-//            visited[i][j] = 'v';
-//        }
+    //        //otherwise goes down 1 cell, if possible
+    //        else if(j+1<height && (grid[i][j+1].currentState == Cell::state:: EMPTY ||grid[i][j+1].currentState == Cell::state:: EXIT) && visited[i][j+1] !='v' && visited[i][j+1] != 'T')
+    //        {
+    //            j++;
+    //            visited[i][j] = 'v';
+    //        }
 
-//        //if none of these are possible (i.e. trapped) the 'v' in visisted is replaced with a 'T'
-//        //then all the 'v's in the array visited are erased
-//        else
-//        {
-//            visited[i][j] = 'T';
+    //        //if none of these are possible (i.e. trapped) the 'v' in visisted is replaced with a 'T'
+    //        //then all the 'v's in the array visited are erased
+    //        else
+    //        {
+    //            visited[i][j] = 'T';
 
-//            for(int x=0; x<width; x++)
-//            {
-//                for(int y=0; y<height; y++)
-//                {
-//                    if(visited[x][y] == 'v')
-//                        visited[x][y] = '-';
-//                }
-//            }
+    //            for(int x=0; x<width; x++)
+    //            {
+    //                for(int y=0; y<height; y++)
+    //                {
+    //                    if(visited[x][y] == 'v')
+    //                        visited[x][y] = '-';
+    //                }
+    //            }
 
-//            i = startX;
-//            j = startY;
-//        }
+    //            i = startX;
+    //            j = startY;
+    //        }
 
 
-//        if(visited[startX][startY] == 'T')
-//            return 0;
-//    }while(grid[i][j].currentState != Cell::state::EXIT);
+    //        if(visited[startX][startY] == 'T')
+    //            return 0;
+    //    }while(grid[i][j].currentState != Cell::state::EXIT);
 
 
     return true;
