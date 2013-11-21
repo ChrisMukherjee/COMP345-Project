@@ -39,8 +39,10 @@ void MapCreator::setupDefaults()
 {
     height = 0;
     width = 0;
-    startPos = -1;
-    endPos = -1;
+    startX = -1;
+    startY = -1;
+    endX = -1;
+    endY = -1;
     // Set Wall as automatically selected
     ui->wallImage->setStyleSheet("border: 2px solid red");
     ui->startImage->setStyleSheet("border: none");
@@ -69,16 +71,92 @@ void MapCreator::on_action_Open_triggered()
                 return;
             }
             deleteMap();
-            QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), "/", tr("MAP Files (*.dcmap)"));
+            setupDefaults();
         }
         else if (warn == QMessageBox::Cancel) {
             return;
         }
         else if (warn == QMessageBox::No) {
             deleteMap();
-            QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), "/", tr("MAP Files (*.dcmap)"));
+            setupDefaults();
         }
     }
+    else {
+        deleteMap();
+        setupDefaults();
+    }
+    QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), "/", tr("MAP Files (*.dcmap)"));
+    std::string fileName = mapName.toStdString();
+    std::ifstream f(fileName, std::ios::in);
+    if (f.is_open())
+    {
+        int lwidth, lheight;
+        f >> lwidth >> lheight;
+        ui->wValue->setValue(width);
+        ui->hValue->setValue(height);
+
+        populateMap(lwidth, lheight);
+
+        QPixmap img;
+
+        for (int i = 0; i < height; ++i)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                char temp;
+                f >> temp;
+                switch (temp)
+                {
+                case '.':
+                    img = QPixmap(":/images/mud.png");
+                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    map[i][j]->setPixmap(img);
+                    mapChars[i][j] = '.';
+                    break;
+                case 'S':
+                    img = QPixmap(":/images/startdoor.png");
+                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    map[i][j]->setPixmap(img);
+                    mapChars[i][j] = 'S';
+                    startX = i;
+                    startY = j;
+                    break;
+                case 'E':
+                    img = QPixmap(":/images/enddoor.png");
+                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    map[i][j]->setPixmap(img);
+                    mapChars[i][j] = 'E';
+                    endX = i;
+                    endY = j;
+                    break;
+                case '#':
+                    img = QPixmap(":/images/wall.png");
+                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    map[i][j]->setPixmap(img);
+                    mapChars[i][j] = '#';
+                    break;
+                case 'M':
+                    img = QPixmap(":/images/rat.png");
+                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    map[i][j]->setPixmap(img);
+                    mapChars[i][j] = 'M';
+                    break;
+                case 'C':
+                    img = QPixmap(":/images/chest.png");
+                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    map[i][j]->setPixmap(img);
+                    mapChars[i][j] = 'C';
+                    break;
+                }
+            }
+        }
+        f.close();
+    }
+    else
+    {
+        QMessageBox::StandardButton err = QMessageBox::critical(this, "Error loading map!", "ERROR: Map could not be loaded. File may be corrupted or invalid", QMessageBox::Ok);
+    }
+
 }
 
 bool MapCreator::on_action_Save_triggered()
@@ -95,7 +173,7 @@ bool MapCreator::on_action_Save_triggered()
             {
                 for (int j = 0; j < width; ++j)
                 {
-                    f << mapChars.at((i*width)+j) << " ";
+                    f << mapChars[i][j] << " ";
                 }
                 f << std::endl;
             }
@@ -179,27 +257,27 @@ void MapCreator::addCells() {
             cell->setStyleSheet("border: 1px solid");
             cell->setScaledContents(true);
             cell->setObjectName(QString::number((i*width)+j));
-            map << cell;
-            mapChars << '.';
+            map[i][j] = cell;
+            mapChars[i][j] = '.';
             ui->gridLayout->addWidget(cell, i, j);
         }
     }
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            ClickLabel* currCell = map.at((i*width)+j);
-            connect(map.at((i*width)+j), SIGNAL(clicked()), this, SLOT(map_label_clicked()));
+            ClickLabel* currCell = map[i][j];
+            connect(map[i][j], SIGNAL(clicked()), this, SLOT(map_label_clicked()));
 
             if (i == 0 || j == 0 || i == height-1 || j == width-1) {
                 QPixmap img = QPixmap(":/images/wall.png");
                 img = img.scaled(currCell->width(), currCell->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
                 currCell->setPixmap(img);
-                mapChars[(i*width)+j] = '#';
+                mapChars[i][j] = '#';
             }
             else {
                 QPixmap img = QPixmap(":/images/mud.png");
                 img = img.scaled(currCell->width(), currCell->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
                 currCell->setPixmap(img);
-                mapChars[(i*width)+j] = '.';
+                mapChars[i][j] = '.';
             }
         }
     }
@@ -213,130 +291,219 @@ void MapCreator::on_action_Help_triggered()
 
 void MapCreator::map_label_clicked()
 {
-    int index = QObject::sender()->objectName().toInt();
-    if (index == 0 || index == width-1 || index == map.size()-1 || index == map.size()-width) {
-        return;
+    int x = 0, y = 0;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            if (map[i][j]->objectName() == QObject::sender()->objectName()) {
+                x = i;
+                y = j;
+                break;
+            }
+        }
     }
-    // Start and End are added in a special way
-    // Must make sure to only have one Start
+
+    if (selectType == 'W') {
+        setWall(x, y);
+    }
     else if (selectType == 'S') {
-        if (startPos != -1) {
-            if (startPos <= width || startPos%width == 0 || (startPos+1)%width == 0 || startPos >= (map.size()-width)) {
-                QPixmap img = QPixmap(":/images/wall.png");
-                img = img.scaled(map.at(startPos)->width(), map.at(startPos)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                map.at(startPos)->setPixmap(img);
-                mapChars[startPos] = '#';
-            }
-            else {
-                QPixmap img = QPixmap(":/images/mud.png");
-                img = img.scaled(map.at(startPos)->width(), map.at(startPos)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                map.at(startPos)->setPixmap(img);
-                mapChars[startPos] = '.';
-            }
-        }
-        QPixmap img = QPixmap(":/images/startdoor.png");
-        img = img.scaled(map.at(index)->width(), map.at(index)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        map.at(index)->setPixmap(img);
-        mapChars[index] = 'S';
-        startPos = index;
-        return;
+        setStart(x, y);
     }
-    // Must make sure to only have one End
     else if (selectType == 'E') {
-        if (endPos != -1) {
-            if (endPos <= width || endPos%width == 0 || (endPos+1)%width == 0 == 0 || endPos >= (map.size()-width)) {
-                QPixmap img = QPixmap(":/images/wall.png");
-                img = img.scaled(map.at(endPos)->width(), map.at(endPos)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                map.at(endPos)->setPixmap(img);
-                mapChars[endPos] = '#';
-            }
-            else {
-                QPixmap img = QPixmap(":/images/mud.png");
-                img = img.scaled(map.at(endPos)->width(), map.at(endPos)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                map.at(endPos)->setPixmap(img);
-                mapChars[endPos] = '.';
-            }
-        }
-        QPixmap img = QPixmap(":/images/enddoor.png");
-        img = img.scaled(map.at(index)->width(), map.at(index)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        map.at(index)->setPixmap(img);
-        mapChars[index] = 'E';
-        endPos = index;
-        return;
-    }
-    // Can only add doors or walls to the edges
-    else if (index <= width || index%width == 0 || (index+1)%width == 0 || index >= (map.size()-width)) {
-        if (selectType == 'W') {
-            // Reset Start and End locations, if replacing one
-            if (startPos == index) {
-                startPos = -1;
-            }
-            else if (endPos == index) {
-                endPos = -1;
-            }
-            QPixmap img = QPixmap(":/images/wall.png");
-            img = img.scaled(map.at(index)->width(), map.at(index)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            map.at(index)->setPixmap(img);
-            mapChars[index] = '#';
-        }
-        return;
-    }
-    // Any other acceptable character can be added in the map
-    else if (selectType == 'W') {
-        // Reset Start and End locations, if replacing one
-        if (startPos == index) {
-            startPos = -1;
-        }
-        else if (endPos == index) {
-            endPos = -1;
-        }
-        QPixmap img = QPixmap(":/images/wall.png");
-        img = img.scaled(map.at(index)->width(), map.at(index)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        map.at(index)->setPixmap(img);
-        mapChars[index] = '#';
-        return;
-    }
-    else if (selectType == '-') {
-        // Reset Start and End locations, if replacing one
-        if (startPos == index) {
-            startPos = -1;
-        }
-        else if (endPos == index) {
-            endPos = -1;
-        }
-        QPixmap img = QPixmap(":/images/mud.png");
-        img = img.scaled(map.at(index)->width(), map.at(index)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        map.at(index)->setPixmap(img);
-        mapChars[index] = '.';
-        return;
+        setEnd(x, y);
     }
     else if (selectType == 'C') {
-        // Reset Start and End locations, if replacing one
-        if (startPos == index) {
-            startPos = -1;
-        }
-        else if (endPos == index) {
-            endPos = -1;
-        }
-        QPixmap img = QPixmap(":/images/chest.png");
-        img = img.scaled(map.at(index)->width(), map.at(index)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        map.at(index)->setPixmap(img);
-        mapChars[index] = 'C';
-        return;
+        setChest(x, y);
     }
     else if (selectType == 'M') {
-        // Reset Start and End locations, if replacing one
-        if (startPos == index) {
-            startPos = -1;
+        setMonster(x, y);
+    }
+    else if (selectType == '-') {
+        setEmpty(x, y);
+    }
+}
+
+bool MapCreator::setWall(int x, int y)
+{
+    // Reset Start and End locations, if replacing one
+    if (mapChars[x][y] == 'S') {
+        startX = -1;
+        startY = -1;
+    }
+    // Reset Start and End locations, if replacing one
+    else if (mapChars[x][y] == 'E') {
+        endX = -1;
+        endY = -1;
+    }
+    QPixmap img = QPixmap(":/images/wall.png");
+    img = img.scaled(map[x][y]->width(), map[x][y]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    map[x][y]->setPixmap(img);
+    mapChars[x][y] = '#';
+    return true;
+}
+
+bool MapCreator::setStart(int x, int y)
+{
+    QPixmap img;
+    // Cannot edit the corners of the map
+    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+        return false;
+    }
+    // Start is added in a special way
+    // Must make sure to only have one Start
+    else {
+        if (startX != -1 || startY != -1) {
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (mapChars[i][j] == 'S') {
+                        if ((j == 0 || j == width-1) || (i == 0 || i == height-1)) {
+                            img = QPixmap(":/images/wall.png");
+                            img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                            map[i][j]->setPixmap(img);
+                            mapChars[i][j] = '#';
+                        }
+                        else {
+                            img = QPixmap(":/images/mud.png");
+                            img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                            map[i][j]->setPixmap(img);
+                            mapChars[i][j] = '.';
+                        }
+                        break;
+                    }
+                }
+            }
         }
-        else if (endPos == index) {
-            endPos = -1;
+        img = QPixmap(":/images/startdoor.png");
+        img = img.scaled(map[x][y]->width(), map[x][y]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[x][y]->setPixmap(img);
+        mapChars[x][y] = 'S';
+        startX = x;
+        startY = y;
+        return true;
+    }
+}
+
+bool MapCreator::setEnd(int x, int y)
+{
+    QPixmap img;
+    // Cannot edit the corners of the map
+    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+        return false;
+    }
+    // End is added in a special way
+    // Must make sure to only have one End
+    else {
+        if (endX != -1 || endY != -1) {
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (mapChars[i][j] == 'E') {
+                        if ((j == 0 || j == width-1) || (i == 0 || i == height-1)) {
+                            img = QPixmap(":/images/wall.png");
+                            img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                            map[i][j]->setPixmap(img);
+                            mapChars[i][j] = '#';
+                        }
+                        else {
+                            img = QPixmap(":/images/mud.png");
+                            img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                            map[i][j]->setPixmap(img);
+                            mapChars[i][j] = '.';
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        img = QPixmap(":/images/enddoor.png");
+        img = img.scaled(map[x][y]->width(), map[x][y]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[x][y]->setPixmap(img);
+        mapChars[x][y] = 'E';
+        endX = x;
+        endY = y;
+        return true;
+    }
+}
+
+bool MapCreator::setChest(int x, int y) {
+    // Cannot edit the corners of the map
+    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+        return false;
+    }
+    // Can only add doors or walls to the edges
+    else if ((x == 0 || x == width-1) || (y == 0 || y == height-1)) {
+        return false;
+    }
+    else {
+        // Reset Start and End locations, if replacing one
+        if (mapChars[x][y] == 'S') {
+            startX = -1;
+            startY = -1;
+        }
+        // Reset Start and End locations, if replacing one
+        else if (mapChars[x][y] == 'E') {
+            endX = -1;
+            endY = -1;
+        }
+        QPixmap img = QPixmap(":/images/chest.png");
+        img = img.scaled(map[x][y]->width(), map[x][y]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[x][y]->setPixmap(img);
+        mapChars[x][y] = 'C';
+        return true;
+    }
+}
+
+bool MapCreator::setMonster(int x, int y) {
+    // Cannot edit the corners of the map
+    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+        return false;
+    }
+    // Can only add doors or walls to the edges
+    else if ((x == 0 || x == width-1) || (y == 0 || y == height-1)) {
+        return false;
+    }
+    else {
+        // Reset Start and End locations, if replacing one
+        if (mapChars[x][y] == 'S') {
+            startX = -1;
+            startY = -1;
+        }
+        // Reset Start and End locations, if replacing one
+        else if (mapChars[x][y] == 'E') {
+            endX = -1;
+            endY = -1;
         }
         QPixmap img = QPixmap(":/images/rat.png");
-        img = img.scaled(map.at(index)->width(), map.at(index)->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        map.at(index)->setPixmap(img);
-        mapChars[index] = 'M';
-        return;
+        img = img.scaled(map[x][y]->width(), map[x][y]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[x][y]->setPixmap(img);
+        mapChars[x][y] = 'M';
+        return true;
+    }
+}
+
+bool MapCreator::setEmpty(int x, int y) {
+    // Cannot edit the corners of the map
+    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+        return false;
+    }
+    // Can only add doors or walls to the edges
+    else if ((x == 0 || x == width-1) || (y == 0 || y == height-1)) {
+        return false;
+    }
+    else {
+        // Reset Start and End locations, if replacing one
+        if (mapChars[x][y] == 'S') {
+            startX = -1;
+            startY = -1;
+        }
+        // Reset Start and End locations, if replacing one
+        else if (mapChars[x][y] == 'E') {
+            endX = -1;
+            endY = -1;
+        }
+        QPixmap img = QPixmap(":/images/mud.png");
+        img = img.scaled(map[x][y]->width(), map[x][y]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[x][y]->setPixmap(img);
+        mapChars[x][y] = '.';
+        return true;
     }
 }
 
@@ -396,82 +563,76 @@ void MapCreator::deleteMap()
 
 bool MapCreator::validateMap()
 {
-    if (startPos == -1 || endPos == -1) {
+    // First check to make sure the map has a Start and End
+    if (startX == -1 || startY == -1 || endX == -1 || endY == -1) {
         QMessageBox::StandardButton err = QMessageBox::critical(this, "Invalid Map!", "This map is not valid. Your map must have one (S)tart cell and one (E)nd cell.", QMessageBox::Ok);
         return false;
     }
 
-    //Using ideas from "the right hand rule" for maze travesal this method runs through the map
-    //ensuring that the exit tile is always accesible from the start tile.
-    //    int index = startPos;
-    //    int i, j;
-    //    i = (index-j)/width;
-    //    j = index - (i*width);
-    //    char** visited = new char*[width];
+    // Set up for map traversal
+    // Create another array so that user's map remains unchanged
+    char** visitedArr = new char*[width];
+    for (int k = 0; k < width; k++)
+        visitedArr[k] = new char[height];
 
-    //    for(int c=0; c<width; c++)
-    //        visited[c] = new char[height];
+    // Fill the new array with empty spaces (=)
+    for (int k = 0; k < height; k++) {
+        for (int l = 0; l < width; l++)
+            visitedArr[l][k] = '=';
+    }
 
-    //    visited[i][j] = 'v';
+    int i = startX;
+    int j = startY;
 
-    //    do
-    //    {
-    //        //goes to the right cell if possible
-    //        if (index <= width || index%width == 0 || (index+1)%width == 0 || index >= (map.size()-width)) {
+    // Mark visited indices with a V character
+    visitedArr[i][j] = 'V';
 
-    //            if((index+1)%width != 0 && (mapChars.at(index+1) == '.' || mapChars.at(index+1) == 'E') && visited[i+1][j] != 'v' && visited[i+1][j] != 'd')
-    //        {
-    //            i++;
-    //            index = ((i+1)*width)+j;
-    //            visited[i][j]='v';
-    //        }
+    while (i != endX || j != endY) {
+        // Try going right
+        if (i+1 < width && mapChars[i+1][j] != '#' && visitedArr[i+1][j] != 'V' && visitedArr[i+1][j] != 'Z') {
+            i++;
+            visitedArr[i][j] = 'V';
+        }
+        // Try going up
+        else if (j-1 >= 0 && mapChars[i+1][j] != '#' && visitedArr[i][j-1] != 'V' && visitedArr[i][j-1] != 'Z') {
+            j--;
+            visitedArr[i][j] = 'V';
+        }
+        // Try going left
+        else if (i-1 >= 0 && mapChars[i+1][j] != '#' && visitedArr[i-1][j] != 'V' && visitedArr[i-1][j] != 'Z') {
+            i--;
+            visitedArr[i][j] = 'V';
+        }
+        // Try going down
+        else if (j+1 < height && mapChars[i+1][j] != '#' && visitedArr[i][j+1] != 'V' && visitedArr[i][j+1] != 'Z') {
+            j++;
+            visitedArr[i][j] = 'V';
+        }
+        // If none of the above movements are possible, we have reached a dead end
+        else {
+            // Mark dead end indices with a Z character
+            visitedArr[i][j] = 'Z';
 
-    //        //otherwise goes up 1 cell, if possible
-    //        else if(j-1>=0 && (grid[i][j-1].currentState == Cell::state:: EMPTY|| grid[i][j-1].currentState ==Cell::state:: EXIT) && visited[i][j-1] != 'v' && visited[i][j-1] != 'T')
-    //        {
-    //            j--;
-    //            visited[i][j] = 'v';
-    //        }
+            // Change all the (V)isited indices back into empty (=) cells because they may need to be used for another traversal
+            for (int k = 0; k < height; k++) {
+                for (int l = 0; l < width; l++) {
+                    if (visitedArr[l][k] == 'V') {
+                        visitedArr[l][k] = '=';
+                    }
+                }
+            }
 
-    //        //otherwise goes left 1 cell, if possible
-    //        else if(i-1>=0 && (grid[i-1][j].currentState == Cell::state:: EMPTY||grid[i-1][j].currentState ==Cell::state:: EXIT) && visited[i-1][j] != 'v' && visited[i-1][j] != 'T')
-    //        {
-    //            i--;
-    //            visited[i][j] = 'v';
-    //        }
+            // Reset i, j variables
+            i = startX;
+            j = startY;
+        }
 
-    //        //otherwise goes down 1 cell, if possible
-    //        else if(j+1<height && (grid[i][j+1].currentState == Cell::state:: EMPTY ||grid[i][j+1].currentState == Cell::state:: EXIT) && visited[i][j+1] !='v' && visited[i][j+1] != 'T')
-    //        {
-    //            j++;
-    //            visited[i][j] = 'v';
-    //        }
+        // Invalid map (no way to get from Start to End)
+        if (visitedArr[startX][startY] == 'Z')
+            return false;
+    }
 
-    //        //if none of these are possible (i.e. trapped) the 'v' in visisted is replaced with a 'T'
-    //        //then all the 'v's in the array visited are erased
-    //        else
-    //        {
-    //            visited[i][j] = 'T';
-
-    //            for(int x=0; x<width; x++)
-    //            {
-    //                for(int y=0; y<height; y++)
-    //                {
-    //                    if(visited[x][y] == 'v')
-    //                        visited[x][y] = '-';
-    //                }
-    //            }
-
-    //            i = startX;
-    //            j = startY;
-    //        }
-
-
-    //        if(visited[startX][startY] == 'T')
-    //            return 0;
-    //    }while(grid[i][j].currentState != Cell::state::EXIT);
-
-
+    // If the loop exits, we have reached the end of the map
     return true;
 }
 

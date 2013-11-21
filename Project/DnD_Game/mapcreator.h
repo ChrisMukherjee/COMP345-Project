@@ -22,6 +22,12 @@ public:
     ~MapCreator();
     void populateMap(int w, int h);
     void addCells();
+    bool setWall(int x, int y);
+    bool setStart(int x, int y);
+    bool setEnd(int x, int y);
+    bool setChest(int x, int y);
+    bool setMonster(int x, int y);
+    bool setEmpty(int x, int y);
     void setupDefaults();
     void deleteMap();
     bool validateMap();
@@ -50,9 +56,9 @@ private:
     int height;
     int width;
     char selectType;
-    int startPos, endPos;
-    QList<ClickLabel*> map;
-    QList<char> mapChars;
+    int startX, startY, endX, endY;
+    QList<QList<ClickLabel*>> map;
+    QList<QList<char>> mapChars;
 };
 
 #endif // MAPCREATOR_H
