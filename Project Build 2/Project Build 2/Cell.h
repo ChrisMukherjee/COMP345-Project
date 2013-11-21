@@ -2,6 +2,7 @@
 
 #include "GridContent.h"
 #include "Item.h"
+#include "Monster.h"
 #include "Container.h"
 class Cell
 {
@@ -30,7 +31,7 @@ public:
 	Character* getCharacter();
 	Container* getContainer();
 
-	void setState(state s, GridContent& content);
+	void setState(state s, GridContent* content);
 	void setImage();
 
 private:

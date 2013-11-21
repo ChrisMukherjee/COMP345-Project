@@ -1,4 +1,5 @@
 #include "Cell.h"
+#include "Character.h"
 
 Cell::Cell() :
 	currentState(EMPTY),
@@ -38,7 +39,7 @@ Container* Cell::getContainer()
 	}
 }
 
-void Cell::setState(STATE s, GridContent* c)
+void Cell::setState(Cell::state s, GridContent* c)
 {
 	currentState = s;
 	content = c;

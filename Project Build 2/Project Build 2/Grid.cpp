@@ -21,7 +21,7 @@ Grid::Grid()
 
 	for(int x=0; x<width; x++)
 		for(int y=0; y<height; y++)
-			grid[x][y] = Cell(NULL, Cell::state::EMPTY);
+			grid[x][y] = Cell(Cell::state::EMPTY,NULL);
 
 	// Set up initial walls around
 	for (int i = 0; i < width; i++) {
@@ -41,8 +41,8 @@ Grid::Grid()
 	playerX = startX;
 	playerY = startY;
 
-	grid[startX][startY] = Cell(NULL, Cell::state::START);
-	grid[endX][endY] = Cell(NULL, Cell::state::EXIT);
+	grid[startX][startY] = Cell(Cell::state::START, NULL);
+	grid[endX][endY] = Cell(Cell::state::EXIT,NULL);
 
 
 }
@@ -64,7 +64,7 @@ Grid::Grid(int w, int h)
 
 	for(int x=0; x<width; x++)
 		for(int y=0; y<height; y++)
-			grid[x][y] = Cell(NULL, Cell::state::EMPTY);
+			grid[x][y] = Cell(Cell::state::EMPTY,NULL);
 
 	// Set up initial walls around
 	for (int i = 0; i < width; i++) {
@@ -108,28 +108,28 @@ bool Grid:: isValid()
 	do
 	{
 		//goes to the right cell if possible
-		if(i+1<width && (grid[i+1][j].currentState == Cell::state:: EMPTY||grid[i+1][j].currentState == Cell::state:: EXIT) && visited[i+1][j] != 'v' && visited[i+1][j] != 'T')
+		if(i+1<width && !(grid[i+1][j].isWall()) && visited[i+1][j] != 'v' && visited[i+1][j] != 'T')
 		{
 			i++;
 			visited[i][j]='v';
 		}
 
 		//otherwise goes up 1 cell, if possible
-		else if(j-1>=0 && (grid[i][j-1].currentState == Cell::state:: EMPTY|| grid[i][j-1].currentState ==Cell::state:: EXIT) && visited[i][j-1] != 'v' && visited[i][j-1] != 'T')
+		else if(j-1>=0 && !(grid[i][j-1].isWall()) && visited[i][j-1] != 'v' && visited[i][j-1] != 'T')
 		{
 			j--;
 			visited[i][j] = 'v';
 		}
 
 		//otherwise goes left 1 cell, if possible
-		else if(i-1>=0 && (grid[i-1][j].currentState == Cell::state:: EMPTY||grid[i-1][j].currentState ==Cell::state:: EXIT) && visited[i-1][j] != 'v' && visited[i-1][j] != 'T')
+		else if(i-1>=0 && !(grid[i-1][j].isWall()) && visited[i-1][j] != 'v' && visited[i-1][j] != 'T')
 		{
 			i--;
 			visited[i][j] = 'v';
 		}
 
 		//otherwise goes down 1 cell, if possible
-		else if(j+1<height && (grid[i][j+1].currentState == Cell::state:: EMPTY ||grid[i][j+1].currentState == Cell::state:: EXIT) && visited[i][j+1] !='v' && visited[i][j+1] != 'T')
+		else if(j+1<height && !(grid[i][j+1].isWall()) && visited[i][j+1] !='v' && visited[i][j+1] != 'T')
 		{
 			j++;
 			visited[i][j] = 'v';
@@ -157,7 +157,7 @@ bool Grid:: isValid()
 
 		if(visited[startX][startY] == 'T')
 			return 0;
-	}while(grid[i][j].currentState != Cell::state::EXIT);
+	}while(!grid[i][j].isExit());
 
 	return 1;
 

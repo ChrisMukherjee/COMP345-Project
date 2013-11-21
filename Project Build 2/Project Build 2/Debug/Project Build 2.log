@@ -1,0 +1,40 @@
+﻿Build started 11/21/2013 5:04:07 PM.
+     1>Project "c:\Users\Steven\documents\visual studio 2012\Projects\Project Build 2\Project Build 2\Project Build 2.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt BullyFighterBuilder.cpp Cell.cpp Character.cpp CharacterObserver.cpp ContainerObserver.cpp Dice.cpp Driver.cpp Fighter.cpp FighterDirector.cpp Grid.cpp GridContent.cpp GridObsrver.cpp InputEvent.cpp InputManager.cpp Item.cpp NimbleFighterBuilder.cpp Observable.cpp TankFighterBuilder.cpp
+         TankFighterBuilder.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         Observable.cpp
+         NimbleFighterBuilder.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         Item.cpp
+         InputManager.cpp
+         InputEvent.cpp
+         GridObsrver.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         GridContent.cpp
+         Grid.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         FighterDirector.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         Fighter.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         Driver.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         Dice.cpp
+         ContainerObserver.cpp
+         CharacterObserver.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         Character.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         Cell.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         BullyFighterBuilder.cpp
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\cell.h(5): fatal error C1083: Cannot open include file: 'Container.h': No such file or directory
+         Generating Code...
+     1>c:\users\steven\documents\visual studio 2012\projects\project build 2\project build 2\item.cpp(507): warning C4715: 'Container::getEQfromContainer' : not all control paths return a value
+     1>Done Building Project "c:\Users\Steven\documents\visual studio 2012\Projects\Project Build 2\Project Build 2\Project Build 2.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:30.45
