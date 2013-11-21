@@ -3,12 +3,14 @@
 Thumbs.db
 
 # Visual Studio extras #
-*.sln
 *.sdf
 *.opensdf
 *.suo
 *.vcxproj
 *.filters
+
+# Qt extras #
+*.pro.user
 
 # Windows Executables #
 *.exe
