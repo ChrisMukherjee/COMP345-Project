@@ -19,7 +19,8 @@ public:
 		mapBuilder->buildStart();
 		mapBuilder->buildEnd();
 		mapBuilder->buildChest();
-		mapBuilder->buildMonster(); }
+		mapBuilder->buildMonster();
+		mapBuilder->setLevel(); }
 private:
     MapBuilder* mapBuilder;
 };

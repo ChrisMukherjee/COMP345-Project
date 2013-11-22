@@ -371,6 +371,10 @@ bool Map::move(char direction)
 
 	mapArr[playerX][playerY] = onCell;
 
+	// If a monster is moved onto (killed), replace it with an empty cell when the player moves
+	if (onCell == 'M')
+		mapArr[playerX][playerY] = '=';
+
 	if (direction == 'd' || direction == 'D')
 		tmpX = tmpX+1;
 	else if (direction == 'w' || direction == 'W')
@@ -381,7 +385,7 @@ bool Map::move(char direction)
 		tmpY = tmpY+1;
 
 	// Moveable location
-	if (mapArr[tmpX][tmpY] == '=') {
+	if (mapArr[tmpX][tmpY] == '=' || mapArr[tmpX][tmpY] == 'C' || mapArr[tmpX][tmpY] == 'M') {
 		// Reset Start cell if moving from start
 		if(playerX == startX && playerY == startY)
 			mapArr[playerX][playerY] = 'S';

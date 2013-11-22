@@ -22,3 +22,12 @@ void ArenaBuilder::buildChest() {
 void ArenaBuilder::buildMonster() {
 	builtMap->setMonster(4, 1);
 };
+
+void ArenaBuilder::setLevel() {
+	// Generate a random number between 1 and 10.
+	// This number will be used to adjust the content of the chest and the difficulty level of the monster to the level of the character playing the map.
+	// This level can only work with a proper chest container, and a character with levels (neither of which I have for the assignment).
+	// This will come into play when combined with the other parts of the project.
+	int l = rand() % 10 + 1;
+	level = l;
+};

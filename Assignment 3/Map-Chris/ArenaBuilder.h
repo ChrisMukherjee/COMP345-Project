@@ -13,4 +13,5 @@ public:
 	virtual void buildEnd();
 	virtual void buildChest();
 	virtual void buildMonster();
+	virtual void setLevel();
 };

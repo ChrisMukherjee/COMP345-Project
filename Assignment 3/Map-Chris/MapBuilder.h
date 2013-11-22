@@ -17,7 +17,9 @@ public:
 	virtual void buildEnd() = 0;
 	virtual void buildChest() = 0;
 	virtual void buildMonster() = 0;
+	virtual void setLevel() = 0;
 protected:
 	// Map built by Builder
 	Map* builtMap;
+	int level;
 };
