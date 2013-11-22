@@ -14,7 +14,6 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    explicit MainWindow(char x, QWidget *parent = 0);
     ~MainWindow();
     void closeEvent(QCloseEvent *event);
     SplashDialog *sp;
@@ -22,9 +21,7 @@ public:
 private slots:
     void on_actionE_xit_triggered();
 
-    void on_action_Load_triggered();
-
-    void on_action_Save_triggered();
+    void on_action_New_triggered();
 
 private:
     Ui::MainWindow *ui;

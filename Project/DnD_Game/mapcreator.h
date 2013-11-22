@@ -57,8 +57,8 @@ private:
     int width;
     char selectType;
     int startX, startY, endX, endY;
-    QList<QList<ClickLabel*>> map;
-    QList<QList<char>> mapChars;
+    ClickLabel*** map;
+    char** mapChars;
 };
 
 #endif // MAPCREATOR_H

@@ -63,7 +63,7 @@ void MapCreator::on_actionE_xit_triggered()
 void MapCreator::on_action_Open_triggered()
 {
     // If user has edited map opened
-    if (!map.empty()) {
+    if (map != NULL) {
         // Display warning about unsaved map
         QMessageBox::StandardButton warn = QMessageBox::warning(this, "Save Map?", "Do you want to save the changes you have made to the current map?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
         if (warn == QMessageBox::Yes) {
@@ -192,7 +192,7 @@ bool MapCreator::on_action_Save_triggered()
 void MapCreator::on_action_New_triggered()
 {
     // If user has edited map opened
-    if (!map.empty()) {
+    if (map != NULL) {
         // Display warning about unsaved map
         QMessageBox::StandardButton warn = QMessageBox::warning(this, "Save Map?", "Do you want to save the changes you have made to the current map?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
         if (warn == QMessageBox::Yes) {
@@ -226,6 +226,13 @@ void MapCreator::populateMap(int w, int h)
         if (height == 0 && width == 0) {
             height = h;
             width = w;
+            // Create 2D array
+            map = new ClickLabel**[height];
+            mapChars = new char*[height];
+            for (int i = 0; i < height; i++) {
+                map[i] = new ClickLabel*[width];
+                mapChars[i] = new char[width];
+            }
             addCells();
         }
         // If user is trying to change the size of a map
@@ -236,6 +243,13 @@ void MapCreator::populateMap(int w, int h)
                 deleteMap();
                 height = h;
                 width = w;
+                // Create 2D array
+                map = new ClickLabel**[width];
+                mapChars = new char*[width];
+                for (int i = 0; i < width; i++) {
+                    map[i] = new ClickLabel*[height];
+                    mapChars[i] = new char[height];
+                }
                 addCells();
             }
             else {
@@ -543,13 +557,16 @@ void MapCreator::change_selected()
 
 void MapCreator::deleteMap()
 {
-    // Remove all pointers in QList
-    while (!map.isEmpty()) {
-        map.removeLast();
+    // Delete 2D arrays
+    for (int i = 0; i < width; i++) {
+        delete[] map[i];
+        delete[] mapChars[i];
     }
-    while (!mapChars.isEmpty()) {
-        mapChars.removeLast();
-    }
+    delete[] map;
+    delete[] mapChars;
+    map = NULL;
+    mapChars = NULL;
+
     // Delete all cells
     while (QLayoutItem* item = ui->gridLayout->takeAt(0))
     {
@@ -639,7 +656,7 @@ bool MapCreator::validateMap()
 void MapCreator::closeEvent(QCloseEvent *event)
 {
     // If user has edited map opened
-    if (!map.empty()) {
+    if (map != NULL) {
         // Display warning about unsaved map
         QMessageBox::StandardButton warn = QMessageBox::warning(this, "Save Map?", "Do you want to save the changes you have made to the current map?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
         if (warn == QMessageBox::Yes) {

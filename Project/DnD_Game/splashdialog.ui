@@ -7,25 +7,12 @@
     <x>0</x>
     <y>0</y>
     <width>238</width>
-    <height>376</height>
+    <height>325</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dungeon Crawler</string>
   </property>
-  <widget class="QPushButton" name="loadButton">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>170</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Load Game</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="titleText">
    <property name="geometry">
     <rect>
@@ -69,7 +56,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>220</y>
+     <y>170</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -82,7 +69,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>270</y>
+     <y>220</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -95,7 +82,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>320</y>
+     <y>270</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -107,7 +94,6 @@
  </widget>
  <tabstops>
   <tabstop>newButton</tabstop>
-  <tabstop>loadButton</tabstop>
   <tabstop>mapButton</tabstop>
  </tabstops>
  <resources/>

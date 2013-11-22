@@ -119,9 +119,6 @@
     </property>
     <addaction name="action_New"/>
     <addaction name="separator"/>
-    <addaction name="action_Load"/>
-    <addaction name="action_Save"/>
-    <addaction name="separator"/>
     <addaction name="actionE_xit"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
@@ -161,22 +158,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
-   </property>
-  </action>
-  <action name="action_Load">
-   <property name="text">
-    <string>&amp;Load</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+L</string>
-   </property>
-  </action>
-  <action name="action_Save">
-   <property name="text">
-    <string>&amp;Save</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionE_xit">

@@ -17,18 +17,21 @@ SOURCES += main.cpp\
     splashdialog.cpp \
     mapcreator.cpp \
     clicklabel.cpp \
-    maphelpdialog.cpp
+    maphelpdialog.cpp \
+    newgame.cpp
 
 HEADERS  += mainwindow.h \
     splashdialog.h \
     mapcreator.h \
     clicklabel.h \
-    maphelpdialog.h
+    maphelpdialog.h \
+    newgame.h
 
 FORMS    += mainwindow.ui \
     splashdialog.ui \
     mapcreator.ui \
-    maphelpdialog.ui
+    maphelpdialog.ui \
+    newgame.ui
 
 RESOURCES += \
     images.qrc

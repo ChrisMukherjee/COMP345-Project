@@ -18,14 +18,6 @@ SplashDialog::~SplashDialog()
     delete ui;
 }
 
-void SplashDialog::on_loadButton_clicked()
-{
-    w = new MainWindow('l');
-    w->sp = this;
-    w->show();
-    this->hide();
-}
-
 void SplashDialog::on_newButton_clicked()
 {
     w = new MainWindow();

@@ -153,10 +153,10 @@
    <widget class="QGroupBox" name="wallGroup">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>130</y>
-      <width>61</width>
-      <height>81</height>
+      <x>690</x>
+      <y>190</y>
+      <width>81</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="title">
@@ -166,9 +166,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
-       <width>41</width>
-       <height>41</height>
+       <y>20</y>
+       <width>64</width>
+       <height>64</height>
       </rect>
      </property>
      <property name="text">
@@ -182,10 +182,10 @@
    <widget class="QGroupBox" name="startGroup">
     <property name="geometry">
      <rect>
-      <x>760</x>
-      <y>130</y>
-      <width>61</width>
-      <height>81</height>
+      <x>810</x>
+      <y>190</y>
+      <width>81</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="title">
@@ -196,8 +196,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>31</width>
-       <height>51</height>
+       <width>64</width>
+       <height>64</height>
       </rect>
      </property>
      <property name="text">
@@ -211,10 +211,10 @@
    <widget class="QGroupBox" name="endGroup">
     <property name="geometry">
      <rect>
-      <x>840</x>
-      <y>130</y>
-      <width>61</width>
-      <height>81</height>
+      <x>810</x>
+      <y>310</y>
+      <width>81</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="title">
@@ -225,8 +225,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>31</width>
-       <height>51</height>
+       <width>64</width>
+       <height>64</height>
       </rect>
      </property>
      <property name="text">
@@ -240,10 +240,10 @@
    <widget class="QGroupBox" name="chestGroup">
     <property name="geometry">
      <rect>
-      <x>760</x>
-      <y>230</y>
-      <width>61</width>
-      <height>71</height>
+      <x>690</x>
+      <y>430</y>
+      <width>81</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="title">
@@ -254,8 +254,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>41</width>
-       <height>41</height>
+       <width>64</width>
+       <height>64</height>
       </rect>
      </property>
      <property name="text">
@@ -265,14 +265,16 @@
       <pixmap resource="images.qrc">:/images/chest.png</pixmap>
      </property>
     </widget>
+    <zorder>chestImage</zorder>
+    <zorder>emptyGroup</zorder>
    </widget>
    <widget class="QGroupBox" name="monsterGroup">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>320</y>
-      <width>221</width>
-      <height>281</height>
+      <x>810</x>
+      <y>430</y>
+      <width>81</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="title">
@@ -283,8 +285,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>46</width>
-       <height>41</height>
+       <width>64</width>
+       <height>64</height>
       </rect>
      </property>
      <property name="text">
@@ -298,10 +300,10 @@
    <widget class="QGroupBox" name="emptyGroup">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>230</y>
-      <width>61</width>
-      <height>71</height>
+      <x>690</x>
+      <y>310</y>
+      <width>81</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="title">
@@ -312,8 +314,8 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>41</width>
-       <height>41</height>
+       <width>64</width>
+       <height>64</height>
       </rect>
      </property>
      <property name="text">
