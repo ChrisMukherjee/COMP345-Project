@@ -25,12 +25,12 @@ Grid::Grid()
 
 	// Set up initial walls around
 	for (int i = 0; i < width; i++) {
-		grid[i][0].setState(Cell::WALL);
-		grid[i][height-1].setState(Cell::WALL);
+		grid[i][0].setState(Cell::WALL, NULL);
+		grid[i][height-1].setState(Cell::WALL, NULL);
 	}
 	for (int i = 0; i < height; i++) {
-		grid[0][i].setState(Cell::WALL);
-		grid[width-1][i].setState(Cell::WALL);
+		grid[0][i].setState(Cell::WALL, NULL);
+		grid[width-1][i].setState(Cell::WALL, NULL);
 	}
 
 	startX=0;
@@ -41,8 +41,10 @@ Grid::Grid()
 	playerX = startX;
 	playerY = startY;
 
-	grid[startX][startY] = Cell(Cell::state::START, NULL);
-	grid[endX][endY] = Cell(Cell::state::EXIT,NULL);
+	//We don't need to mark those cells as start or exit
+	//We will just keep those as pairs of numbers in the map
+	//grid[startX][startY] = Cell(Cell::state::START, NULL);
+	//grid[endX][endY] = Cell(Cell::state::EXIT,NULL);
 
 
 }
@@ -64,16 +66,16 @@ Grid::Grid(int w, int h)
 
 	for(int x=0; x<width; x++)
 		for(int y=0; y<height; y++)
-			grid[x][y] = Cell(Cell::state::EMPTY,NULL);
+			grid[x][y] = Cell(Cell::state::EMPTY, NULL);
 
 	// Set up initial walls around
 	for (int i = 0; i < width; i++) {
-		grid[i][0].setState(Cell::WALL);
-		grid[i][height-1].setState(Cell::WALL);
+		grid[i][0].setState(Cell::WALL, NULL);
+		grid[i][height-1].setState(Cell::WALL, NULL);
 	}
 	for (int i = 0; i < height; i++) {
-		grid[0][i].setState(Cell::WALL);
-		grid[width-1][i].setState(Cell::WALL);
+		grid[0][i].setState(Cell::WALL, NULL);
+		grid[width-1][i].setState(Cell::WALL, NULL);
 	}
 }
 //destructor
@@ -157,7 +159,8 @@ bool Grid:: isValid()
 
 		if(visited[startX][startY] == 'T')
 			return 0;
-	}while(!grid[i][j].isExit());
+		//}while(!grid[i][j].isExit());
+	} while ( !(i == endX && j == endY) );
 
 	return 1;
 
@@ -183,11 +186,11 @@ bool Grid::setCell(int x, int y, char a) {
 	else if (a == 'S') {
 		if (startX != -1 || startY != -1) {
 			if ((startX == 0 || startX == width-1) || (startY == 0 || startY == height-1))
-				grid[startX][startY].setState(Cell::state::WALL);
+				grid[startX][startY].setState(Cell::state::WALL, NULL);
 			else
-				grid[startX][startY].setState(Cell::state::EMPTY);
+				grid[startX][startY].setState(Cell::state::EMPTY, NULL);
 		}
-		grid[x][y].setState(Cell::state::START);
+		//grid[x][y].setState(Cell::state::START); //Don't need, there is no start or end
 		startX = x;
 		startY = y;
 		return true;
@@ -196,11 +199,11 @@ bool Grid::setCell(int x, int y, char a) {
 	else if (a == 'E') {
 		if (endX != -1 || endY != -1) {
 			if ((endX == 0 || endX == width-1) || (endY == 0 || endY == height-1))
-				grid[endX][endY].setState(Cell::state::WALL);
+				grid[endX][endY].setState(Cell::state::WALL, NULL);
 			else
-				grid[endX][endY].setState(Cell::state::EMPTY);
+				grid[endX][endY].setState(Cell::state::EMPTY, NULL);
 		}
-		grid[x][y].setState(Cell::state::EXIT);
+		//grid[x][y].setState(Cell::state::EXIT);
 		endX = x;
 		endY = y;
 		return true;
@@ -209,15 +212,17 @@ bool Grid::setCell(int x, int y, char a) {
 	else if ((x == 0 || x == width-1) || (y == 0 || y == height-1)) {
 		if (a == '#') {
 			// Reset Start and End locations, if replacing one
-			if (grid[x][y].currentState == Cell::START) {
+			//if (grid[x][y].currentState == Cell::START) {
+			if (isStart(x, y)) {
 				startX = -1;
 				startY = -1;
 			}
-			if (grid[x][y].currentState == Cell::EXIT) {
+			//if (grid[x][y].currentState == Cell::EXIT) {
+			else if (isEnd(x, y)) {
 				endX = -1;
 				endY = -1;
 			}
-			grid[x][y].setState(Cell::state::WALL);
+			grid[x][y].setState(Cell::state::WALL, NULL);
 		}
 		else {
 			// Print out helpful error message
@@ -229,54 +234,54 @@ bool Grid::setCell(int x, int y, char a) {
 	// Any other acceptable character can be added in the map
 	else if (a == '#') {
 		// Reset Start and End locations, if replacing one
-		if (grid[x][y].currentState == Cell::START) {
+		if (isStart(x, y)) {
 			startX = -1;
 			startY = -1;
 		}
-		if (grid[x][y].currentState == Cell::EXIT) {
+		if (isEnd(x, y)) {
 			endX = -1;
 			endY = -1;
 		}
-		grid[x][y].setState(Cell::state::WALL);
+		grid[x][y].setState(Cell::state::WALL, NULL);
 		return true;
 	}
 	else if (a == '.') {
 		// Reset Start and End locations, if replacing one
-		if (grid[x][y].currentState == Cell::START) {
+		if (isStart(x, y)) {
 			startX = -1;
 			startY = -1;
 		}
-		if (grid[x][y].currentState == Cell::EXIT) {
+		if (isEnd(x, y)) {
 			endX = -1;
 			endY = -1;
 		}
-		grid[x][y].setState(Cell::state::EMPTY);
+		grid[x][y].setState(Cell::state::EMPTY, NULL);
 		return true;
 	}
 	else if (a == 'C') {
 		// Reset Start and End locations, if replacing one
-		if (grid[x][y].currentState == Cell::START) {
+		if (isStart(x, y)) {
 			startX = -1;
 			startY = -1;
 		}
-		if (grid[x][y].currentState == Cell::EXIT) {
+		if (isEnd(x, y)) {
 			endX = -1;
 			endY = -1;
 		}
-		grid[x][y].setState(Cell::state::CHEST);
+		grid[x][y].setState(Cell::state::CONTAINER, NULL); //THIS should generate a new Container? No, because you can't play after making a map.
 		return true;
 	}
 	else if (a == 'M') {
 		// Reset Start and End locations, if replacing one
-		if (grid[x][y].currentState == Cell::START) {
+		if (isStart(x, y)) {
 			startX = -1;
 			startY = -1;
 		}
-		if (grid[x][y].currentState == Cell::EXIT) {
+		if (isEnd(x, y)) {
 			endX = -1;
 			endY = -1;
 		}
-		grid[x][y].setState(Cell::state::MONSTER);
+		grid[x][y].setState(Cell::state::MONSTER, NULL); //Same as above
 		return true;
 	}
 	else {
@@ -289,8 +294,7 @@ bool Grid::setCell(int x, int y, char a) {
 
 void Grid:: startGame(Character* c)
 {
-	grid[startX][startY].gc = c;
-	grid[startX][startY].setState(Cell::state::OCCUPIED);
+	grid[startX][startY].setState(Cell::CHARACTER, c);
 	playerX = startX;
 	playerY = startY;
 	this->output();
@@ -309,7 +313,7 @@ string Grid:: output()
 		//cout<<"\t\t\t";
 		for(int i=0; i<width; i++)
 		{
-			sstm<<"| "<<grid[i][j].image<<" | ";
+			sstm<<"| "<<grid[i][j].getImage()<<" | ";
 		}
 
 		sstm<<"\n\n";
@@ -318,117 +322,172 @@ string Grid:: output()
 	return sstm.str();
 }
 
-bool Grid:: move(string direction)
+bool Grid::move(string dir)
 {
-	//std::cout << (playerY < height);
+	Cell* oldTile = &grid[playerX][playerY]; //This is the current tile the player is on
+	Cell* newTile; //This will be the prospective tile to move to
+	Character* p = grid[playerX][playerY].getCharacter();
 
-	GridContent* temp = grid[playerX][playerY].gc;
-
-	//******** Do Not erase Start & End Tiles*******
-	if(playerX==startX && playerY==startY)
-		grid[playerX][playerY].setState(Cell::state::START);
-
-	else if(playerX==endX && playerY==endY)
-		grid[playerX][playerY].setState(Cell::state::EXIT);
-
-	else
-		grid[playerX][playerY].setState(Cell::state::EMPTY);
-	//**********************************************
-
-
-
-
-	//*****Define What Happens With Each Input******
-	if(direction== "up")
+	if (dir == "up")
 	{
-		if((playerY-1) >= 0
-			&& (grid[playerX][playerY-1].currentState == Cell::state::EMPTY
-			 || grid[playerX][playerY-1].currentState == Cell::state::EXIT
-			 || grid[playerX][playerY-1].currentState == Cell::state::START))
+		newTile = &grid[playerX][playerY - 1];
+		if( (playerY - 1 >= 0) && (newTile->isEmpty()) )
 		{
-			playerY=playerY-1;
-			grid[playerX][playerY].gc = temp;
-			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
-		}
-		else if (grid[playerX][playerY-1].currentState == Cell::state::CHEST)
+			oldTile->setState(Cell::EMPTY, NULL);
+			newTile->setState(Cell::CHARACTER, p);
+			playerY = playerY - 1;
+		} //Need cases for chest!!!
+	}
+	else if (dir == "down")
+	{
+		newTile = &grid[playerX][playerY + 1];
+		if( (playerY + 1 < height) && (newTile->isEmpty()) )
 		{
-			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
-			grid[playerX][playerY-1].setState(Cell::state::EMPTY);
-			this->notify();
+			oldTile->setState(Cell::EMPTY, NULL);
+			newTile->setState(Cell::CHARACTER, p);
+			playerY = playerY + 1;
 		}
 	}
-
-	else if(direction== "right")
+	else if (dir == "right")
 	{
-		if(playerX+1<width
-			&& 
-			(grid[playerX+1][playerY].currentState == Cell::state::EMPTY
-			|| grid[playerX+1][playerY].currentState == Cell::state::EXIT
-			|| grid[playerX+1][playerY].currentState == Cell::state::START))
+		newTile = &grid[playerX + 1][playerY];
+		if( (playerY + 1 < width) && (newTile->isEmpty()) )
 		{
-			playerX=playerX+1;
-			grid[playerX][playerY].gc = temp;
-			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
-		}
-		else if (grid[playerX+1][playerY].currentState == Cell::state::CHEST)
-		{
-			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
-			grid[playerX+1][playerY].setState(Cell::state::EMPTY);
-			this->notify();
+			oldTile->setState(Cell::EMPTY, NULL);
+			newTile->setState(Cell::CHARACTER, p);
+			playerX = playerX + 1;
 		}
 	}
-
-	else if(direction== "down")
+	else if (dir == "left")
 	{
-		if(playerY+1<height
-			&& ((grid[playerX][playerY+1].currentState == Cell::state::EMPTY)
-			  ||(grid[playerX][playerY+1].currentState == Cell::state::EXIT)
-			  ||(grid[playerX][playerY+1].currentState == Cell::state::START)))
+		newTile = &grid[playerX - 1][playerY];
+		if( (playerY - 1 >= 0) && (newTile->isEmpty()) )
 		{
-			playerY=playerY+1;
-			grid[playerX][playerY].gc = temp;
-			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
-		}
-		else if (grid[playerX][playerY+1].currentState == Cell::state::CHEST)
-		{
-			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
-			grid[playerX][playerY+1].setState(Cell::state::EMPTY);
-			this->notify();
+			oldTile->setState(Cell::EMPTY, NULL);
+			newTile->setState(Cell::CHARACTER, p);
+			playerX = playerX - 1;
 		}
 	}
-
-	else if(direction== "left")
-	{
-		if(playerX-1>=0
-			&& (grid[playerX-1][playerY].currentState == Cell::state::EMPTY
-			 || grid[playerX-1][playerY].currentState == Cell::state::EXIT
-			 || grid[playerX-1][playerY].currentState == Cell::state::START))
-		{
-			playerX=playerX-1;
-			grid[playerX][playerY].gc = temp;
-			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
-		}
-		else if (grid[playerX-1][playerY].currentState == Cell::state::CHEST)
-		{
-			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
-			grid[playerX-1][playerY].setState(Cell::state::EMPTY);
-			this->notify();
-		}
-	}
-	//*************************************************
-
-	grid[playerX][playerY].gc = temp;
-	grid[playerX][playerY].setState(Cell::state::OCCUPIED);
 
 	notify();
-
-
-	if (playerX == endX && playerY == endY)
+	if (isEnd(playerX, playerY))
 	{
 		return true;
 	}
 	return false;
 }
+
+//bool Grid:: move(string direction) /////////This needs to be completely reworked
+//{
+//	//std::cout << (playerY < height);
+//
+//	GridContent* temp = grid[playerX][playerY].gc;
+//
+//	//******** Do Not erase Start & End Tiles*******
+//	if(playerX==startX && playerY==startY)
+//		grid[playerX][playerY].setState(Cell::state::START);
+//
+//	else if(playerX==endX && playerY==endY)
+//		grid[playerX][playerY].setState(Cell::state::EXIT);
+//
+//	else
+//		grid[playerX][playerY].setState(Cell::state::EMPTY);
+//	//**********************************************
+//
+//
+//
+//
+//	//*****Define What Happens With Each Input******
+//	if(direction== "up")
+//	{
+//		if((playerY-1) >= 0
+//			&& (grid[playerX][playerY-1].currentState == Cell::state::EMPTY
+//			|| grid[playerX][playerY-1].currentState == Cell::state::EXIT
+//			|| grid[playerX][playerY-1].currentState == Cell::state::START))
+//		{
+//			playerY=playerY-1;
+//			grid[playerX][playerY].gc = temp;
+//			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
+//		}
+//		else if (grid[playerX][playerY-1].currentState == Cell::state::CHEST)
+//		{
+//			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
+//			grid[playerX][playerY-1].setState(Cell::state::EMPTY);
+//			this->notify();
+//		}
+//	}
+//
+//	else if(direction== "right")
+//	{
+//		if(playerX+1<width
+//			&& 
+//			(grid[playerX+1][playerY].currentState == Cell::state::EMPTY
+//			|| grid[playerX+1][playerY].currentState == Cell::state::EXIT
+//			|| grid[playerX+1][playerY].currentState == Cell::state::START))
+//		{
+//			playerX=playerX+1;
+//			grid[playerX][playerY].gc = temp;
+//			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
+//		}
+//		else if (grid[playerX+1][playerY].currentState == Cell::state::CHEST)
+//		{
+//			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
+//			grid[playerX+1][playerY].setState(Cell::state::EMPTY);
+//			this->notify();
+//		}
+//	}
+//
+//	else if(direction== "down")
+//	{
+//		if(playerY+1<height
+//			&& ((grid[playerX][playerY+1].currentState == Cell::state::EMPTY)
+//			||(grid[playerX][playerY+1].currentState == Cell::state::EXIT)
+//			||(grid[playerX][playerY+1].currentState == Cell::state::START)))
+//		{
+//			playerY=playerY+1;
+//			grid[playerX][playerY].gc = temp;
+//			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
+//		}
+//		else if (grid[playerX][playerY+1].currentState == Cell::state::CHEST)
+//		{
+//			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
+//			grid[playerX][playerY+1].setState(Cell::state::EMPTY);
+//			this->notify();
+//		}
+//	}
+//
+//	else if(direction== "left")
+//	{
+//		if(playerX-1>=0
+//			&& (grid[playerX-1][playerY].currentState == Cell::state::EMPTY
+//			|| grid[playerX-1][playerY].currentState == Cell::state::EXIT
+//			|| grid[playerX-1][playerY].currentState == Cell::state::START))
+//		{
+//			playerX=playerX-1;
+//			grid[playerX][playerY].gc = temp;
+//			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
+//		}
+//		else if (grid[playerX-1][playerY].currentState == Cell::state::CHEST)
+//		{
+//			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
+//			grid[playerX-1][playerY].setState(Cell::state::EMPTY);
+//			this->notify();
+//		}
+//	}
+//	//*************************************************
+//
+//	grid[playerX][playerY].gc = temp;
+//	grid[playerX][playerY].setState(Cell::state::OCCUPIED);
+//
+//	notify();
+//
+//
+//	if (playerX == endX && playerY == endY)
+//	{
+//		return true;
+//	}
+//	return false;
+//}
 
 bool Grid::saveMap()
 {
@@ -445,12 +504,12 @@ bool Grid::saveMap()
 		{
 			for (int j = 0; j < width; ++j)
 			{
-				if (grid[j][i].currentState == Cell::state::EMPTY)
+				if (grid[j][i].isEmpty())
 				{
 					f << '.' << " "; //Special case for empty cells, to help with loading
 				}
 				else{
-					f << grid[j][i].image << " ";
+					f << grid[j][i].getImage() << " ";
 				}
 			}
 			f << std::endl;
@@ -494,27 +553,27 @@ Grid* Grid::loadMap()
 				switch (temp)
 				{
 				case '.':
-					map->grid[j][i].setState(Cell::state::EMPTY);
+					map->grid[j][i].setState(Cell::state::EMPTY, NULL);
 					break;
 				case 'S':
-					map->grid[j][i].setState(Cell::state::START);
+					//map->grid[j][i].setState(Cell::state::START);
 					map->startX = j;
 					map->startY = i;
 					break;
 				case 'E':
-					map->grid[j][i].setState(Cell::state::EXIT);
+					//map->grid[j][i].setState(Cell::state::EXIT);
 					map->endX = j;
 					map->endY = i;
 					break;
 				case '#':
-					map->grid[j][i].setState(Cell::state::WALL);
+					map->grid[j][i].setState(Cell::state::WALL, NULL);
 					break;
 				case 'M':
-					map->grid[j][i].setState(Cell::state::MONSTER);
+					map->grid[j][i].setState(Cell::state::MONSTER, NULL); //THIS IS WHERE NEW MONSTER GETS GEN'D
 					break;
 				case 'C':
-					map->grid[j][i].setState(Cell::state::CHEST);
-					map->grid[j][i].it = new Equippable("Swrod", Equippable::WEAPON);
+					map->grid[j][i].setState(Cell::state::CONTAINER, NULL); //THIS IS WHERE NEW CONT GETS GEN'D
+					//map->grid[j][i].it = new Equippable("Swrod", Equippable::WEAPON);
 					break;
 				}
 			}

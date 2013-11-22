@@ -33,6 +33,7 @@ public:
 
 	void setState(state s, GridContent* content);
 	void setImage();
+	char getImage() {return image;}
 
 private:
 	state currentState;

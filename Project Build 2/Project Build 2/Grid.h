@@ -38,4 +38,8 @@ private:
 
 	bool equals(Grid otherMap);
 
+	//Helper methods to determine if a coord is a start or end tile
+	bool isStart(int x, int y) {return x == startX && y == startY;}
+	bool isEnd(int x, int y) {return x == endX && y == endY;}
+
 };
