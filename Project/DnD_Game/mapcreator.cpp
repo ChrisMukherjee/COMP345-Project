@@ -53,6 +53,8 @@ void MapCreator::setupDefaults()
     selectType = 'W';
     ui->wValue->setValue(5);
     ui->hValue->setValue(5);
+    map = NULL;
+    mapChars = NULL;
 }
 
 void MapCreator::on_actionE_xit_triggered()
@@ -85,7 +87,7 @@ void MapCreator::on_action_Open_triggered()
         deleteMap();
         setupDefaults();
     }
-    QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), "/", tr("MAP Files (*.dcmap)"));
+    QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps", tr("MAP Files (*.dcmap)"));
     std::string fileName = mapName.toStdString();
     std::ifstream f(fileName, std::ios::in);
     if (f.is_open())
@@ -152,17 +154,12 @@ void MapCreator::on_action_Open_triggered()
         }
         f.close();
     }
-    else
-    {
-        QMessageBox::StandardButton err = QMessageBox::critical(this, "Error loading map!", "ERROR: Map could not be loaded. File may be corrupted or invalid", QMessageBox::Ok);
-    }
-
 }
 
 bool MapCreator::on_action_Save_triggered()
 {
     if (validateMap()) {
-        QString mapName = QFileDialog::getSaveFileName(this, tr("Save Map"), "/", tr("MAP Files (*.dcmap)"));
+        QString mapName = QFileDialog::getSaveFileName(this, tr("Save Map"), "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps", tr("MAP Files (*.dcmap)"));
         std::string fileName = mapName.toStdString();
         std::ofstream f(fileName, std::ios::out);
         if (f.is_open())
@@ -178,13 +175,11 @@ bool MapCreator::on_action_Save_triggered()
                 f << std::endl;
             }
             f.close();
+            return true;
         }
-        else
-        {
-            QMessageBox::StandardButton err = QMessageBox::critical(this, "Error saving map!", "ERROR: Map could not be saved.", QMessageBox::Ok);
+        else {
             return false;
         }
-        return true;
     }
     return false;
 }
@@ -359,7 +354,7 @@ bool MapCreator::setStart(int x, int y)
 {
     QPixmap img;
     // Cannot edit the corners of the map
-    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+    if ((x == 0 && y == 0) || (x == 0 && y == width-1) || (x == height-1 && y == 0)|| (x == height-1 && y == width-1)) {
         return false;
     }
     // Start is added in a special way
@@ -400,7 +395,7 @@ bool MapCreator::setEnd(int x, int y)
 {
     QPixmap img;
     // Cannot edit the corners of the map
-    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+    if ((x == 0 && y == 0) || (x == 0 && y == width-1) || (x == height-1 && y == 0)|| (x == height-1 && y == width-1)) {
         return false;
     }
     // End is added in a special way
@@ -439,7 +434,7 @@ bool MapCreator::setEnd(int x, int y)
 
 bool MapCreator::setChest(int x, int y) {
     // Cannot edit the corners of the map
-    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+    if ((x == 0 && y == 0) || (x == 0 && y == width-1) || (x == height-1 && y == 0)|| (x == height-1 && y == width-1)) {
         return false;
     }
     // Can only add doors or walls to the edges
@@ -467,7 +462,7 @@ bool MapCreator::setChest(int x, int y) {
 
 bool MapCreator::setMonster(int x, int y) {
     // Cannot edit the corners of the map
-    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+    if ((x == 0 && y == 0) || (x == 0 && y == width-1) || (x == height-1 && y == 0)|| (x == height-1 && y == width-1)) {
         return false;
     }
     // Can only add doors or walls to the edges
@@ -495,7 +490,7 @@ bool MapCreator::setMonster(int x, int y) {
 
 bool MapCreator::setEmpty(int x, int y) {
     // Cannot edit the corners of the map
-    if ((x == 0 && y == 0) || (x == 0 && y == height-1) || (x == width-1 && y == 0)|| (x == width-1 && y == height-1)) {
+    if ((x == 0 && y == 0) || (x == 0 && y == width-1) || (x == height-1 && y == 0)|| (x == height-1 && y == width-1)) {
         return false;
     }
     // Can only add doors or walls to the edges
@@ -589,13 +584,13 @@ bool MapCreator::validateMap()
     // Set up for map traversal
     // Create another array so that user's map remains unchanged
     char** visitedArr = new char*[width];
-    for (int k = 0; k < width; k++)
-        visitedArr[k] = new char[height];
+    for (int k = 0; k < height; k++)
+        visitedArr[k] = new char[width];
 
     // Fill the new array with empty spaces (=)
     for (int k = 0; k < height; k++) {
         for (int l = 0; l < width; l++)
-            visitedArr[l][k] = '=';
+            visitedArr[k][l] = '=';
     }
 
     int i = startX;
@@ -606,23 +601,23 @@ bool MapCreator::validateMap()
 
     while (i != endX || j != endY) {
         // Try going right
-        if (i+1 < width && mapChars[i+1][j] != '#' && visitedArr[i+1][j] != 'V' && visitedArr[i+1][j] != 'Z') {
-            i++;
+        if (j+1 < width && mapChars[i][j+1] != '#' && visitedArr[i][j+1] != 'V' && visitedArr[i][j+1] != 'Z') {
+            j++;
             visitedArr[i][j] = 'V';
         }
         // Try going up
-        else if (j-1 >= 0 && mapChars[i+1][j] != '#' && visitedArr[i][j-1] != 'V' && visitedArr[i][j-1] != 'Z') {
-            j--;
-            visitedArr[i][j] = 'V';
-        }
-        // Try going left
-        else if (i-1 >= 0 && mapChars[i+1][j] != '#' && visitedArr[i-1][j] != 'V' && visitedArr[i-1][j] != 'Z') {
+        else if (i-1 >= 0 && mapChars[i-1][j] != '#' && visitedArr[i-1][j] != 'V' && visitedArr[i-1][j] != 'Z') {
             i--;
             visitedArr[i][j] = 'V';
         }
+        // Try going left
+        else if (j-1 >= 0 && mapChars[i][j-1] != '#' && visitedArr[i][j-1] != 'V' && visitedArr[i][j-1] != 'Z') {
+            j--;
+            visitedArr[i][j] = 'V';
+        }
         // Try going down
-        else if (j+1 < height && mapChars[i+1][j] != '#' && visitedArr[i][j+1] != 'V' && visitedArr[i][j+1] != 'Z') {
-            j++;
+        else if (i+1 < height && mapChars[i+1][j] != '#' && visitedArr[i+1][j] != 'V' && visitedArr[i+1][j] != 'Z') {
+            i++;
             visitedArr[i][j] = 'V';
         }
         // If none of the above movements are possible, we have reached a dead end
@@ -633,8 +628,8 @@ bool MapCreator::validateMap()
             // Change all the (V)isited indices back into empty (=) cells because they may need to be used for another traversal
             for (int k = 0; k < height; k++) {
                 for (int l = 0; l < width; l++) {
-                    if (visitedArr[l][k] == 'V') {
-                        visitedArr[l][k] = '=';
+                    if (visitedArr[k][l] == 'V') {
+                        visitedArr[k][l] = '=';
                     }
                 }
             }
@@ -645,8 +640,10 @@ bool MapCreator::validateMap()
         }
 
         // Invalid map (no way to get from Start to End)
-        if (visitedArr[startX][startY] == 'Z')
+        if (visitedArr[startX][startY] == 'Z') {
+            QMessageBox::StandardButton err = QMessageBox::critical(this, "Invalid Map!", "This map is not valid. Please review it and fix any errors!", QMessageBox::Ok);
             return false;
+        }
     }
 
     // If the loop exits, we have reached the end of the map
@@ -662,6 +659,7 @@ void MapCreator::closeEvent(QCloseEvent *event)
         if (warn == QMessageBox::Yes) {
             if (!on_action_Save_triggered()) {
                 event->ignore();
+                return;
             }
             deleteMap();
             this->sp->show();
@@ -676,7 +674,9 @@ void MapCreator::closeEvent(QCloseEvent *event)
             event->accept();
         }
     }
-    deleteMap();
-    this->sp->show();
-    event->accept();
- }
+    else {
+        deleteMap();
+        this->sp->show();
+        event->accept();
+    }
+}

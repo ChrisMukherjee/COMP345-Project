@@ -6,7 +6,7 @@ MapHelpDialog::MapHelpDialog(QWidget *parent) :
     ui(new Ui::MapHelpDialog)
 {
     ui->setupUi(this);
-    ui->helpBrowser->setTextColor(Qt::black);
+    this->setWindowFlags(Qt::WindowStaysOnTopHint);
 }
 
 MapHelpDialog::~MapHelpDialog()
