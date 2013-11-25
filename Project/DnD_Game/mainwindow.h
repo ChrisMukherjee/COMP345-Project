@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "splashdialog.h"
+#include <QString>
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +26,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+public:
+    QString character;
+    QString map;
 };
 
 #endif // MAINWINDOW_H
