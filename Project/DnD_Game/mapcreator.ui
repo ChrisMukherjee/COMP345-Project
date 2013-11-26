@@ -20,7 +20,7 @@
    <widget class="QPushButton" name="goButton">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>780</x>
       <y>70</y>
       <width>61</width>
       <height>23</height>
@@ -46,7 +46,7 @@
    <widget class="QLabel" name="heightLabel">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>400</x>
       <y>70</y>
       <width>46</width>
       <height>21</height>
@@ -118,7 +118,7 @@
    <widget class="QSpinBox" name="hValue">
     <property name="geometry">
      <rect>
-      <x>490</x>
+      <x>470</x>
       <y>70</y>
       <width>42</width>
       <height>22</height>
@@ -265,8 +265,6 @@
       <pixmap resource="images.qrc">:/images/chest.png</pixmap>
      </property>
     </widget>
-    <zorder>chestImage</zorder>
-    <zorder>emptyGroup</zorder>
    </widget>
    <widget class="QGroupBox" name="monsterGroup">
     <property name="geometry">
@@ -350,6 +348,45 @@
     </property>
     <property name="text">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; font-style:italic; color:#ff0000;&quot;&gt;Dungeon Crawler!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="loadingLabel">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>290</y>
+      <width>701</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:36pt; font-weight:600; color:#ff0000;&quot;&gt;Loading...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="templateCombo">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>70</y>
+      <width>121</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Choose a template...</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="templateLabel">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>70</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Template:</string>
     </property>
    </widget>
   </widget>

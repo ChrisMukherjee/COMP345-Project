@@ -7,5 +7,9 @@
         <file>mud.png</file>
         <file>rat.png</file>
         <file>startdoor.png</file>
+        <file>fighter_heavy.png</file>
+        <file>fighter_mace.png</file>
+        <file>fighter_shield.png</file>
+        <file>fighter_sword.png</file>
     </qresource>
 </RCC>
