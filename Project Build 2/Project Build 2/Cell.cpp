@@ -27,17 +27,30 @@ Character* Cell::getCharacter()
 	}
 }
 
-Container* Cell::getContainer()
+Monster* Cell::getMonster()
 {
-	if (isContainer())
+	if (isMonster())
 	{
-		return dynamic_cast<Container*>(content);
+		return dynamic_cast<Monster*>(content);
 	}
 	else
 	{
 		return NULL;
 	}
 }
+
+
+//Container* Cell::getContainer()
+//{
+//	if (isContainer())
+//	{
+//		return dynamic_cast<Container*>(content);
+//	}
+//	else
+//	{
+//		return NULL;
+//	}
+//}
 
 void Cell::setState(Cell::state s, GridContent* c)
 {
@@ -62,7 +75,8 @@ void Cell::setImage()
 	case MONSTER:
 		image = getMonster()->image;
 		break;
-	case CONTAINER:
-		image = getContainer()->image;
+		//case CONTAINER:
+		//	image = getContainer()->image;
+		//	break;
 	}
 }

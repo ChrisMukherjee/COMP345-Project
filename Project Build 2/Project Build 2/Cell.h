@@ -3,7 +3,9 @@
 #include "GridContent.h"
 #include "Item.h"
 #include "Monster.h"
-#include "Container.h"
+#include "Character.h"
+//#include "Container.h"
+
 class Cell
 {
 public:
@@ -29,7 +31,7 @@ public:
 
 	Monster* getMonster();
 	Character* getCharacter();
-	Container* getContainer();
+	//Container* getContainer();
 
 	void setState(state s, GridContent* content);
 	void setImage();

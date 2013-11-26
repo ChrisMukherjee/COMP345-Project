@@ -5,8 +5,8 @@
 class FighterBuilder
 {
 public:
-	FighterBuilder(void) {}
-	virtual ~FighterBuilder(void) {}
+	FighterBuilder() {}
+	virtual ~FighterBuilder() {}
 
 	Fighter* getFighter() {return product;}
 

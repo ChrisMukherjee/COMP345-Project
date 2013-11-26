@@ -51,3 +51,7 @@ void Monster::recalculateAttributes()
 }
 
 
+void Monster::assignOtherAttributes()
+{
+
+}

@@ -6,7 +6,6 @@
 #include "Item.h"
 #include "Dice.h"
 #include "Observable.h"
-#include "Cell.h"
 
 // A Character is a class for all characters in the game
 class Character :
