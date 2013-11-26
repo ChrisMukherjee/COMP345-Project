@@ -4,6 +4,7 @@
 #include <fstream>
 #include "windows.h"
 #include "Fighter.h"
+#include <cmath>
 
 using namespace std;
 
@@ -52,6 +53,17 @@ Grid::Grid()
 //Constructor
 Grid::Grid(int w, int h)
 {
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			monsters[i][j] = -1;
+		}
+	}
+
+	numMonsters = 0;
+
 	height = h+2;
 	width  = w+2;
 	startX = -1;
@@ -282,6 +294,7 @@ bool Grid::setCell(int x, int y, char a) {
 			endY = -1;
 		}
 		grid[x][y].setState(Cell::state::MONSTER, NULL); //Same as above
+		//numMonsters++;
 		return true;
 	}
 	else {
@@ -498,7 +511,7 @@ bool Grid::saveMap()
 
 	if (f.is_open())
 	{
-		f << width << std::endl << height << std::endl;
+		f << width << std::endl << height << std::endl << numMonsters << std::endl;
 
 		for (int i = 0; i < height; ++i)
 		{
@@ -523,7 +536,7 @@ bool Grid::saveMap()
 	}
 }
 
-Grid* Grid::loadMap()
+Grid* Grid::loadMap(int characterLevel)
 {
 	std::string filename;
 	puts("\n\nPlease enter filename of the map you'd like to load:");
@@ -543,6 +556,11 @@ Grid* Grid::loadMap()
 		{
 			map->grid[i] = new Cell[height];
 		}
+
+		f >> map->numMonsters;
+
+		int levelPerMonster = ceil(static_cast<float>(characterLevel) / map->numMonsters);
+		int numM = 0;
 
 		for (int i = 0; i < height; ++i)
 		{
@@ -569,7 +587,10 @@ Grid* Grid::loadMap()
 					map->grid[j][i].setState(Cell::state::WALL, NULL);
 					break;
 				case 'M':
-					map->grid[j][i].setState(Cell::state::MONSTER, NULL); //THIS IS WHERE NEW MONSTER GETS GEN'D
+					map->grid[j][i].setState(Cell::state::MONSTER, new Monster("Rat", levelPerMonster));
+					map->monsters[numM][0] = i;
+					map->monsters[numM][1] = j;
+					numM++;
 					break;
 				case 'C':
 					map->grid[j][i].setState(Cell::state::CONTAINER, NULL); //THIS IS WHERE NEW CONT GETS GEN'D
@@ -588,5 +609,15 @@ Grid* Grid::loadMap()
 
 }
 
+bool Grid::inRange(int srcX, int srcY, int tarX, int tarY, int range)
+{
+	int d = floor(sqrt(((tarX - srcX) * (tarX - srcX)) + ((tarY - srcY) * (tarY - srcY))));
+	std::cout << d << std::endl;
+	if (d <= range)
+	{
+		return true;
+	}
+	return false;
+}
 
 

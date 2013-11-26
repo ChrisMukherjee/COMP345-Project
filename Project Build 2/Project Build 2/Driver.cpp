@@ -1,6 +1,5 @@
 //Rewokred main to make it more readable
 
-
 #include <iostream>
 #include <stdlib.h>
 #include <conio.h>
@@ -24,6 +23,12 @@ Fighter* player;
 Grid* map;
 bool playerLoaded = false;
 bool mapLoaded = false;
+
+int main2()
+{
+	std::cout << Grid::inRange(0,0, 1, 1, 1) << std::endl;
+	return 0;
+}
 
 int main()
 {
@@ -66,7 +71,7 @@ int main()
 		} 
 	} while(!quit);
 
-
+	return 0;
 }
 
 void play()
@@ -83,7 +88,10 @@ void play()
 		loadMap();
 	}
 
-	map->startGame(player);
+	if (mapLoaded && playerLoaded)
+	{
+		map->startGame(player);
+	}
 
 	GridObserver gObs(map);
 	CharacterObserver cObs(*player);
@@ -266,7 +274,7 @@ void makeMap()
 }
 void loadMap()
 {
-	map = Grid::loadMap();
+	map = Grid::loadMap(player->level);
 	if (map == NULL)
 	{
 		puts("Could not load, returning to main menu...");

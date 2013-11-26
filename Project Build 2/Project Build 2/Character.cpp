@@ -270,6 +270,19 @@ bool Character::loadCharacter(std::string filename)
 	}
 }
 
+void Character::attack(Character* target)
+{
+	for (size_t i = 0; i < baseAttackBonus.size(); i++)
+	{
+		if (roll(20, 1, baseAttackBonus[i]) > target->ac)
+		{
+			//Do damage equal to current weapon
+			//We should also output info to the console, to let
+			//Joey know we are following the rules.
+		}
+	}
+}
+
 //**********PRIVATE MEMBER FUNCTIONS**********//
 
 // Rolls 4d6 and chooses the best three rolls
