@@ -2,6 +2,12 @@
 
 #include <iostream>
 
+CharacterObserver::CharacterObserver()
+{
+	subject = NULL;
+	name = "View " + std::to_string(serial);
+	++serial;
+}
 
 CharacterObserver::CharacterObserver(Character& c)
 {

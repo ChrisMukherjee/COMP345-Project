@@ -7,6 +7,7 @@
 class CharacterObserver : public Observer
 {
 public:
+	CharacterObserver();
 	CharacterObserver(Character& c);
 	virtual ~CharacterObserver();
 	

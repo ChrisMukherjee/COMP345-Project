@@ -11,6 +11,8 @@ class Cell
 public:
 	static enum state
 	{
+		START,
+		EXIT,
 		EMPTY,
 		WALL,
 		CHARACTER,
@@ -23,6 +25,9 @@ public:
 	Cell(state, GridContent* content = NULL);
 	virtual ~Cell() {};
 
+	bool canMoveOne() {return isStart() || isExit() || isEmpty();}
+	bool isStart() {return currentState == START;}
+	bool isExit() {return currentState == EXIT;}
 	bool isEmpty() {return currentState == EMPTY;}
 	bool isWall() {return currentState == EMPTY;}
 	bool isCharacter() {return currentState == CHARACTER;}

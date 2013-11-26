@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <string>
+#include <ctime>
 
 #include "Windows.h"
 
@@ -14,6 +15,7 @@
 #include "CharacterObserver.h"
 
 void play();
+void playerTurn();
 void loadCharacter();
 void createCharacter();
 void loadMap();
@@ -23,15 +25,21 @@ Fighter* player;
 Grid* map;
 bool playerLoaded = false;
 bool mapLoaded = false;
+string filename;
+std:: vector <InputEvent> events;
 
 int main2()
 {
-	std::cout << Grid::inRange(0,0, 1, 1, 1) << std::endl;
+	//std::cout << Grid::inRange(0,0, 1, 1, 1) << std::endl;
+	map = Grid::loadMap(1);
+	std::cout << map->output();
 	return 0;
 }
 
 int main()
 {
+	srand(static_cast<unsigned>(time(NULL)));
+
 	bool quit = false;
 
 	do
@@ -96,7 +104,13 @@ void play()
 	GridObserver gObs(map);
 	CharacterObserver cObs(*player);
 
-	std:: vector <InputEvent> events;
+	CharacterObserver* mObs = new CharacterObserver[map->actors.size()];
+
+	for (size_t i = 0; i < map->actors.size(); i++)
+	{
+		map->actors[i]->attach(&mObs[i]);
+	}
+
 	events.push_back(InputEvent("up",VK_UP));
 	events.push_back(InputEvent("down",VK_DOWN));
 	events.push_back(InputEvent("left",VK_LEFT));
@@ -105,17 +119,41 @@ void play()
 	events.push_back(InputEvent("map", 0x4d));
 	events.push_back(InputEvent("quit",VK_ESCAPE));
 
-	std::string move;
-	bool onExit = false;
-	//loops allowing for user to move player around the map
-	//each move calls notify() and thus updating the map
-	do
+	while (!map->isEnd(player->x, player->y))
 	{
-		std::cout<< "your turn! \n";
+		for (size_t i = 0; i < map->actors.size(); i++)
+		{
+			if (map->actors[i]->name == "Rat")
+			{
+				int d = roll(4);
+				if (d == 1) {map->getMove(map->actors[i], "up", false);}
+				else if (d == 2) {map->getMove(map->actors[i], "down", false);}
+				else if (d == 3) {map->getMove(map->actors[i], "right", false);}
+				else if (d == 4) {map->getMove(map->actors[i], "left", false);}
+			}
+			else
+			{
+				playerTurn();
+			}
+		}
+	}
+}
+
+void playerTurn()
+{
+	std::string move;
+	bool moved = false;
+
+	std::cout<< "your turn! \n";
+	do 
+	{
 		move = InputManager :: getInput(events);
 		if (move == "character")
 		{
-			player->notify();
+			for (size_t i = 0; i < map->actors.size(); i++)
+			{
+				std::cout << map->actors[i]->characterSheetToString();
+			}
 		}
 		else if (move == "map")
 		{
@@ -123,25 +161,22 @@ void play()
 		}
 		else
 		{
-			onExit = map->move(move);
+			moved = map->getMove(player, move, true);
 		}
-		if (onExit)
-		{
-			system("CLS");
-			player->levelUp();
-			puts("Congratulations! You have beaten the level. Your character increases in strength!");
-			std::cout << '\a';
-			Sleep(2500);
-			player->notify();
-			Sleep(2500);
-			mapLoaded = false;
-			playerLoaded = false;
-		}
-
-	}while( move != "quit" && !onExit);
-
-	puts("Press any key to return to main menu...\n\n");
-	_getch();
+	} while (!moved);
+	//if (onExit)
+	//{
+	//	system("CLS");
+	//	player->levelUp();
+	//	puts("Congratulations! You have beaten the level. Your character increases in strength!");
+	//	std::cout << '\a';
+	//	Sleep(2500);
+	//	player->notify();
+	//	Sleep(2500);
+	//	player->saveCharacter(filename);
+	//	mapLoaded = false;
+	//	playerLoaded = false;
+	//}
 }
 
 void createCharacter()
@@ -166,7 +201,7 @@ void createCharacter()
 void loadCharacter()
 {
 	system("CLS");
-	std::string filename;
+	//std::string filename;
 	puts("\n\nPlease enter filename of the character you'd like to load:");
 	std::cin >> filename;
 	player = new Fighter("", 1);

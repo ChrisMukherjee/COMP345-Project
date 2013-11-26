@@ -5,6 +5,7 @@
 #include "windows.h"
 #include "Fighter.h"
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -53,15 +54,6 @@ Grid::Grid()
 //Constructor
 Grid::Grid(int w, int h)
 {
-
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 2; j++)
-		{
-			monsters[i][j] = -1;
-		}
-	}
-
 	numMonsters = 0;
 
 	height = h+2;
@@ -305,11 +297,24 @@ bool Grid::setCell(int x, int y, char a) {
 	return true;
 };
 
-void Grid:: startGame(Character* c)
+bool sortByDex(Character* i, Character* j) {return i->initiative > j->initiative;}
+
+void Grid::startGame(Character* c)
 {
 	grid[startX][startY].setState(Cell::CHARACTER, c);
+	c->x = startX;
+	c->y = startY;
 	playerX = startX;
 	playerY = startY;
+	actors.push_back(c);
+
+	for(size_t i = 0; i < actors.size(); i++)
+	{
+		actors[i]->initiative = roll(20) + actors[i]->modDex;
+	}
+
+	std::sort(actors.begin(), actors.end(), sortByDex);
+
 	this->output();
 }
 
@@ -326,7 +331,7 @@ string Grid:: output()
 		//cout<<"\t\t\t";
 		for(int i=0; i<width; i++)
 		{
-			sstm<<"| "<<grid[i][j].getImage()<<" | ";
+			sstm<<" "<<grid[i][j].getImage()<<"  ";
 		}
 
 		sstm<<"\n\n";
@@ -335,59 +340,110 @@ string Grid:: output()
 	return sstm.str();
 }
 
-bool Grid::move(string dir)
+void Grid::move(Monster* monster, int destX, int destY)
 {
-	Cell* oldTile = &grid[playerX][playerY]; //This is the current tile the player is on
+	Cell* oldTile = &grid[monster->x][monster->y];
+	Cell* newTile = &grid[destX][destY];
+	oldTile->setState(Cell::EMPTY, NULL);
+	newTile->setState(Cell::MONSTER, monster);
+	monster->x = destX;
+	monster->y = destY;
+}
+
+void Grid::move(Fighter* player, int destX, int destY)
+{
+	Cell* oldTile = &grid[player->x][player->y];
+	Cell* newTile = &grid[destX][destY];
+	oldTile->setState(Cell::EMPTY, NULL);
+	newTile->setState(Cell::CHARACTER, player);
+	player->x = destX;
+	player->y = destY;
+}
+
+bool Grid::getMove(Character* actor, string dir, bool isPlayer)
+{
+	Cell* oldTile = &grid[actor->x][actor->y]; //This is the current tile the player is on
 	Cell* newTile; //This will be the prospective tile to move to
-	Character* p = grid[playerX][playerY].getCharacter();
+
+	bool moved = false;
 
 	if (dir == "up")
 	{
-		newTile = &grid[playerX][playerY - 1];
-		if( (playerY - 1 >= 0) && (newTile->isEmpty()) )
+		newTile = &grid[actor->x][actor->y - 1];
+		if( (actor->y - 1 >= 0) && (newTile->canMoveOne()) )
 		{
-			oldTile->setState(Cell::EMPTY, NULL);
-			newTile->setState(Cell::CHARACTER, p);
-			playerY = playerY - 1;
+			if(isPlayer)
+			{
+				move(dynamic_cast<Fighter*>(actor), actor->x, actor->y - 1);
+			}
+			else
+			{
+				move(dynamic_cast<Monster*>(actor), actor->x, actor->y - 1);
+			}
+			moved = true;
 		} //Need cases for chest!!!
 	}
 	else if (dir == "down")
 	{
-		newTile = &grid[playerX][playerY + 1];
-		if( (playerY + 1 < height) && (newTile->isEmpty()) )
+		newTile = &grid[actor->x][actor->y + 1];
+		if( (actor->y + 1 < height) && (newTile->canMoveOne()) )
 		{
-			oldTile->setState(Cell::EMPTY, NULL);
-			newTile->setState(Cell::CHARACTER, p);
-			playerY = playerY + 1;
+			if(isPlayer)
+			{
+				move(dynamic_cast<Fighter*>(actor), actor->x, actor->y + 1);
+			}
+			else
+			{
+				move(dynamic_cast<Monster*>(actor), actor->x, actor->y + 1);
+			}
+			moved = true;
 		}
 	}
 	else if (dir == "right")
 	{
-		newTile = &grid[playerX + 1][playerY];
-		if( (playerY + 1 < width) && (newTile->isEmpty()) )
+		newTile = &grid[actor->x + 1][actor->y];
+		if( (actor->x + 1 < width) && (newTile->canMoveOne()) )
 		{
-			oldTile->setState(Cell::EMPTY, NULL);
-			newTile->setState(Cell::CHARACTER, p);
-			playerX = playerX + 1;
+			if(isPlayer)
+			{
+				move(dynamic_cast<Fighter*>(actor), actor->x + 1, actor->y);
+			}
+			else
+			{
+				move(dynamic_cast<Monster*>(actor), actor->x + 1, actor->y);
+			}
+			moved = true;
 		}
 	}
 	else if (dir == "left")
 	{
-		newTile = &grid[playerX - 1][playerY];
-		if( (playerY - 1 >= 0) && (newTile->isEmpty()) )
+		newTile = &grid[actor->x - 1][actor->y];
+		if( (actor->x - 1 >= 0) && (newTile->canMoveOne()) )
 		{
-			oldTile->setState(Cell::EMPTY, NULL);
-			newTile->setState(Cell::CHARACTER, p);
-			playerX = playerX - 1;
+			if(isPlayer)
+			{
+				move(dynamic_cast<Fighter*>(actor), actor->x - 1, actor->y);
+			}
+			else
+			{
+				move(dynamic_cast<Monster*>(actor), actor->x - 1, actor->y);
+			}
+			moved = true;
 		}
 	}
 
-	notify();
-	if (isEnd(playerX, playerY))
+	if (grid[startX][startY].isEmpty())
 	{
-		return true;
+		grid[startX][startY].setState(Cell::START, NULL);
 	}
-	return false;
+	if (grid[endX][endY].isEmpty())
+	{
+		grid[endX][endY].setState(Cell::EXIT, NULL);
+	}
+
+	notify();
+
+	return moved;
 }
 
 //bool Grid:: move(string direction) /////////This needs to be completely reworked
@@ -536,10 +592,10 @@ bool Grid::saveMap()
 	}
 }
 
-Grid* Grid::loadMap(int characterLevel)
+Grid* Grid::loadMap(std::string filename, int characterLevel)
 {
-	std::string filename;
-	puts("\n\nPlease enter filename of the map you'd like to load:");
+	//std::string filename;
+	//puts("\n\nPlease enter filename of the map you'd like to load:");
 	std::cin >> filename;
 	std::ifstream f(filename, std::ios::in);
 
@@ -561,6 +617,7 @@ Grid* Grid::loadMap(int characterLevel)
 
 		int levelPerMonster = ceil(static_cast<float>(characterLevel) / map->numMonsters);
 		int numM = 0;
+		Monster* m;
 
 		for (int i = 0; i < height; ++i)
 		{
@@ -574,12 +631,12 @@ Grid* Grid::loadMap(int characterLevel)
 					map->grid[j][i].setState(Cell::state::EMPTY, NULL);
 					break;
 				case 'S':
-					//map->grid[j][i].setState(Cell::state::START);
+					map->grid[j][i].setState(Cell::state::START, NULL);
 					map->startX = j;
 					map->startY = i;
 					break;
 				case 'E':
-					//map->grid[j][i].setState(Cell::state::EXIT);
+					map->grid[j][i].setState(Cell::state::EXIT, NULL);
 					map->endX = j;
 					map->endY = i;
 					break;
@@ -587,10 +644,11 @@ Grid* Grid::loadMap(int characterLevel)
 					map->grid[j][i].setState(Cell::state::WALL, NULL);
 					break;
 				case 'M':
-					map->grid[j][i].setState(Cell::state::MONSTER, new Monster("Rat", levelPerMonster));
-					map->monsters[numM][0] = i;
-					map->monsters[numM][1] = j;
-					numM++;
+					m = new Monster("Rat", levelPerMonster);
+					map->grid[j][i].setState(Cell::state::MONSTER, m);
+					m->x = i;
+					m->y = j;
+					map->actors.push_back(m);
 					break;
 				case 'C':
 					map->grid[j][i].setState(Cell::state::CONTAINER, NULL); //THIS IS WHERE NEW CONT GETS GEN'D
