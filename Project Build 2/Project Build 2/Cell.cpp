@@ -63,6 +63,12 @@ void Cell::setImage()
 {
 	switch (currentState)
 	{
+	case START:
+		image = 'S';
+		break;
+	case EXIT:
+		image = 'E';
+		break;
 	case EMPTY:
 		image = ' ';
 		break;
@@ -70,10 +76,10 @@ void Cell::setImage()
 		image = '#';
 		break;
 	case CHARACTER:
-		//image = getCharacter()->image;
+		image = getCharacter()->image;
 		break;
 	case MONSTER:
-		//image = getMonster()->image;
+		image = getMonster()->image;
 		break;
 		//case CONTAINER:
 		//	image = getContainer()->image;

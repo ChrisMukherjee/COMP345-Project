@@ -2,6 +2,8 @@
 #include "Observable.h"
 #include "Cell.h"
 #include "Character.h"
+#include "Fighter.h"
+#include "Monster.h"
 #include <String>
 
 
@@ -17,7 +19,11 @@ public:
 
 	bool setCell(int w, int h, char x);
 	void startGame(Character* c);
-	bool move(std::string direction);
+	bool getMove(Character* actor, std::string direction, bool isPlayer);
+
+	void move(Fighter*, int, int);
+	void move(Monster*, int, int);
+
 
 	bool saveMap();
 	static Grid* loadMap(int characterLevel);
@@ -28,8 +34,11 @@ public:
 	static bool inRange(int srcX, int srcY, int tarX, int tarY, int range);
 	
 	std:: string output();
-	
 
+	vector<Character*> actors;
+	
+	bool isStart(int x, int y) {return x == startX && y == startY;}
+	bool isEnd(int x, int y) {return x == endX && y == endY;}
 
 private:
 	int height;
@@ -40,12 +49,5 @@ private:
 
 	int numMonsters;
 
-	int monsters[3][2];
-
 	bool equals(Grid otherMap);
-
-	//Helper methods to determine if a coord is a start or end tile
-	bool isStart(int x, int y) {return x == startX && y == startY;}
-	bool isEnd(int x, int y) {return x == endX && y == endY;}
-
 };

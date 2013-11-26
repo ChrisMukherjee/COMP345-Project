@@ -6,6 +6,7 @@
 #include "Item.h"
 #include "Dice.h"
 #include "Observable.h"
+#include "GridContent.h"
 
 // A Character is a class for all characters in the game
 class Character :
@@ -101,6 +102,10 @@ public:
 
 	// Gold - How much money the character has
 	int gold;
+
+	int x, y;
+
+	int initiative;
 
 protected:
 	// Equipped Items

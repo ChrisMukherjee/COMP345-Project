@@ -53,5 +53,17 @@ void Monster::recalculateAttributes()
 
 void Monster::assignOtherAttributes()
 {
+	curHP = maxHP = HP_START + ((level - 1) * HP_PER_LEVEL) + baseCon;
 
+	ac = 10 + modDex;
+
+	meleeAttackBonus = modStr + static_cast<int>(Character::level / 2);
+
+	meleeDmgBonus = modStr;
+
+	slot = std::vector<Equippable*>(8);
+
+	inv = std::vector<Item*>();
+
+	gold = 0;
 }
