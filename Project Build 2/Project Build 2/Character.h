@@ -43,6 +43,9 @@ public:
 	// Load a Character from text file
 	bool loadCharacter(std::string filename);
 
+	// Attack a target
+	void attack(Character* target);
+
 	// Level a character!!
 	virtual void levelUp() = 0;
 

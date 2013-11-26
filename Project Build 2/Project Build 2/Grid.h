@@ -20,10 +20,12 @@ public:
 	bool move(std::string direction);
 
 	bool saveMap();
-	static Grid* loadMap();
+	static Grid* loadMap(int characterLevel);
 	// Accessor Functions
 	int getWidth() { return width; };
 	int getHeight() { return height; };
+
+	static bool inRange(int srcX, int srcY, int tarX, int tarY, int range);
 	
 	std:: string output();
 	
@@ -35,6 +37,10 @@ private:
 	Cell** grid;
 	int startX, startY, endX,endY;
 	int playerX,playerY;
+
+	int numMonsters;
+
+	int monsters[3][2];
 
 	bool equals(Grid otherMap);
 
