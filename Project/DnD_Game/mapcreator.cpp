@@ -8,7 +8,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "clicklabel.h"
 #include <QMessageBox>
 #include "maphelpdialog.h"
 #include <QCloseEvent>
@@ -19,7 +18,11 @@ MapCreator::MapCreator(QWidget *parent) :
     ui(new Ui::MapCreator)
 {
     ui->setupUi(this);
+    ui->loadingLabel->setVisible(false);
     ui->gridLayout->setSpacing(0);
+    ui->templateCombo->addItem("None");
+    ui->templateCombo->addItem("Arena");
+//    ui->templateCombo->addItem("Maze");
     setupDefaults();
     // Connected options to click signal
     connect(ui->wallImage, SIGNAL(clicked()), this, SLOT(change_selected()));
@@ -170,6 +173,18 @@ bool MapCreator::on_action_Save_triggered()
             {
                 for (int j = 0; j < width; ++j)
                 {
+                    if (mapChars[i][j] == 'M') {
+                        numMonsters++;
+                    }
+                }
+            }
+
+            f << numMonsters << std::endl;
+
+            for (int i = 0; i < height; ++i)
+            {
+                for (int j = 0; j < width; ++j)
+                {
                     f << mapChars[i][j] << " ";
                 }
                 f << std::endl;
@@ -211,7 +226,9 @@ void MapCreator::on_goButton_clicked()
 {
     int w = ui->wValue->value();
     int h = ui->hValue->value();
+    ui->loadingLabel->setVisible(true);
     populateMap(w, h);
+    ui->loadingLabel->setVisible(false);
 }
 
 void MapCreator::populateMap(int w, int h)
@@ -239,11 +256,11 @@ void MapCreator::populateMap(int w, int h)
                 height = h;
                 width = w;
                 // Create 2D array
-                map = new ClickLabel**[width];
-                mapChars = new char*[width];
-                for (int i = 0; i < width; i++) {
-                    map[i] = new ClickLabel*[height];
-                    mapChars[i] = new char[height];
+                map = new ClickLabel**[height];
+                mapChars = new char*[height];
+                for (int i = 0; i < height; i++) {
+                    map[i] = new ClickLabel*[width];
+                    mapChars[i] = new char[width];
                 }
                 addCells();
             }
@@ -289,6 +306,27 @@ void MapCreator::addCells() {
                 mapChars[i][j] = '.';
             }
         }
+    }
+    if (ui->templateCombo->currentText() == "Arena") {
+        QPixmap img = QPixmap(":/images/chest.png");
+        img = img.scaled(map[height/2][width/2]->width(), map[height/2][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[height/2][width/2]->setPixmap(img);
+        mapChars[height/2][width/2] = 'C';
+
+        img = QPixmap(":/images/rat.png");
+        img = img.scaled(map[1][width/2]->width(), map[1][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[1][width/2]->setPixmap(img);
+        mapChars[1][width/2] = 'M';
+
+        img = QPixmap(":/images/enddoor.png");
+        img = img.scaled(map[0][width/2]->width(), map[0][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[0][width/2]->setPixmap(img);
+        mapChars[0][width/2] = 'E';
+
+        img = QPixmap(":/images/startdoor.png");
+        img = img.scaled(map[height-1][width/2]->width(), map[height-1][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[height-1][width/2]->setPixmap(img);
+        mapChars[height-1][width/2] = 'S';
     }
 }
 
@@ -553,7 +591,7 @@ void MapCreator::change_selected()
 void MapCreator::deleteMap()
 {
     // Delete 2D arrays
-    for (int i = 0; i < width; i++) {
+    for (int i = 0; i < height; i++) {
         delete[] map[i];
         delete[] mapChars[i];
     }

@@ -53,12 +53,12 @@ private slots:
 
 private:
     Ui::MapCreator *ui;
-    int height;
-    int width;
+    int height, width;
     char selectType;
     int startX, startY, endX, endY;
     ClickLabel*** map;
     char** mapChars;
+    int numMonsters;
 };
 
 #endif // MAPCREATOR_H

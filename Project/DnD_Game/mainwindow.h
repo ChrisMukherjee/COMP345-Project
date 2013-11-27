@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "splashdialog.h"
 #include <QString>
+#include <QPixmap>
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -17,7 +19,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void closeEvent(QCloseEvent *event);
+    void populateMap(int w, int h);
     SplashDialog *sp;
+    void setChar(QString charName);
+    void setMap(QString mapName);
+    void displayMap();
+    QPixmap chooseMonster();
+    QPixmap setFighterPic();
+    void start();
 
 private slots:
     void on_actionE_xit_triggered();
@@ -26,10 +35,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-
-public:
-    QString character;
-    QString map;
+    QLabel*** labelmap;
 };
 
 #endif // MAINWINDOW_H

@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include "mainwindow.h"
+#include <QList>
+#include <QListWidgetItem>
 
 namespace Ui {
 class NewGame;
@@ -25,6 +27,10 @@ private slots:
 
 private:
     Ui::NewGame *ui;
+
+public:
+    QList<QListWidgetItem*> selectedChar;
+    QList<QListWidgetItem*> selectedMap;
 };
 
 #endif // NEWGAME_H
