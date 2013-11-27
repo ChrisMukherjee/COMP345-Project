@@ -17,6 +17,8 @@
 void play();
 void gameOver();
 void playerTurn();
+void equipScreen();
+void unequipScreen();
 void loadCharacter();
 void createCharacter();
 void loadMap();
@@ -29,14 +31,6 @@ bool mapLoaded = false;
 bool allEnemiesDead = false;
 std::string filename;
 std:: vector <InputEvent> events;
-
-int main2()
-{
-	//std::cout << Grid::inRange(0,0, 1, 1, 1) << std::endl;
-	map = Grid::loadMap(1);
-	std::cout << map->output();
-	return 0;
-}
 
 int main()
 {
@@ -120,6 +114,11 @@ void play()
 	events.push_back(InputEvent("character",0x43));
 	events.push_back(InputEvent("map", 0x4d));
 	events.push_back(InputEvent("quit",VK_ESCAPE));
+	events.push_back(InputEvent("equip", 0x49));
+	events.push_back(InputEvent("unequip", 0x4F));
+
+	player->inv.push_back(new Equippable("Sword", Equippable::WEAPON, player->level));
+	//player->equip(*(player->inv[0]));
 
 	while (!map->isEnd(player->x, player->y) || !allEnemiesDead)
 	{
@@ -148,14 +147,22 @@ void play()
 				{
 					std::cout << current->movesLeft << std::endl;
 					playerTurn();
+					if (map->actors.size() == 1 && map->actors[0] == player)
+					{
+						allEnemiesDead = true;
+					}
 				}
-			}
-			if (map->actors.size() == 1 && map->actors[0] == player)
-			{
-				allEnemiesDead = true;
 			}
 		}
 	}
+
+	puts("Congratulations!\nYou have increased in strength!");
+	player->levelUp();
+	player->saveCharacter(filename);
+
+	mapLoaded = false;
+	playerLoaded = false;
+	//We should delete map and player as well
 }
 
 void playerTurn()
@@ -164,7 +171,7 @@ void playerTurn()
 	std::string move;
 
 	std::cout<< "your turn! \n";
-	move = InputManager :: getInput(events);
+	move = InputManager::getInput(events);
 	if (move == "character")
 	{
 		for (size_t i = 0; i < map->actors.size(); i++)
@@ -176,23 +183,47 @@ void playerTurn()
 	{
 		map->notify();
 	}
+	else if (move == "equip")
+	{
+		equipScreen();
+	}
+	else if (move == "unequip")
+	{
+		unequipScreen();
+	}
 	else
 	{
 		map->tryMove(player, move, true);
 	}
-	//if (onExit)
-	//{
-	//	system("CLS");
-	//	player->levelUp();
-	//	puts("Congratulations! You have beaten the level. Your character increases in strength!");
-	//	std::cout << '\a';
-	//	Sleep(2500);
-	//	player->notify();
-	//	Sleep(2500);
-	//	player->saveCharacter(filename);
-	//	mapLoaded = false;
-	//	playerLoaded = false;
-	//}
+}
+
+void equipScreen()
+{
+	system("CLS");
+	std::cout << player->invToString();
+	std::cout << "Select an item ID to equip:\n";
+	int id;
+	cin >> id;
+	for (size_t i = 0; i < player->inv.size(); i++)
+	{
+		if (player->inv[i]->getItemID() == id)
+		{
+			player->equip(*(player->inv[i]));
+			break;
+		}
+	}
+	map->notify();
+}
+
+void unequipScreen()
+{
+	system("CLS");
+	std::cout << player->equipedToString();
+	std::cout << "Select a slot to unequip:\n";
+	int slot;
+	cin >> slot;
+	player->unequip(slot);
+	map->notify();
 }
 
 void createCharacter()

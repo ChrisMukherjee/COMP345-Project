@@ -63,7 +63,7 @@ void Monster::assignOtherAttributes()
 
 	slot = std::vector<Equippable*>(8);
 
-	inv = std::vector<Item*>();
+	inv = std::vector<Equippable*>();
 
 	gold = 0;
 }

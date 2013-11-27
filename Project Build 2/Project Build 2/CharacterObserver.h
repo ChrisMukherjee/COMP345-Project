@@ -15,7 +15,7 @@ public:
 
 	static int serial;
 
-private:
+//private:
 	std::string name;
 	Character* subject;
 };
