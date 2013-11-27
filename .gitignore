@@ -6,8 +6,10 @@ Thumbs.db
 *.sdf
 *.opensdf
 *.suo
-*.vcxproj
-*.filters
+*.tlog
+*.ilk
+*.pdb
+*.obj
 
 # Qt extras #
 *.pro.user
