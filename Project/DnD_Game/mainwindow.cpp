@@ -11,8 +11,15 @@
 #include "newgame.h"
 #include <QMessageBox>
 #include <QDebug>
+#include "Character.h"
+#include "Grid.h"
+#include "InputEvent.h"
+#include <vector>
+#include "windows.h"
 
 NewGame *n;
+Fighter* player;
+Grid* map;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,26 +27,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     on_action_New_triggered();
-    level = 1;
     ui->gridLayout->setSpacing(0);
-    setupDefaults();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::setupDefaults()
-{
-    height = 0;
-    width = 0;
-    startX = -1;
-    startY = -1;
-    endX = -1;
-    endY = -1;
-    map = NULL;
-    mapChars = NULL;
 }
 
 void MainWindow::on_actionE_xit_triggered()
@@ -62,146 +55,111 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::setChar(QString charName)
 {
-    QString fullName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters/" + charName;
-    std::string fileName = fullName.toStdString();
-    std::ifstream f(fileName, std::ios::in);
-    if (f.is_open())
-    {
-        f >> name;
-        f >> image;
-        f >> level;
-        f >> baseStr;
-        f >> baseDex;
-        f >> baseCon;
-        f >> baseInt;
-        f >> baseWis;
-        f >> baseCha;
-        f >> effStr;
-        f >> effDex;
-        f >> effCon;
-        f >> effInt;
-        f >> effWis;
-        f >> effCha;
-        f >> modStr;
-        f >> modDex;
-        f >> modCon;
-        f >> modInt;
-        f >> modWis;
-        f >> modCha;
-        f >> ac;
-        f >> attackBonus;
-        f >> dmgBonus;
-        f >> maxHP;
-        f >> curHP;
-        f >> gold;
-        f.close();
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    charName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters/" + charName;
+    std::string fileName = charName.toStdString();
+    player = new Fighter();
+    player->loadCharacter(fileName);
+    //    displayStats();
+    //    displayInv();
 }
 
 void MainWindow::setMap(QString mapName)
 {
-    QString fullName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps/" + mapName;
-    std::string fileName = fullName.toStdString();
-    std::ifstream f(fileName, std::ios::in);
-    if (f.is_open())
-    {
-        int lwidth, lheight;
-        f >> lwidth >> lheight;
-
-        populateMap(lwidth, lheight);
-
-        QPixmap img;
-
-        for (int i = 0; i < height; ++i)
-        {
-            for (int j = 0; j < width; j++)
-            {
-                char temp;
-                f >> temp;
-                switch (temp)
-                {
-                case '.':
-                    img = QPixmap(":/images/mud.png");
-                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                    map[i][j]->setPixmap(img);
-                    mapChars[i][j] = '.';
-                    break;
-                case 'S':
-                    img = QPixmap(":/images/startdoor.png");
-                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                    map[i][j]->setPixmap(img);
-                    mapChars[i][j] = 'S';
-                    startX = i;
-                    startY = j;
-                    break;
-                case 'E':
-                    img = QPixmap(":/images/enddoor.png");
-                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                    map[i][j]->setPixmap(img);
-                    mapChars[i][j] = 'E';
-                    endX = i;
-                    endY = j;
-                    break;
-                case '#':
-                    img = QPixmap(":/images/wall.png");
-                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                    map[i][j]->setPixmap(img);
-                    mapChars[i][j] = '#';
-                    break;
-                case 'M':
-                    img = chooseMonster();
-                    img = QPixmap(":/images/rat.png");
-                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                    map[i][j]->setPixmap(img);
-                    mapChars[i][j] = 'M';
-                    break;
-                case 'C':
-                    img = QPixmap(":/images/chest.png");
-                    img = img.scaled(map[i][j]->width(), map[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                    map[i][j]->setPixmap(img);
-                    mapChars[i][j] = 'C';
-                    break;
-                }
-            }
-        }
-        f.close();
-    }
+    mapName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps/" + mapName;
+    std::string fileName = mapName.toStdString();
+    map = Grid::loadMap(fileName, player->level);
+    displayMap();
 }
 
-void MainWindow::populateMap(int w, int h)
+void MainWindow::displayMap()
 {
-    height = h;
-    width = w;
-    // Create 2D array
-    map = new QLabel**[height];
-    mapChars = new char*[height];
-    for (int i = 0; i < height; i++) {
-        map[i] = new QLabel*[width];
-        mapChars[i] = new char[width];
-    }
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+    char** testmap = map->getGrid();
+    labelmap = new QLabel**[map->getWidth()];
+    for (int i = 0; i < map->getWidth(); ++i)
+        labelmap[i] = new QLabel*[map->getHeight()];
+
+    for (int i = 0; i < map->getWidth(); ++i)
+    {
+        for (int j = 0; j < map->getHeight(); j++)
+        {
             QLabel* cell = new QLabel();
             cell->setStyleSheet("border: 1px solid");
             cell->setScaledContents(true);
-            cell->setObjectName(QString::number((i*width)+j));
-            map[i][j] = cell;
-            mapChars[i][j] = '.';
+            labelmap[i][j] = cell;
             ui->gridLayout->addWidget(cell, i, j);
         }
     }
+
+    QPixmap img;
+
+    for (int i = 0; i < map->getWidth(); ++i)
+    {
+        for (int j = 0; j < map->getHeight(); j++)
+        {
+            switch (testmap[i][j])
+            {
+            case '.':
+                img = QPixmap(":/images/mud.png");
+                break;
+            case 'S':
+                img = QPixmap(":/images/startdoor.png");
+                break;
+            case 'E':
+                img = QPixmap(":/images/enddoor.png");
+                break;
+            case '#':
+                img = QPixmap(":/images/wall.png");
+                break;
+            case 'M':
+                img = QPixmap(":/images/rat.png");
+                break;
+            case 'C':
+                img = QPixmap(":/images/chest.png");
+                break;
+            case 'F':
+                img = setFighterPic();
+                break;
+            default:
+                img = QPixmap(":/images/mud.png");
+                break;
+            }
+            img = img.scaled(labelmap[i][j]->width(), labelmap[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            labelmap[i][j]->setPixmap(img);
+        }
+    }
+    start();
+}
+
+void MainWindow::start()
+{
+    map->startGame(player);
+
+    std::vector<InputEvent> events;
+    // Map w, a, s, d keypresses to Input Events
+    events.push_back(InputEvent("up", 0x57));
+    events.push_back(InputEvent("down", 0x53));
+    events.push_back(InputEvent("left", 0x41));
+    events.push_back(InputEvent("right", 0x44));
+    // Map arrow keypresses to Input Events
+    events.push_back(InputEvent("up", VK_UP));
+    events.push_back(InputEvent("down", VK_DOWN));
+    events.push_back(InputEvent("left", VK_LEFT));
+    events.push_back(InputEvent("right", VK_RIGHT));
+    // This one should always be last
+    events.push_back(InputEvent("quit", VK_ESCAPE));
+
+    displayMap();
 }
 
 QPixmap MainWindow::chooseMonster()
 {
-    switch (level) {
+    switch (player->level) {
     case 1:
         return QPixmap(":/images/rat.png");
+        break;
+    case 2:
+        break;
+    case 3:
         break;
     default:
         return QPixmap(":/images/rat.png");
@@ -209,54 +167,25 @@ QPixmap MainWindow::chooseMonster()
     }
 }
 
-bool MainWindow::move(char direction)
+QPixmap MainWindow::setFighterPic()
 {
-    tmpX = playerX;
-    tmpY = playerY;
-
-    mapChars[playerX][playerY] = onCell;
-
-    // If a monster is moved onto (killed), replace it with an empty cell when the player moves
-    if (onCell == 'M')
-        mapChars[playerX][playerY] = '=';
-
-    if (direction == 'd' || direction == 'D')
-        tmpY = tmpY+1;
-    else if (direction == 'w' || direction == 'W')
-        tmpX = tmpX-1;
-    else if (direction == 'a' || direction == 'A')
-        tmpY = tmpY-1;
-    else if (direction == 's' || direction == 'S')
-        tmpX = tmpX+1;
-
-    // Moveable location
-    if (mapChars[tmpX][tmpY] == '=' || mapChars[tmpX][tmpY] == 'C' || mapChars[tmpX][tmpY] == 'M') {
-        // Reset Start cell if moving from start
-        if(playerX == startX && playerY == startY)
-            mapChars[playerX][playerY] = 'S';
-        playerX = tmpX;
-        playerY = tmpY;
-    }
-    // Moved onto End cell
-    else if (mapChars[tmpX][tmpY] == 'E') {
-        playerX = tmpX;
-        playerY = tmpY;
-        onCell = mapChars[playerX][playerY];
-        mapChars[playerX][playerY] = '&';
-        //        notify();
-        return true;
+    switch (player->picture) {
+    case 1:
+        return QPixmap(":/images/fighter-heavy.png");
+        break;
+    case 2:
+        return QPixmap(":/images/fighter-mace.png");
+        break;
+    case 3:
+        return QPixmap(":/images/fighter-shield.png");
+        break;
+    case 4:
+        return QPixmap(":/images/fighter-sword.png");
+        break;
+    default:
+        return QPixmap(":/images/fighter-heavy.png");
+        break;
     }
 
-    onCell = mapChars[playerX][playerY];
-    mapChars[playerX][playerY] = '&';
-
-    //    notify();
-    return false;
 }
 
-void MainWindow::playGame()
-{
-    playerX = startX;
-    playerY = startY;
-    mapChars[playerX][playerY] = '&';
-}

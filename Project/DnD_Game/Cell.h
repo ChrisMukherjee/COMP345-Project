@@ -1,33 +1,50 @@
 #pragma once
 
 #include "GridContent.h"
-//#include "Item.h"
+#include "Item.h"
+#include "Monster.h"
+#include "Character.h"
+//#include "Container.h"
+
 class Cell
 {
 public:
 	static enum state
 	{
-		WALL,
 		START,
 		EXIT,
 		EMPTY,
-		OCCUPIED,
+		WALL,
+		CHARACTER,
 		MONSTER,
-		CHEST
+		CONTAINER
 	};
-	
-	Cell(GridContent* gc = nullptr, state = EMPTY);
-	virtual ~Cell(void);
 
-	void setState(state);
+public:
+	Cell();
+	Cell(state, GridContent* content = NULL);
+	virtual ~Cell() {};
+
+	bool canMoveOne() {return isStart() || isExit() || isEmpty();}
+	bool isStart() {return currentState == START;}
+	bool isExit() {return currentState == EXIT;}
+	bool isEmpty() {return currentState == EMPTY;}
+	bool isWall() {return currentState == EMPTY;}
+	bool isCharacter() {return currentState == CHARACTER;}
+	bool isMonster() {return currentState == MONSTER;}
+	bool isContainer() {return currentState == CONTAINER;}
+
+	Monster* getMonster();
+	Character* getCharacter();
+	//Container* getContainer();
+
+	void setState(state s, GridContent* content);
 	void setImage();
+	char getImage() {return image;}
 
+private:
 	state currentState;
-	GridContent* gc;
-//	Item* it;
-//	char image;
-
-
-
+	GridContent* content;
+	char image;
 };
 

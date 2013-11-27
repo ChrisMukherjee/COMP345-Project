@@ -8,7 +8,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "clicklabel.h"
 #include <QMessageBox>
 #include "maphelpdialog.h"
 #include <QCloseEvent>
@@ -23,7 +22,7 @@ MapCreator::MapCreator(QWidget *parent) :
     ui->gridLayout->setSpacing(0);
     ui->templateCombo->addItem("None");
     ui->templateCombo->addItem("Arena");
-    ui->templateCombo->addItem("Maze");
+//    ui->templateCombo->addItem("Maze");
     setupDefaults();
     // Connected options to click signal
     connect(ui->wallImage, SIGNAL(clicked()), this, SLOT(change_selected()));
@@ -307,6 +306,27 @@ void MapCreator::addCells() {
                 mapChars[i][j] = '.';
             }
         }
+    }
+    if (ui->templateCombo->currentText() == "Arena") {
+        QPixmap img = QPixmap(":/images/chest.png");
+        img = img.scaled(map[height/2][width/2]->width(), map[height/2][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[height/2][width/2]->setPixmap(img);
+        mapChars[height/2][width/2] = 'C';
+
+        img = QPixmap(":/images/rat.png");
+        img = img.scaled(map[1][width/2]->width(), map[1][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[1][width/2]->setPixmap(img);
+        mapChars[1][width/2] = 'M';
+
+        img = QPixmap(":/images/enddoor.png");
+        img = img.scaled(map[0][width/2]->width(), map[0][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[0][width/2]->setPixmap(img);
+        mapChars[0][width/2] = 'E';
+
+        img = QPixmap(":/images/startdoor.png");
+        img = img.scaled(map[height-1][width/2]->width(), map[height-1][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        map[height-1][width/2]->setPixmap(img);
+        mapChars[height-1][width/2] = 'S';
     }
 }
 

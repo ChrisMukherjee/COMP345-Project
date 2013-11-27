@@ -1,55 +1,88 @@
 #include "Cell.h"
+#include "Character.h"
 
-
-Cell::Cell(GridContent* gc, Cell:: state theState)
+Cell::Cell() :
+	currentState(EMPTY),
+	content(NULL)
 {
-	currentState = theState;
-	setImage();
-	this->gc = gc;
+	image = ' ';
+}
 
+Cell::Cell(state s, GridContent* c) :
+	currentState(s),
+	content(c)
+{
+	setImage();
+}
+
+Character* Cell::getCharacter()
+{
+	if (isCharacter())
+	{
+		return dynamic_cast<Character*>(content);
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+Monster* Cell::getMonster()
+{
+	if (isMonster())
+	{
+		return dynamic_cast<Monster*>(content);
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+
+//Container* Cell::getContainer()
+//{
+//	if (isContainer())
+//	{
+//		return dynamic_cast<Container*>(content);
+//	}
+//	else
+//	{
+//		return NULL;
+//	}
+//}
+
+void Cell::setState(Cell::state s, GridContent* c)
+{
+	currentState = s;
+	content = c;
+	setImage();
 }
 
 void Cell::setImage()
 {
 	switch (currentState)
 	{
-	case Cell::WALL:
-		image = '#';
-		gc = 0;
-		break;
-	case Cell::START:
+	case START:
 		image = 'S';
-		gc = 0;
 		break;
-	case Cell::EXIT:
+	case EXIT:
 		image = 'E';
-		gc = 0;
 		break;
-	case Cell::EMPTY:
+	case EMPTY:
 		image = ' ';
-		gc = 0;
 		break;
-	case Cell::OCCUPIED:
-		image = gc->image;
+	case WALL:
+		image = '#';
 		break;
-	case Cell::MONSTER:
-		image = 'M';
-		gc = 0;
+	case CHARACTER:
+		image = getCharacter()->image;
 		break;
-	case Cell::CHEST:
-		image = 'C';
+	case MONSTER:
+		image = getMonster()->image;
 		break;
+		//case CONTAINER:
+		//	image = getContainer()->image;
+		//	break;
 	}
-}
-
-void Cell::setState(state newState)
-{
-	currentState = newState;
-	setImage();
-}
-
-
-
-Cell::~Cell(void)
-{
 }

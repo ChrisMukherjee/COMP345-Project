@@ -23,10 +23,10 @@ public:
     SplashDialog *sp;
     void setChar(QString charName);
     void setMap(QString mapName);
+    void displayMap();
     QPixmap chooseMonster();
-    void setupDefaults();
-    bool move(char direction);
-    void playGame();
+    QPixmap setFighterPic();
+    void start();
 
 private slots:
     void on_actionE_xit_triggered();
@@ -35,12 +35,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    int height, width;
-    int level;
-    int startX, startY, endX, endY, playerX, playerY, tmpX, tmpY;
-    QLabel*** map;
-    char** mapChars;
-    char onCell;
+    QLabel*** labelmap;
 };
 
 #endif // MAINWINDOW_H
