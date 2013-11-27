@@ -106,7 +106,7 @@ public:
 		/* static cast fix by aiden -- working and compiles
 		for (int i = 1; i <= roll(3); i++)
 		{
-			m_container->addEQtoContainer(Equippable(ContainerBuilder::nameGenerator(), static_cast<Equippable::ItemType>(roll(8, 1, -1)) , leveladjustmodficiation));
+			m_container->addEQtoContainer(Equippable(ContainerBuilder::static_cast<Equippable::ItemType>(roll(8, 1, -1)) , leveladjustmodficiation));
 		}
 		*/
 
@@ -116,55 +116,55 @@ public:
 		case 0:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(nameGenerator(), Equippable::SWORD, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::SWORD, leveladjustmodficiation));
 			}
 			break;
 		case 1:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(nameGenerator(), Equippable::BOW, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::BOW, leveladjustmodficiation));
 			}
 			break;
 		case 2:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(nameGenerator(), Equippable::SHIELD, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::SHIELD, leveladjustmodficiation));
 			}
 			break;
 		case 3:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(nameGenerator(), Equippable::HELMET, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::HELMET, leveladjustmodficiation));
 			}
 			break;
 		case 4:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(nameGenerator(), Equippable::ARMOR, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::ARMOR, leveladjustmodficiation));
 			}
 			break;
 		case 5:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(nameGenerator(), Equippable::BRACERS, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::BRACERS, leveladjustmodficiation));
 			}
 			break;
 		case 6:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(nameGenerator(), Equippable::BELT, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::BELT, leveladjustmodficiation));
 			}
 			break;
 		case 7:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(nameGenerator(), Equippable::BOOTS, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::BOOTS, leveladjustmodficiation));
 			}
 			break;
 		case 8:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(nameGenerator(), Equippable::RING, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::RING, leveladjustmodficiation));
 			}
 			break;
 		}
