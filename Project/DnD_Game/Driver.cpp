@@ -1,41 +1,40 @@
-//Rewokred main to make it more readable
+////Rewokred main to make it more readable
 
-#include <iostream>
-#include <stdlib.h>
-#include <conio.h>
-#include <string>
-#include <ctime>
+//#include <iostream>
+//#include <stdlib.h>
+//#include <conio.h>
+//#include <string>
+//#include <ctime>
 
-#include "Windows.h"
+//#include "Windows.h"
 
-#include "GridObserver.h"
-#include "InputManager.h"
-#include "Grid.h"
-#include "Fighter.h"
-#include "CharacterObserver.h"
+//#include "GridObserver.h"
+//#include "InputManager.h"
+//#include "Grid.h"
+//#include "Fighter.h"
+//#include "CharacterObserver.h"
 
-#include "splashdialog.h"
-#include <QApplication>
-
-void play();
-void playerTurn();
-void loadCharacter();
-void createCharacter();
+//void play();
+//void gameOver();
+//void playerTurn();
+//void equipScreen();
+//void unequipScreen();
+//void loadCharacter();
+//void createCharacter();
 //void loadMap();
 //void makeMap();
 
+//Fighter* player;
+//Grid* map;
 //bool playerLoaded = false;
 //bool mapLoaded = false;
+//bool allEnemiesDead = false;
 //std::string filename;
-//std::vector <InputEvent> events;
+//std:: vector <InputEvent> events;
 
-//int main(int argc, char *argv[])
+//int main()
 //{
-//    srand(static_cast<unsigned>(time(NULL)));
-
-//    QApplication a(argc, argv);
-//    SplashDialog sp;
-//    sp.show();
+//	srand(static_cast<unsigned>(time(NULL)));
 
 //	bool quit = false;
 
@@ -76,7 +75,7 @@ void createCharacter();
 //		}
 //	} while(!quit);
 
-//    return a.exec();
+//	return 0;
 //}
 
 //void play()
@@ -95,17 +94,17 @@ void createCharacter();
 
 //	if (mapLoaded && playerLoaded)
 //	{
-//    map->startGame(player);
+//		map->startGame(player);
 //	}
 
-//    GridObserver gObs(map);
+//	GridObserver gObs(map);
 //	CharacterObserver cObs(*player);
 
-//    CharacterObserver* mObs = new CharacterObserver[map->actors.size()];
+//	CharacterObserver* mObs = new CharacterObserver[map->actors.size()];
 
-//    for (size_t i = 0; i < map->actors.size(); i++)
+//	for (size_t i = 0; i < map->actors.size(); i++)
 //	{
-//        map->actors[i]->attach(&mObs[i]);
+//		map->actors[i]->attach(&mObs[i]);
 //	}
 
 //	events.push_back(InputEvent("up",VK_UP));
@@ -115,65 +114,116 @@ void createCharacter();
 //	events.push_back(InputEvent("character",0x43));
 //	events.push_back(InputEvent("map", 0x4d));
 //	events.push_back(InputEvent("quit",VK_ESCAPE));
+//	events.push_back(InputEvent("equip", 0x49));
+//	events.push_back(InputEvent("unequip", 0x4F));
 
-//	while (!map->isEnd(player->x, player->y))
+//	player->inv.push_back(new Equippable("Sword", Equippable::WEAPON, player->level));
+//	//player->equip(*(player->inv[0]));
+
+//	while (!map->isEnd(player->x, player->y) || !allEnemiesDead)
 //	{
 //		for (size_t i = 0; i < map->actors.size(); i++)
 //		{
-//			if (map->actors[i]->name == "Rat")
+//			Character* current = map->actors[i];
+//			current->movesLeft = 6;
+//			if (current->name == "Rat")
 //			{
-//				int d = roll(4);
-//				if (d == 1) {map->getMove(map->actors[i], "up", false);}
-//				else if (d == 2) {map->getMove(map->actors[i], "down", false);}
-//				else if (d == 3) {map->getMove(map->actors[i], "right", false);}
-//				else if (d == 4) {map->getMove(map->actors[i], "left", false);}
+//				while (current->movesLeft > 0)
+//				{
+//					int d = roll(4);
+//					if (d == 1) {map->tryMove(current, "up", false);}
+//					else if (d == 2) {map->tryMove(current, "down", false);}
+//					else if (d == 3) {map->tryMove(current, "right", false);}
+//					else if (d == 4) {map->tryMove(current, "left", false);}
+//					if (player->curHP <= 0)
+//					{
+//						gameOver();
+//					}
+//				}
 //			}
 //			else
 //			{
-//				playerTurn();
+//				while (player->movesLeft > 0)
+//				{
+//					std::cout << current->movesLeft << std::endl;
+//					playerTurn();
+//					if (map->actors.size() == 1 && map->actors[0] == player)
+//					{
+//						allEnemiesDead = true;
+//					}
+//				}
 //			}
 //		}
 //	}
+
+//	puts("Congratulations!\nYou have increased in strength!");
+//	player->levelUp();
+//	player->saveCharacter(filename);
+
+//	mapLoaded = false;
+//	playerLoaded = false;
+//	//We should delete map and player as well
 //}
 
 //void playerTurn()
 //{
+
 //	std::string move;
-//	bool moved = false;
 
 //	std::cout<< "your turn! \n";
-//	do
+//	move = InputManager::getInput(events);
+//	if (move == "character")
 //	{
-//		move = InputManager :: getInput(events);
-//		if (move == "character")
+//		for (size_t i = 0; i < map->actors.size(); i++)
 //		{
-//			for (size_t i = 0; i < map->actors.size(); i++)
-//			{
-//				std::cout << map->actors[i]->characterSheetToString();
-//			}
+//			std::cout << map->actors[i]->characterSheetToString();
 //		}
-//		else if (move == "map")
+//	}
+//	else if (move == "map")
+//	{
+//		map->notify();
+//	}
+//	else if (move == "equip")
+//	{
+//		equipScreen();
+//	}
+//	else if (move == "unequip")
+//	{
+//		unequipScreen();
+//	}
+//	else
+//	{
+//		map->tryMove(player, move, true);
+//	}
+//}
+
+//void equipScreen()
+//{
+//	system("CLS");
+//	std::cout << player->invToString();
+//	std::cout << "Select an item ID to equip:\n";
+//	int id;
+//	cin >> id;
+//	for (size_t i = 0; i < player->inv.size(); i++)
+//	{
+//		if (player->inv[i]->getItemID() == id)
 //		{
-//			map->notify();
+//			player->equip(*(player->inv[i]));
+//			break;
 //		}
-//		else
-//		{
-//			moved = map->getMove(player, move, true);
-//		}
-//	} while (!moved);
-//	//if (onExit)
-//	//{
-//	//	system("CLS");
-//	//	player->levelUp();
-//	//	puts("Congratulations! You have beaten the level. Your character increases in strength!");
-//	//	std::cout << '\a';
-//	//	Sleep(2500);
-//	//	player->notify();
-//	//	Sleep(2500);
-//	//	player->saveCharacter(filename);
-//	//	mapLoaded = false;
-//	//	playerLoaded = false;
-//	//}
+//	}
+//	map->notify();
+//}
+
+//void unequipScreen()
+//{
+//	system("CLS");
+//	std::cout << player->equipedToString();
+//	std::cout << "Select a slot to unequip:\n";
+//	int slot;
+//	cin >> slot;
+//	player->unequip(slot);
+//	map->notify();
 //}
 
 //void createCharacter()
@@ -304,6 +354,7 @@ void createCharacter();
 //		}
 //	}
 //}
+
 //void loadMap()
 //{
 //	map = Grid::loadMap(player->level);
@@ -315,4 +366,12 @@ void createCharacter();
 //	{
 //		mapLoaded = true;
 //	}
+//}
+
+//void gameOver()
+//{
+//	system("CLS");
+//	puts("\n\nGAME OVER");
+//	system("PAUSE");
+//	std::exit(0);
 //}

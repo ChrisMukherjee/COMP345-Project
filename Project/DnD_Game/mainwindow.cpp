@@ -10,10 +10,11 @@
 #include "newgame.h"
 #include <QMessageBox>
 #include <QDebug>
-#include "InputManager.h"
-#include "InputEvent.h"
-#include <vector>
 #include "windows.h"
+#include "CharacterObserver.h"
+#include "GridObserver.h"
+#include <QCoreApplication>
+#include <QScrollBar>
 
 NewGame *n;
 
@@ -22,10 +23,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_DeleteOnClose);
     on_action_New_triggered();
     ui->gridLayout->setSpacing(0);
     loaded = false;
+    dead = false;
     connect(n,SIGNAL(destroyed()), this, SLOT(start()));
+    connect(ui->invList,SIGNAL(currentRowChanged(int)), this, SLOT(equip()));
 }
 
 MainWindow::~MainWindow()
@@ -40,6 +44,7 @@ void MainWindow::on_actionE_xit_triggered()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    dead = true;
     this->sp->show();
     event->accept();
 }
@@ -53,74 +58,117 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::setChar(QString charName)
 {
-    charName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters/" + charName;
-    std::string fileName = charName.toStdString();
+    charFName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters/" + charName;
+    std::string fileName = charFName.toStdString();
     player = new Fighter();
     player->loadCharacter(fileName);
 }
 
 void MainWindow::setMap(QString mapName)
 {
-    mapName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps/" + mapName;
-    std::string fileName = mapName.toStdString();
+    mapFName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps/" + mapName;
+    std::string fileName = mapFName.toStdString();
     map = Grid::loadMap(fileName, player->level);
 }
 
-void MainWindow::displayMap()
+void MainWindow::displayStart()
 {
     char** testmap = map->getGrid();
     labelmap = new QLabel**[map->getWidth()];
     for (int i = 0; i < map->getWidth(); ++i)
         labelmap[i] = new QLabel*[map->getHeight()];
 
-    for (int i = 0; i < map->getWidth(); ++i)
+    for (int i = 0; i < map->getHeight(); ++i)
     {
-        for (int j = 0; j < map->getHeight(); j++)
+        for (int j = 0; j < map->getWidth(); j++)
         {
             QLabel* cell = new QLabel();
             cell->setStyleSheet("border: 1px solid");
             cell->setScaledContents(true);
-            labelmap[i][j] = cell;
+            labelmap[j][i] = cell;
             ui->gridLayout->addWidget(cell, i, j);
         }
     }
 
     scale_images();
 
-    for (int i = 0; i < map->getWidth(); ++i)
+    for (int i = 0; i < map->getHeight(); ++i)
     {
-        for (int j = 0; j < map->getHeight(); j++)
+        for (int j = 0; j < map->getWidth(); j++)
         {
-            switch (testmap[i][j])
+            switch (testmap[j][i])
             {
             case '.':
-                labelmap[i][j]->setPixmap(mudSkin);
+                labelmap[j][i]->setPixmap(mudSkin);
                 break;
             case 'S':
-                labelmap[i][j]->setPixmap(startSkin);
+                labelmap[j][i]->setPixmap(startSkin);
                 break;
             case 'E':
-                labelmap[i][j]->setPixmap(endSkin);
+                labelmap[j][i]->setPixmap(endSkin);
                 break;
             case '#':
-                labelmap[i][j]->setPixmap(wallSkin);
+                labelmap[j][i]->setPixmap(wallSkin);
                 break;
             case 'M':
-                labelmap[i][j]->setPixmap(monsterSkin);
+                labelmap[j][i]->setPixmap(monsterSkin);
                 break;
             case 'C':
-                labelmap[i][j]->setPixmap(chestSkin);
+                labelmap[j][i]->setPixmap(chestSkin);
                 break;
             case 'F':
-                labelmap[i][j]->setPixmap(playerSkin);
+                labelmap[j][i]->setPixmap(playerSkin);
                 break;
             default:
-                labelmap[i][j]->setPixmap(mudSkin);
+                labelmap[j][i]->setPixmap(mudSkin);
                 break;
             }
         }
     }
+    ui->textBrowser->verticalScrollBar()->setSliderPosition(ui->textBrowser->verticalScrollBar()->maximum());
+    QCoreApplication::processEvents();
     playGame();
+}
+
+void MainWindow::displayMap()
+{
+    char** testmap = map->getGrid();
+
+    for (int i = 0; i < map->getHeight(); ++i)
+    {
+        for (int j = 0; j < map->getWidth(); j++)
+        {
+            switch (testmap[j][i])
+            {
+            case '.':
+                labelmap[j][i]->setPixmap(mudSkin);
+                break;
+            case 'S':
+                labelmap[j][i]->setPixmap(startSkin);
+                break;
+            case 'E':
+                labelmap[j][i]->setPixmap(endSkin);
+                break;
+            case '#':
+                labelmap[j][i]->setPixmap(wallSkin);
+                break;
+            case 'M':
+                labelmap[j][i]->setPixmap(monsterSkin);
+                break;
+            case 'C':
+                labelmap[j][i]->setPixmap(chestSkin);
+                break;
+            case 'F':
+                labelmap[j][i]->setPixmap(playerSkin);
+                break;
+            default:
+                labelmap[j][i]->setPixmap(mudSkin);
+                break;
+            }
+        }
+    }
+    ui->textBrowser->verticalScrollBar()->setSliderPosition(ui->textBrowser->verticalScrollBar()->maximum());
+    QCoreApplication::processEvents();
 }
 
 void MainWindow::start()
@@ -131,14 +179,20 @@ void MainWindow::start()
         //    displayStats();
         //    displayInv();
         map->startGame(player);
-        displayMap();
+        displayStart();
     }
 }
 
-// THIS DOES NOT WORK - FIX THIS ASAP
 void MainWindow::playGame()
 {
-    std::vector<InputEvent> events;
+    ui->textBrowser->append("Initiative rolls:");
+
+    for (size_t i = 0; i < map->actors.size(); i++)
+    {
+        QString output(QString::fromStdString(map->actors[i]->name + ": " + std::to_string(map->actors[i]->initiative)));
+        ui->textBrowser->append(output);
+    }
+
     // Map w, a, s, d keypresses to Input Events
     events.push_back(InputEvent("up", 0x57));
     events.push_back(InputEvent("down", 0x53));
@@ -152,57 +206,109 @@ void MainWindow::playGame()
     // This one should always be last
     events.push_back(InputEvent("quit", VK_ESCAPE));
 
-    std::string dir;
+    player->inv.push_back(new Equippable(Equippable::WEAPON, player->level));
+    qDebug() << QString::fromStdString(player->inv[0]->getName());
 
-    //    while (dir != "quit") {
-    //        qDebug()<<"in here";
+    while (!map->isEnd(player->x, player->y) && !dead)
+    {
+        ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
+        updateInvList();
+        for (size_t i = 0; i < map->actors.size(); i++)
+        {
+            Character* current = map->actors[i];
+            current->movesLeft = 6;
+            if (current->name != player->name)
+            {
+                while (current->movesLeft > 0)
+                {
+                    int d = roll(4);
+                    if (d == 1) {
+                        if (map->tryMove(current, "up", false) == true) {
+                            displayMap();
+                        }
+                    }
+                    else if (d == 2) {
+                        if (map->tryMove(current, "down", false) == true) {
+                            displayMap();
+                        }
+                    }
+                    else if (d == 3) {
+                        if (map->tryMove(current, "right", false) == true) {
+                            displayMap();
+                        }
+                    }
+                    else if (d == 4) {
+                        if (map->tryMove(current, "left", false) == true) {
+                            displayMap();
+                        }
+                    }
+                    if (player->curHP <= 0)
+                    {
+                        dead = true;
+                        QMessageBox::StandardButton err = QMessageBox::critical(this, "Game Over!", "You have died! Please play again.", QMessageBox::Ok);
+                        goto amdead;
+                    }
+                }
+                if (current->attackinfo != "")
+                    ui->textBrowser->append(QString::fromStdString(current->attackinfo));
+            }
+            else
+            {
+                ui->textBrowser->append("\nYour turn!\n");
+                while (player->movesLeft > 0)
+                {
+                    //                    std::cout << current->movesLeft << std::endl;
+                    playerTurn();
+                    if (map->actors.size() == 1 && map->actors[0] == player)
+                    {
+                        //                        allEnemiesDead = true;
+                    }
+                }
+                if (current->attackinfo != "")
+                    ui->textBrowser->append(QString::fromStdString(player->attackinfo));
+            }
+        }
+    }
 
-    //        char** testmap = map->getGrid();
-    //        QPixmap img;
+    puts("Congratulations!\nYou have increased in strength!");
+    player->levelUp();
+    //    std::string fileName = charFName.toStdString();
+    //    player->saveCharacter(fileName);
 
-    //        for (int i = 0; i < map->getWidth(); ++i)
-    //        {
-    //            for (int j = 0; j < map->getHeight(); j++)
-    //            {
-    //                switch (testmap[i][j])
-    //                {
-    //                case '.':
-    //                    img = QPixmap(":/images/mud.png");
-    //                    break;
-    //                case 'S':
-    //                    img = QPixmap(":/images/startdoor.png");
-    //                    break;
-    //                case 'E':
-    //                    img = QPixmap(":/images/enddoor.png");
-    //                    break;
-    //                case '#':
-    //                    img = QPixmap(":/images/wall.png");
-    //                    break;
-    //                case 'M':
-    //                    img = QPixmap(":/images/rat.png");
-    //                    break;
-    //                case 'C':
-    //                    img = QPixmap(":/images/chest.png");
-    //                    break;
-    //                case 'F':
-    //                    img = playerSkin;
-    //                    break;
-    //                default:
-    //                    img = QPixmap(":/images/mud.png");
-    //                    break;
-    //                }
-    //                img = img.scaled(labelmap[i][j]->width(), labelmap[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    //                labelmap[i][j]->setPixmap(img);
-    //            }
-    //        }
-    //        dir = InputManager::getInput(events);
-    //        qDebug()<<"got event";
+    amdead:
+    this->close();
+}
 
-    //        map->getMove(player, dir, true);
-    //        qDebug()<<"moved";
+void MainWindow::playerTurn()
+{
+    std::string move;
 
-    //        qDebug()<<"end of loop";
-    //    }
+    move = InputManager::getInput(events);
+    if (move == "character")
+    {
+        //        for (size_t i = 0; i < map->actors.size(); i++)
+        //        {
+        //            std::cout << map->actors[i]->characterSheetToString();
+        //        }
+    }
+    else if (move == "map")
+    {
+        map->notify();
+    }
+    else if (move == "equip")
+    {
+        //		equipScreen();
+    }
+    else if (move == "unequip")
+    {
+        //		unequipScreen();
+    }
+    else
+    {
+        if (map->tryMove(player, move, true)) {
+            displayMap();
+        }
+    }
 }
 
 void MainWindow::setMonsterPic()
@@ -211,26 +317,32 @@ void MainWindow::setMonsterPic()
     case 1:
         monsterSkin = QPixmap(":/images/rat.png");
         monsterdeadSkin = QPixmap(":/images/rat_dead.png");
+        map->monsterName = "Rat";
         break;
     case 2:
         monsterSkin = QPixmap(":/images/goblin.png");
         monsterdeadSkin = QPixmap(":/images/goblin_dead.png");
+        map->monsterName = "Goblin";
         break;
     case 3:
         monsterSkin = QPixmap(":/images/gargoyle.png");
         monsterdeadSkin = QPixmap(":/images/gargoyle_dead.png");
+        map->monsterName = "Gargoyle";
         break;
     case 4:
         monsterSkin = QPixmap(":/images/skeleton.png");
         monsterdeadSkin = QPixmap(":/images/skeleton_dead.png");
+        map->monsterName = "Skeleton";
         break;
     case 5:
         monsterSkin = QPixmap(":/images/mage.png");
         monsterdeadSkin = QPixmap(":/images/mage_dead.png");
+        map->monsterName = "Mage";
         break;
     default:
-        monsterSkin = QPixmap(":/images/skeleton.png");
-        monsterdeadSkin = QPixmap(":/images/skeleton_dead.png");
+//        monsterSkin = QPixmap(":/images/devil.png");
+//        monsterdeadSkin = QPixmap(":/images/devil_dead.png");
+        map->monsterName = "Devil";
         break;
     }
 }
@@ -289,4 +401,21 @@ void MainWindow::scale_images()
     img = monsterdeadSkin;
     img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     monsterdeadSkin = img;
+}
+
+void MainWindow::updateInvList()
+{
+    ui->invList->clear();
+    QStringList items;
+    for (int i = 0; i < player->inv.size(); i++)
+    {
+        items.push_back(QString::fromStdString(player->inv[i]->getName()));
+        ui->invList->addItem(items.at(i));
+    }
+}
+
+void MainWindow::equip()
+{
+    int row = ui->invList->currentRow();
+    player->equip(*player->inv[row]);
 }

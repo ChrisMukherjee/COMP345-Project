@@ -6,17 +6,22 @@
 #include "Dice.h"
 #include "Observable.h"
 #include "GridContent.h"
+using namespace std;
+
+//============================//
+//========ITEM CLASSES========//
+//============================//
 
 class Item : public GridContent
 {
 public:
-    std::string getName();
-    void setName(std::string nm);
+	string getName();
+	void setName(string nm);
 	int getItemID();
 	void setItemID(int id);
 
 private:
-    std::string name;
+	string name;
 	int itemID;
 };
 
@@ -26,11 +31,27 @@ class Equippable: public Item
 public:
 	enum ItemType
 	{
-		WEAPON, SHIELD, HELMET, ARMOR, BELT, BOOTS, RING
+		WEAPON, SHIELD, HELMET, ARMOR, BRACERS, BELT, BOOTS, RING
+	};
+
+	enum ArmorMaterial
+	{
+		PADDED, LEATHER, STUDDED, CHAIN, BREASTPLATE, BANDED, HALFPLATE, FULLPLATE
+	};
+
+	enum ShieldType
+	{
+		BUCKLER, HEAVY, TOWER
 	};
 
 	ItemType getIType();
 	void setIType(ItemType ityp);
+
+	ArmorMaterial getArmorMaterial() {return mat;}
+	void setArmorMaterial(ArmorMaterial m) {mat = m;}
+
+	ShieldType getShieldType() {return sType;}
+	void setShieldType(ShieldType s) {sType = s;}
 
 	bool getEqStatus();
 	void setEqStatus(bool eq);
@@ -69,11 +90,13 @@ public:
 	static void getAllEnchantments(Equippable eqp);
 	
 
-    Equippable(std::string nm, ItemType typ);
+	Equippable(ItemType type, int level);
 
 private:
 	bool equipped;
 	ItemType type;
+	ArmorMaterial mat;
+	ShieldType sType;
 	int armboost;
 	int wisboost;
 	int conboost;
@@ -112,15 +135,15 @@ public:
 
 	Equippable getEQfromContainer(int id);
 
-    Container(std::string nm);
+	Container(string nm);
 
-    std::string output();
+	string output();
 
 
 
 
 private:
-    std::vector<Equippable> containervector;
+	vector<Equippable> containervector;
 
 };
 

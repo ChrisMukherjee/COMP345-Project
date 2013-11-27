@@ -16,6 +16,7 @@ CharCreator::CharCreator(QWidget *parent) :
     ui(new Ui::CharCreator)
 {
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_DeleteOnClose);
     ui->templateCombo->addItem("None");
     ui->strValue->setReadOnly(true);
     ui->dexValue->setReadOnly(true);

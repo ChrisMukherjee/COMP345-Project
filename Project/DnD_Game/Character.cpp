@@ -3,6 +3,10 @@
 #include <sstream>
 #include <fstream>
 
+#include "windows.h"
+
+#include "CharacterObserver.h"
+
 // **********PUBLIC MEMBER FUNCTIONS**********//
 
 // Assign and initialize all the data members
@@ -44,52 +48,40 @@ Character::~Character()
 }
 
 // Ringslot is defaulted to 1
-void Character::equip(Equippable& item, int ringSlot)
+void Character::equip(Equippable& item)
 {
-    //Each thing you equip is also placed in inventory i.e. picked up
-    pickUp(&item);
+    if(slot[item.getIType()] != NULL)
+    {
+        unequip( item.getIType() );
+    }
+    slot[item.getIType()] = &item;
 
-    //If it's a ring and you specify you want it in ringSlot 2, we do this special case
-    if(item.getIType() == Equippable::ItemType::RING && ringSlot == 2)
-    {
-        if(slot[7] != NULL)
-        {
-            unequip(7); //Unequips the second ring slot
-        }
-        slot[7] = &item;
-    }
-    else
-    {
-        if(slot[item.getIType()] != NULL)
-        {
-            unequip( item.getIType() );
-        }
-        slot[item.getIType()] = &item;
-    }
-    //notify(); //This should be uncommented when we have a GUI
+    item.setName(item.getName());
+    item.setEqStatus(true);
 }
 
 void Character::unequip(int slotToUnequip)
 {
     //Can't unequip a misc
-    if( !(slotToUnequip > 7 || slotToUnequip < 0) )
+    if( !(slotToUnequip > 8 || slotToUnequip < 0) )
     {
         //If there is nothing in the slot, there's nothing to unequip!
         if(slot[slotToUnequip] != NULL)
         {
+            slot[slotToUnequip]->setEqStatus(false);
             slot[slotToUnequip] = NULL;
         }
     }
     //notify(); //This should be uncommented when we have a GUI
 }
 
-void Character::pickUp(Item* item)
+void Character::pickUp(Equippable* item)
 {
     inv.push_back(item);
     //notify(); //This should be uncommented when we have a GUI
 }
 
-void Character::drop(Item* item)
+void Character::drop(Equippable* item)
 {
     for (size_t i = 0; i < inv.size(); ++i)
     {
@@ -109,10 +101,7 @@ std::string Character::characterSheetToString()
     std::stringstream sstm;
 
     sstm << attributesToString() << std::endl
-         << equipedToString() << std::endl
-         << invToString() << std::endl
-         << otherAttributesToString() << std::endl
-         << goldToString() << std::endl;
+         << otherAttributesToString() << std::endl;
 
     return sstm.str();
 }
@@ -122,12 +111,12 @@ std::string Character::attributesToString()
     std::stringstream sstm;
 
     sstm << "Name: " << name << ", level: " << level << std::endl << std::endl
-         << "STR: " << effStr << " || " << modStr << std::endl
-         << "DEX: " << effDex << " || " << modDex << std::endl
-         << "CON: " << effCon << " || " << modCon << std::endl
-         << "INT: " << effInt << " || " << modInt << std::endl
-         << "WIS: " << effWis << " || " << modWis << std::endl
-         << "CHA: " << effCha << " || " << modCha << std::endl;
+         << "Strength: " << effStr << " || " << modStr << std::endl
+         << "Dexterity: " << effDex << " || " << modDex << std::endl
+         << "Constitution: " << effCon << " || " << modCon << std::endl
+         << "Intelligence: " << effInt << " || " << modInt << std::endl
+         << "Wisdom: " << effWis << " || " << modWis << std::endl
+         << "Charisma: " << effCha << " || " << modCha << std::endl;
 
     return sstm.str();
 }
@@ -142,7 +131,7 @@ std::string Character::equipedToString()
     {
         if( slot[i] != NULL)
         {
-            sstm << "\t" << slot[i]->getName() << std::endl;
+            sstm << "\t" << i << ": " << slot[i]->getName() << std::endl;
         }
     }
 
@@ -156,9 +145,9 @@ std::string Character::invToString()
     sstm << "Currently in inventory:" << std::endl;
     for (size_t i = 0; i < inv.size(); i++)
     {
-        if( inv[i] != NULL )
+        if( inv[i] != NULL && !inv[i]->getEqStatus())
         {
-            sstm << "\t" << inv[i]->getName() << std::endl;
+            sstm << "\t" << inv[i]->getItemID() << ": " << inv[i]->getName() << std::endl;
         }
     }
 
@@ -177,7 +166,7 @@ std::string Character::otherAttributesToString()
         sstm << baseAttackBonus[i] << "/";
     }
     sstm << baseAttackBonus[baseAttackBonus.size() - 1] << std::endl;
-    sstm << "Damage Bonus: " << meleeDmgBonus << std::endl;
+    sstm << "Damage Bonus: " << meleeDmgBonus;
 
     return sstm.str();
 }
@@ -276,11 +265,16 @@ void Character::attack(Character* target)
 {
     for (size_t i = 0; i < baseAttackBonus.size(); i++)
     {
-        if (roll(20, 1, baseAttackBonus[i]) > target->ac)
+        int r = roll(20, 1, baseAttackBonus[i] + modStr);
+        if (r >= target->ac)
         {
-            //Do damage equal to current weapon
-            //We should also output info to the console, to let
-            //Joey know we are following the rules.
+            int d = roll(8, 1, modStr);
+            target->curHP -= d;
+            attackinfo = this->name + " attacks " + target->name + ".\nRolled " + std::to_string(r) + " and dealt " + std::to_string(d) + " dmg!\n" + target->name + " has " + std::to_string(target->curHP) + "/" + std::to_string(target->maxHP) + " left.";
+        }
+        else
+        {
+            attackinfo = this->name + " attacks " + target->name + ".\nRolled " + std::to_string(r) + " and missed!";
         }
     }
 }

@@ -5,11 +5,12 @@
 #include <sstream>
 #include "Item.h"
 #include <sstream>
+using namespace std;
 
 
 //STATIC MEMBERS
 
-int Equippable::equipIDCTR = 1000;
+int Equippable::equipIDCTR = 1;
 
 
   //----------------------------\\
@@ -18,7 +19,7 @@ int Equippable::equipIDCTR = 1000;
 
 /* ACCESSORS */
 
-std::string Item::getName()
+string Item::getName()
 {
 	return name;
 }
@@ -87,141 +88,141 @@ int Equippable::getWisBoost()
 	return wisboost;
 }
 
-//void Equippable::getAllEnchantments(Equippable eqp)
-//{
-//	ostringstream resultingString;
-//	if (eqp.getIType() == HELMET)
-//	{
-//		resultingString << eqp.getName() << endl;
-//		resultingString << "Enchantments: " << endl;
-//		resultingString << "------------" << endl;
-//		if (eqp.getArmBoost() > 0)
-//		{
-//			resultingString << "Armor: " << eqp.getArmBoost() << endl;
-//		}
-//		if (eqp.getIntBoost() > 0)
-//		{
-//			resultingString << "Intelligence: " << eqp.getIntBoost() << endl;
-//		}
-//		if (eqp.getWisBoost() > 0)
-//		{
-//			resultingString << "Wisdom: " << eqp.getWisBoost() << endl;
-//		}
+void Equippable::getAllEnchantments(Equippable eqp)
+{
+	ostringstream resultingString;
+	if (eqp.getIType() == HELMET)
+	{
+		resultingString << eqp.getName() << endl;
+		resultingString << "Enchantments: " << endl;
+		resultingString << "------------" << endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << endl;
+		}
+		if (eqp.getIntBoost() > 0)
+		{
+			resultingString << "Intelligence: " << eqp.getIntBoost() << endl;
+		}
+		if (eqp.getWisBoost() > 0)
+		{
+			resultingString << "Wisdom: " << eqp.getWisBoost() << endl;
+		}
 
-//		cout << resultingString.str();
-//	}
+		cout << resultingString.str();
+	}
 
-//	else if (eqp.getIType() == ARMOR)
-//	{
-//		resultingString << eqp.getName() << endl;
-//		resultingString << "Enchantments: " << endl;
-//		resultingString << "------------" << endl;
-//		if (eqp.getArmBoost() > 0)
-//		{
-//			resultingString << "Armor: " << eqp.getArmBoost() << endl;
-//		}
-//		cout << resultingString.str();
-//	}
+	else if (eqp.getIType() == ARMOR)
+	{
+		resultingString << eqp.getName() << endl;
+		resultingString << "Enchantments: " << endl;
+		resultingString << "------------" << endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << endl;
+		}
+		cout << resultingString.str();
+	}
 
-//	else if (eqp.getIType() == SHIELD)
-//	{
-//		resultingString << eqp.getName() << endl;
-//		resultingString << "Enchantments: " << endl;
-//		resultingString << "------------" << endl;
-//		if (eqp.getArmBoost() > 0)
-//		{
-//			resultingString << "Armor: " << eqp.getArmBoost() << endl;
-//		}
-//		cout << resultingString.str();
-//	}
+	else if (eqp.getIType() == SHIELD)
+	{
+		resultingString << eqp.getName() << endl;
+		resultingString << "Enchantments: " << endl;
+		resultingString << "------------" << endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << endl;
+		}
+		cout << resultingString.str();
+	}
 
-//	else if (eqp.getIType() == RING)
-//	{
-//		resultingString << eqp.getName() << endl;
-//		resultingString << "Enchantments: " << endl;
-//		resultingString << "------------" << endl;
-//		if (eqp.getArmBoost() > 0)
-//		{
-//			resultingString << "Armor: " << eqp.getArmBoost() << endl;
-//		}
-//		if (eqp.getIntBoost() > 0)
-//		{
-//			resultingString << "Intelligence: " << eqp.getIntBoost() << endl;
-//		}
-//		if (eqp.getWisBoost() > 0)
-//		{
-//			resultingString << "Wisdom: " << eqp.getWisBoost() << endl;
-//		}
-//		cout << resultingString.str();
-//	}
+	else if (eqp.getIType() == RING)
+	{
+		resultingString << eqp.getName() << endl;
+		resultingString << "Enchantments: " << endl;
+		resultingString << "------------" << endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << endl;
+		}
+		if (eqp.getIntBoost() > 0)
+		{
+			resultingString << "Intelligence: " << eqp.getIntBoost() << endl;
+		}
+		if (eqp.getWisBoost() > 0)
+		{
+			resultingString << "Wisdom: " << eqp.getWisBoost() << endl;
+		}
+		cout << resultingString.str();
+	}
 
-//	else if (eqp.getIType() == BELT)
-//	{
-//		resultingString << eqp.getName() << endl;
-//		resultingString << "Enchantments: " << endl;
-//		resultingString << "------------" << endl;
-//		if (eqp.getArmBoost() > 0)
-//		{
-//			resultingString << "Armor: " << eqp.getArmBoost() << endl;
-//		}
-//		if (eqp.getStrBoost() > 0)
-//		{
-//			resultingString << "Strength: " << eqp.getStrBoost() << endl;
-//		}
-//		if (eqp.getConBoost() > 0)
-//		{
-//			resultingString << "Constitution: " << eqp.getConBoost() << endl;
-//		}
-//		if (eqp.getWisBoost() > 0)
-//		{
-//			resultingString << "Wisdom: " << eqp.getWisBoost() << endl;
-//		}
-//		if (eqp.getChaBoost() > 0)
-//		{
-//			resultingString << "Charisma: " << eqp.getChaBoost() << endl;
-//		}
-//		cout << resultingString.str();
-//	}
+	else if (eqp.getIType() == BELT)
+	{
+		resultingString << eqp.getName() << endl;
+		resultingString << "Enchantments: " << endl;
+		resultingString << "------------" << endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << endl;
+		}
+		if (eqp.getStrBoost() > 0)
+		{
+			resultingString << "Strength: " << eqp.getStrBoost() << endl;
+		}
+		if (eqp.getConBoost() > 0)
+		{
+			resultingString << "Constitution: " << eqp.getConBoost() << endl;
+		}
+		if (eqp.getWisBoost() > 0)
+		{
+			resultingString << "Wisdom: " << eqp.getWisBoost() << endl;
+		}
+		if (eqp.getChaBoost() > 0)
+		{
+			resultingString << "Charisma: " << eqp.getChaBoost() << endl;
+		}
+		cout << resultingString.str();
+	}
 
-//	else if (eqp.getIType() == BOOTS)
-//	{
-//		resultingString << eqp.getName() << endl;
-//		resultingString << "Enchantments: " << endl;
-//		resultingString << "------------" << endl;
-//		if (eqp.getArmBoost() > 0)
-//		{
-//			resultingString << "Armor: " << eqp.getArmBoost() << endl;
-//		}
-//		if (eqp.getDexBoost() > 0)
-//		{
-//			resultingString << "Dexterity: " << eqp.getDexBoost() << endl;
-//		}
+	else if (eqp.getIType() == BOOTS)
+	{
+		resultingString << eqp.getName() << endl;
+		resultingString << "Enchantments: " << endl;
+		resultingString << "------------" << endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << endl;
+		}
+		if (eqp.getDexBoost() > 0)
+		{
+			resultingString << "Dexterity: " << eqp.getDexBoost() << endl;
+		}
 
-//		cout << resultingString.str();
-//	}
+		cout << resultingString.str();
+	}
 
-//	else if (eqp.getIType() == WEAPON)
-//	{
-//		resultingString << eqp.getName() << endl;
-//		resultingString << "Enchantments: " << endl;
-//		resultingString << "------------" << endl;
-//		if (eqp.getAtkBoost() > 0)
-//		{
-//			resultingString << "Attack: " << eqp.getAtkBoost() << endl;
-//		}
-//		if (eqp.getDmgBoost() > 0)
-//		{
-//			resultingString << "Damage: " << eqp.getDmgBoost() << endl;
-//		}
-//		cout << resultingString.str();
-//	}
+	else if (eqp.getIType() == WEAPON)
+	{
+		resultingString << eqp.getName() << endl;
+		resultingString << "Enchantments: " << endl;
+		resultingString << "------------" << endl;
+		if (eqp.getAtkBoost() > 0)
+		{
+			resultingString << "Attack: " << eqp.getAtkBoost() << endl;
+		}
+		if (eqp.getDmgBoost() > 0)
+		{
+			resultingString << "Damage: " << eqp.getDmgBoost() << endl;
+		}
+		cout << resultingString.str();
+	}
 	
-//}
+}
 
 
 /* MUTATORS */
 
-void Item::setName(std::string nm)
+void Item::setName(string nm)
 {
 	name = nm;
 }
@@ -246,7 +247,7 @@ void Equippable::setIType(ItemType ityp)
 void Equippable::setArmBoost(int arbst)
 {
 	if (arbst < 0 || arbst > 5)
-        std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+		cout << "Can only buff with values between 0 and 5, inclusively." << endl;
 	else
 		armboost = arbst;	
 }
@@ -254,7 +255,7 @@ void Equippable::setArmBoost(int arbst)
 void Equippable::setAtkBoost(int atbst)
 {
 	if (atbst < 0 || atbst > 5)
-        std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+		cout << "Can only buff with values between 0 and 5, inclusively." << endl;
 	else
 		atkboost = atbst;
 }
@@ -262,7 +263,7 @@ void Equippable::setAtkBoost(int atbst)
 void Equippable::setChaBoost(int chbst)
 {
 	if (chbst < 0 || chbst > 5)
-        std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+		cout << "Can only buff with values between 0 and 5, inclusively." << endl;
 	else
 		chaboost = chbst;
 }
@@ -270,7 +271,7 @@ void Equippable::setChaBoost(int chbst)
 void Equippable::setConBoost(int cobst)
 {
 	if (cobst < 0 || cobst > 5)
-        std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+		cout << "Can only buff with values between 0 and 5, inclusively." << endl;
 	else
 		conboost = cobst;
 }
@@ -278,7 +279,7 @@ void Equippable::setConBoost(int cobst)
 void Equippable::setDexBoost(int debst)
 {
 	if (debst < 0 || debst > 5)
-        std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+		cout << "Can only buff with values between 0 and 5, inclusively." << endl;
 	else
 		dexboost = debst;
 }
@@ -286,7 +287,7 @@ void Equippable::setDexBoost(int debst)
 void Equippable::setDmgBoost(int dmbst)
 {
 	if (dmbst < 0 || dmbst > 5)
-        std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+		cout << "Can only buff with values between 0 and 5, inclusively." << endl;
 	else
 		dmgboost = dmbst;
 }
@@ -294,7 +295,7 @@ void Equippable::setDmgBoost(int dmbst)
 void Equippable::setIntBoost(int ibst)
 {
 	if (ibst < 0 || ibst > 5)
-        std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+		cout << "Can only buff with values between 0 and 5, inclusively." << endl;
 	else
 		intboost = ibst;
 }
@@ -302,7 +303,7 @@ void Equippable::setIntBoost(int ibst)
 void Equippable::setStrBoost(int sbst)
 {
 	if (sbst < 0 || sbst > 5)
-        std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+		cout << "Can only buff with values between 0 and 5, inclusively." << endl;
 	else
 		strboost = sbst;
 }
@@ -310,89 +311,94 @@ void Equippable::setStrBoost(int sbst)
 void Equippable::setWisBoost(int wbst)
 {
 	if (wbst < 0 || wbst > 5)
-        std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+		cout << "Can only buff with values between 0 and 5, inclusively." << endl;
 	else
 		wisboost = wbst;
 }
 
-Equippable::Equippable(std::string nm, ItemType itype)
+Equippable::Equippable(ItemType itype, int level)
 {
-    std::cout << "Generating equippable item..." << std::endl;
-    std::cout << std::endl;
-	setName(nm);
+	int chance = level * 5;
+	cout << "Generating equippable item..." << endl;
+	cout << endl;
 	setIType(itype);
 	setItemID(equipIDCTR++);
-    std::cout << nm << std::endl;
-    std::cout << "Equip ID: " << getItemID() << std::endl;
+	//cout << nm << endl;
+	cout << "Equip ID: " << getItemID() << endl;
 
+	int chanceRoll;
 
 	if (itype == HELMET)
 	{
 		//INTELLIGENCE
-		if (roll(2) == 1)
+		setName("Helmet");
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setIntBoost(0);
 		else 
+		{
 			setIntBoost(roll(5));
+			setName(getName() + ", +" + std::to_string(intboost) + " intelligence");
+		}
 
 		//WISDOM
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setWisBoost(0);
 		else 
 			setWisBoost(roll(5));
 
 		//ARMOR CLASS
-		if (roll(2) == 1)
-			setArmBoost(0);
-		else 
-			setArmBoost(roll(5));
+		armboost = 1;
 	}
 
 	else if (itype == ARMOR)
 	{
-		//ARMOR CLASS
-		if (roll(2) == 1)
-			setArmBoost(0);
-		else 
-			setArmBoost(roll(5));
+		int type = rand() % 8;
+		mat = static_cast<Equippable::ArmorMaterial>(type);
+		armboost = type + 1;
 	}
 
 	else if (itype == SHIELD)
 	{
-		//SHIELD
-		if (roll(2) == 1)
-			setArmBoost(0);
-		else 
-			setArmBoost(roll(5));
+		int type = rand() % 3;
+		sType = static_cast<Equippable::ShieldType>(type);
+		armboost = type + 1;
 	}
 
 	else if (itype == RING)
 	{
 		//ARMOR CLASS
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setArmBoost(0);
 		else 
 			setArmBoost(roll(5));
 
 		//STRENGTH
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setStrBoost(0);
 		else 
 			setStrBoost(roll(5));
 
 		//CONSTITUTION
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setConBoost(0);
 		else 
 			setConBoost(roll(5));
 
 		//WISDOM
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setWisBoost(0);
 		else 
 			setWisBoost(roll(5));
 
 		//CHARISMA
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setChaBoost(0);
 		else 
 			setChaBoost(roll(5));
@@ -401,13 +407,15 @@ Equippable::Equippable(std::string nm, ItemType itype)
 	else if (itype == BELT)
 	{
 		//CONSTITUTION
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setConBoost(0);
 		else 
 			setConBoost(roll(5));
 
 		//STRENGTH
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setStrBoost(0);
 		else 
 			setStrBoost(roll(5));
@@ -416,13 +424,15 @@ Equippable::Equippable(std::string nm, ItemType itype)
 	else if (itype == BOOTS)
 	{
 		//ARMOR CLASS
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setArmBoost(0);
 		else 
 			setArmBoost(roll(5));
 
 		//DEXTERITY
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setDexBoost(0);
 		else 
 			setDexBoost(roll(5));
@@ -431,13 +441,15 @@ Equippable::Equippable(std::string nm, ItemType itype)
 	else if (itype == WEAPON)
 	{
 		//ATTACK
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setAtkBoost(0);
 		else 
 			setAtkBoost(roll(5));
 
 		//DAMAGE
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setDmgBoost(0);
 		else 
 			setDmgBoost(roll(5));
@@ -447,17 +459,17 @@ Equippable::Equippable(std::string nm, ItemType itype)
 
 //------------CONTAINER CLASS-------------------//
 
-Container::Container(std::string nm)
+Container::Container(string nm)
 {
-    std::cout << "Generating a Container... " << nm << std::endl;
+	cout << "Generating a Container... " << nm << endl;
 	setName(nm);
 
-    std::vector<Equippable> containervector;
+	vector<Equippable> containervector;
 }
 
 void Container::addEQtoContainer(Equippable eqp)
 {
-    std::cout << "Inserting " << eqp.getName() << " to " << Container::getName() << "." << std::endl;
+	cout << "Inserting " << eqp.getName() << " to " << Container::getName() << "." << endl;
 	containervector.push_back(eqp);
 
 	notify();
@@ -476,7 +488,7 @@ void Container::remEQfromContainer(int id)
 	{
 		if (containervector[i].getItemID() == id)
 		{
-            std::cout << "Removing " << containervector[i].getName() << " from " << Container::getName() << "." << std::endl;
+			cout << "Removing " << containervector[i].getName() << " from " << Container::getName() << "." << endl;
 			containervector.erase(containervector.begin() + i);
 			remCTR++;
 		}
@@ -505,16 +517,16 @@ Equippable Container::getEQfromContainer(int id)
 	}
 }
 
-std::string Container::output()
+string Container::output()
 {
-    std::ostringstream streamer;
+	ostringstream streamer;
 
 	if (containervector.size() != 0)
 	{
 		//cout << "CONTAINER VECTOR SIZE IS NOT 0" << endl;
 		for (size_t i = 0; i < containervector.size(); i++)
 		{
-            streamer << ": " << containervector[i].getName() << " :" << std::endl;
+			streamer << ": " << containervector[i].getName() << " :" << endl;
 			//cout << "ITERATING THROUGH VECTOR TO OUTPUT ITEMS" << endl;
 		}
 		return streamer.str();

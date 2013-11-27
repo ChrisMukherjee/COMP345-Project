@@ -15,6 +15,7 @@ MapCreator::MapCreator(QWidget *parent) :
     ui(new Ui::MapCreator)
 {
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_DeleteOnClose);
     ui->loadingLabel->setVisible(false);
     ui->gridLayout->setSpacing(0);
     ui->templateCombo->addItem("None");
@@ -320,11 +321,15 @@ void MapCreator::addCells() {
         img = img.scaled(map[0][width/2]->width(), map[0][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         map[0][width/2]->setPixmap(img);
         mapChars[0][width/2] = 'E';
+        endX = 0;
+        endY = width/2;
 
         img = QPixmap(":/images/startdoor.png");
         img = img.scaled(map[height-1][width/2]->width(), map[height-1][width/2]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         map[height-1][width/2]->setPixmap(img);
         mapChars[height-1][width/2] = 'S';
+        startX = height-1;
+        startY = width/2;
     }
 }
 
@@ -619,53 +624,53 @@ bool MapCreator::validateMap()
 
     // Set up for map traversal
     // Create another array so that user's map remains unchanged
-    char** visitedArr = new char*[width];
+    char** visited = new char*[height];
     for (int k = 0; k < height; k++)
-        visitedArr[k] = new char[width];
+        visited[k] = new char[width];
 
     // Fill the new array with empty spaces (=)
     for (int k = 0; k < height; k++) {
         for (int l = 0; l < width; l++)
-            visitedArr[k][l] = '=';
+            visited[k][l] = '=';
     }
 
     int i = startX;
     int j = startY;
 
     // Mark visited indices with a V character
-    visitedArr[i][j] = 'V';
+    visited[i][j] = 'V';
 
     while (i != endX || j != endY) {
         // Try going right
-        if (j+1 < width && mapChars[i][j+1] != '#' && visitedArr[i][j+1] != 'V' && visitedArr[i][j+1] != 'Z') {
+        if (j+1 < width && mapChars[i][j+1] != '#' && visited[i][j+1] != 'V' && visited[i][j+1] != 'Z') {
             j++;
-            visitedArr[i][j] = 'V';
+            visited[i][j] = 'V';
         }
         // Try going up
-        else if (i-1 >= 0 && mapChars[i-1][j] != '#' && visitedArr[i-1][j] != 'V' && visitedArr[i-1][j] != 'Z') {
+        else if (i-1 >= 0 && mapChars[i-1][j] != '#' && visited[i-1][j] != 'V' && visited[i-1][j] != 'Z') {
             i--;
-            visitedArr[i][j] = 'V';
+            visited[i][j] = 'V';
         }
         // Try going left
-        else if (j-1 >= 0 && mapChars[i][j-1] != '#' && visitedArr[i][j-1] != 'V' && visitedArr[i][j-1] != 'Z') {
+        else if (j-1 >= 0 && mapChars[i][j-1] != '#' && visited[i][j-1] != 'V' && visited[i][j-1] != 'Z') {
             j--;
-            visitedArr[i][j] = 'V';
+            visited[i][j] = 'V';
         }
         // Try going down
-        else if (i+1 < height && mapChars[i+1][j] != '#' && visitedArr[i+1][j] != 'V' && visitedArr[i+1][j] != 'Z') {
+        else if (i+1 < height && mapChars[i+1][j] != '#' && visited[i+1][j] != 'V' && visited[i+1][j] != 'Z') {
             i++;
-            visitedArr[i][j] = 'V';
+            visited[i][j] = 'V';
         }
         // If none of the above movements are possible, we have reached a dead end
         else {
             // Mark dead end indices with a Z character
-            visitedArr[i][j] = 'Z';
+            visited[i][j] = 'Z';
 
             // Change all the (V)isited indices back into empty (=) cells because they may need to be used for another traversal
             for (int k = 0; k < height; k++) {
                 for (int l = 0; l < width; l++) {
-                    if (visitedArr[k][l] == 'V') {
-                        visitedArr[k][l] = '=';
+                    if (visited[k][l] == 'V') {
+                        visited[k][l] = '=';
                     }
                 }
             }
@@ -676,12 +681,19 @@ bool MapCreator::validateMap()
         }
 
         // Invalid map (no way to get from Start to End)
-        if (visitedArr[startX][startY] == 'Z') {
+        if (visited[startX][startY] == 'Z') {
             QMessageBox::StandardButton err = QMessageBox::critical(this, "Invalid Map!", "This map is not valid. Please review it and fix any errors!", QMessageBox::Ok);
+            for (int i = 0; i < height; i++) {
+                delete[] visited[i];
+            }
+            delete[] visited;
             return false;
         }
     }
-
+    for (int i = 0; i < height; i++) {
+        delete[] visited[i];
+    }
+    delete[] visited;
     // If the loop exits, we have reached the end of the map
     return true;
 }

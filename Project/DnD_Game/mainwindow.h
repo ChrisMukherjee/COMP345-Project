@@ -8,6 +8,9 @@
 #include <QLabel>
 #include "Character.h"
 #include "Grid.h"
+#include <vector>
+#include "InputManager.h"
+#include "InputEvent.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,11 +28,14 @@ public:
     SplashDialog *sp;
     void setChar(QString charName);
     void setMap(QString mapName);
+    void displayStart();
     void displayMap();
     void setMonsterPic();
     void setFighterPic();
     void playGame();
+    void playerTurn();
     void scale_images();
+    void updateInvList();
     bool loaded;
 
 private slots:
@@ -38,6 +44,8 @@ private slots:
     void on_action_New_triggered();
 
     void start();
+
+    void equip();
 
 private:
     Ui::MainWindow *ui;
@@ -53,6 +61,10 @@ private:
     QPixmap chestemptySkin;
     QPixmap startSkin;
     QPixmap endSkin;
+    QString mapFName;
+    QString charFName;
+    std::vector<InputEvent> events;
+    bool dead;
 };
 
 #endif // MAINWINDOW_H
