@@ -12,6 +12,7 @@ NewGame::NewGame(QWidget *parent) :
     ui->setupUi(this);
     populate_lists();
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
+    this->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 NewGame::~NewGame()

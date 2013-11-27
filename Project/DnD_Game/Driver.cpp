@@ -24,18 +24,18 @@ void createCharacter();
 //void loadMap();
 //void makeMap();
 
-bool playerLoaded = false;
-bool mapLoaded = false;
-std::string filename;
-std::vector <InputEvent> events;
+//bool playerLoaded = false;
+//bool mapLoaded = false;
+//std::string filename;
+//std::vector <InputEvent> events;
 
-int main(int argc, char *argv[])
-{
-    srand(static_cast<unsigned>(time(NULL)));
+//int main(int argc, char *argv[])
+//{
+//    srand(static_cast<unsigned>(time(NULL)));
 
-    QApplication a(argc, argv);
-    SplashDialog sp;
-    sp.show();
+//    QApplication a(argc, argv);
+//    SplashDialog sp;
+//    sp.show();
 
 //	bool quit = false;
 
@@ -76,8 +76,8 @@ int main(int argc, char *argv[])
 //		}
 //	} while(!quit);
 
-    return a.exec();
-}
+//    return a.exec();
+//}
 
 //void play()
 //{

@@ -38,7 +38,8 @@ SOURCES +=\
     GridContent.cpp \
     Grid.cpp \
     ContainerObserver.cpp \
-    Driver.cpp
+    Driver.cpp \
+    main.cpp
 
 HEADERS  += mainwindow.h \
     splashdialog.h \

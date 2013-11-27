@@ -2,7 +2,6 @@
 #include "ui_mapcreator.h"
 #include "splashdialog.h"
 #include <QFileDialog>
-#include <QWidget>
 #include <QLabel>
 #include <QGridLayout>
 #include <iostream>

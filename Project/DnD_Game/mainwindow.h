@@ -6,6 +6,8 @@
 #include <QString>
 #include <QPixmap>
 #include <QLabel>
+#include "Character.h"
+#include "Grid.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,18 +26,25 @@ public:
     void setChar(QString charName);
     void setMap(QString mapName);
     void displayMap();
-    QPixmap chooseMonster();
-    QPixmap setFighterPic();
-    void start();
+    void setMonsterPic();
+    void setFighterPic();
+    void playGame();
 
 private slots:
     void on_actionE_xit_triggered();
 
     void on_action_New_triggered();
 
+    void start();
+
 private:
     Ui::MainWindow *ui;
     QLabel*** labelmap;
+    Fighter* player;
+    Grid* map;
+    QPixmap playerSkin;
+    QPixmap monsterSkin;
+    QPixmap monsterdeadSkin;
 };
 
 #endif // MAINWINDOW_H

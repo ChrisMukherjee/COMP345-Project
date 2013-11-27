@@ -13,10 +13,6 @@ public:
 	Grid(int h, int w);
 	~Grid();
 
-	bool isValid();
-	
-
-	bool setCell(int w, int h, char x);
 	void startGame(Character* c);
 	bool getMove(Character* actor, std::string direction, bool isPlayer);
 
@@ -27,7 +23,7 @@ public:
 	bool saveMap();
     static Grid* loadMap(std::string filename, int characterLevel);
 	// Accessor Functions
-	int getWidth() { return width; };
+    int getWidth() { return width; };
 	int getHeight() { return height; };
     char** getGrid();
 	static bool inRange(int srcX, int srcY, int tarX, int tarY, int range);
