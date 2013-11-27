@@ -107,6 +107,8 @@ public:
 
 	int initiative;
 
+	int movesLeft;
+
 protected:
 	// Equipped Items
 	// 1: Weapon

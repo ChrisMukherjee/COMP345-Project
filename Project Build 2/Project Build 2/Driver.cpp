@@ -15,6 +15,7 @@
 #include "CharacterObserver.h"
 
 void play();
+void gameOver();
 void playerTurn();
 void loadCharacter();
 void createCharacter();
@@ -25,7 +26,8 @@ Fighter* player;
 Grid* map;
 bool playerLoaded = false;
 bool mapLoaded = false;
-string filename;
+bool allEnemiesDead = false;
+std::string filename;
 std:: vector <InputEvent> events;
 
 int main2()
@@ -119,21 +121,38 @@ void play()
 	events.push_back(InputEvent("map", 0x4d));
 	events.push_back(InputEvent("quit",VK_ESCAPE));
 
-	while (!map->isEnd(player->x, player->y))
+	while (!map->isEnd(player->x, player->y) || !allEnemiesDead)
 	{
 		for (size_t i = 0; i < map->actors.size(); i++)
 		{
-			if (map->actors[i]->name == "Rat")
+			Character* current = map->actors[i];
+			current->movesLeft = 6;
+			if (current->name == "Rat")
 			{
-				int d = roll(4);
-				if (d == 1) {map->getMove(map->actors[i], "up", false);}
-				else if (d == 2) {map->getMove(map->actors[i], "down", false);}
-				else if (d == 3) {map->getMove(map->actors[i], "right", false);}
-				else if (d == 4) {map->getMove(map->actors[i], "left", false);}
+				while (current->movesLeft > 0)
+				{
+					int d = roll(4);
+					if (d == 1) {map->tryMove(current, "up", false);}
+					else if (d == 2) {map->tryMove(current, "down", false);}
+					else if (d == 3) {map->tryMove(current, "right", false);}
+					else if (d == 4) {map->tryMove(current, "left", false);}
+					if (player->curHP <= 0)
+					{
+						gameOver();
+					}
+				}
 			}
 			else
 			{
-				playerTurn();
+				while (player->movesLeft > 0)
+				{
+					std::cout << current->movesLeft << std::endl;
+					playerTurn();
+				}
+			}
+			if (map->actors.size() == 1 && map->actors[0] == player)
+			{
+				allEnemiesDead = true;
 			}
 		}
 	}
@@ -141,29 +160,26 @@ void play()
 
 void playerTurn()
 {
+
 	std::string move;
-	bool moved = false;
 
 	std::cout<< "your turn! \n";
-	do 
+	move = InputManager :: getInput(events);
+	if (move == "character")
 	{
-		move = InputManager :: getInput(events);
-		if (move == "character")
+		for (size_t i = 0; i < map->actors.size(); i++)
 		{
-			for (size_t i = 0; i < map->actors.size(); i++)
-			{
-				std::cout << map->actors[i]->characterSheetToString();
-			}
+			std::cout << map->actors[i]->characterSheetToString();
 		}
-		else if (move == "map")
-		{
-			map->notify();
-		}
-		else
-		{
-			moved = map->getMove(player, move, true);
-		}
-	} while (!moved);
+	}
+	else if (move == "map")
+	{
+		map->notify();
+	}
+	else
+	{
+		map->tryMove(player, move, true);
+	}
 	//if (onExit)
 	//{
 	//	system("CLS");
@@ -307,6 +323,7 @@ void makeMap()
 		}
 	}
 }
+
 void loadMap()
 {
 	map = Grid::loadMap(player->level);
@@ -318,4 +335,12 @@ void loadMap()
 	{
 		mapLoaded = true;
 	}
+}
+
+void gameOver()
+{
+	system("CLS");
+	puts("\n\nGAME OVER");
+	system("PAUSE");
+	std::exit(0);
 }

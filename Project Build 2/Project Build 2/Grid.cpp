@@ -340,96 +340,132 @@ string Grid:: output()
 	return sstm.str();
 }
 
-void Grid::move(Monster* monster, int destX, int destY)
+void Grid::move(Character* c, int destX, int destY)
 {
-	Cell* oldTile = &grid[monster->x][monster->y];
+	Cell* oldTile = &grid[c->x][c->y];
 	Cell* newTile = &grid[destX][destY];
+	Cell::state s = oldTile->getState();
 	oldTile->setState(Cell::EMPTY, NULL);
-	newTile->setState(Cell::MONSTER, monster);
-	monster->x = destX;
-	monster->y = destY;
+	newTile->setState(s, c);
+	c->x = destX;
+	c->y = destY;
 }
 
-void Grid::move(Fighter* player, int destX, int destY)
-{
-	Cell* oldTile = &grid[player->x][player->y];
-	Cell* newTile = &grid[destX][destY];
-	oldTile->setState(Cell::EMPTY, NULL);
-	newTile->setState(Cell::CHARACTER, player);
-	player->x = destX;
-	player->y = destY;
-}
 
-bool Grid::getMove(Character* actor, string dir, bool isPlayer)
+bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
 {
 	Cell* oldTile = &grid[actor->x][actor->y]; //This is the current tile the player is on
-	Cell* newTile; //This will be the prospective tile to move to
+	Cell* newTile = NULL; //This will be the prospective tile to move to
 
 	bool moved = false;
 
 	if (dir == "up")
 	{
-		newTile = &grid[actor->x][actor->y - 1];
-		if( (actor->y - 1 >= 0) && (newTile->canMoveOne()) )
+		if (actor->y - 1 >= 0)
 		{
-			if(isPlayer)
+			newTile = &grid[actor->x][actor->y - 1];
+			if( newTile->canMoveOne() )
 			{
-				move(dynamic_cast<Fighter*>(actor), actor->x, actor->y - 1);
+				move(actor, actor->x, actor->y - 1);
+				actor->movesLeft--;
+				moved = true;
 			}
-			else
+			else if (newTile->isMonster() && isPlayer)
 			{
-				move(dynamic_cast<Monster*>(actor), actor->x, actor->y - 1);
+				actor->attack(newTile->getMonster());
+				actor->movesLeft = 0;
 			}
-			moved = true;
-		} //Need cases for chest!!!
+			else if (newTile->isCharacter() && !isPlayer)
+			{
+				actor->attack(newTile->getCharacter());
+				actor->movesLeft = 0;
+			}
+		}
 	}
 	else if (dir == "down")
 	{
-		newTile = &grid[actor->x][actor->y + 1];
-		if( (actor->y + 1 < height) && (newTile->canMoveOne()) )
+		if (actor->y + 1 < height)
 		{
-			if(isPlayer)
+			newTile = &grid[actor->x][actor->y + 1];
+			if( newTile->canMoveOne() )
 			{
-				move(dynamic_cast<Fighter*>(actor), actor->x, actor->y + 1);
+				move(actor, actor->x, actor->y + 1);
+				actor->movesLeft--;
+				moved = true;
 			}
-			else
+			else if (newTile->isMonster() && isPlayer)
 			{
-				move(dynamic_cast<Monster*>(actor), actor->x, actor->y + 1);
+				actor->attack(newTile->getMonster());
+				actor->movesLeft = 0;
 			}
-			moved = true;
+			else if (newTile->isCharacter() && !isPlayer)
+			{
+				actor->attack(newTile->getCharacter());
+				actor->movesLeft = 0;
+			}
 		}
 	}
 	else if (dir == "right")
 	{
-		newTile = &grid[actor->x + 1][actor->y];
-		if( (actor->x + 1 < width) && (newTile->canMoveOne()) )
+		if (actor->x + 1 < width)
 		{
-			if(isPlayer)
+			newTile = &grid[actor->x + 1][actor->y];
+			if( newTile->canMoveOne() )
 			{
-				move(dynamic_cast<Fighter*>(actor), actor->x + 1, actor->y);
+				move(actor, actor->x + 1, actor->y);
+				actor->movesLeft--;
+				moved = true;
 			}
-			else
+			else if (newTile->isMonster() && isPlayer)
 			{
-				move(dynamic_cast<Monster*>(actor), actor->x + 1, actor->y);
+				actor->attack(newTile->getMonster());
+				actor->movesLeft = 0;
 			}
-			moved = true;
+			else if (newTile->isCharacter() && !isPlayer)
+			{
+				actor->attack(newTile->getCharacter());
+				actor->movesLeft = 0;
+			}
 		}
 	}
 	else if (dir == "left")
 	{
-		newTile = &grid[actor->x - 1][actor->y];
-		if( (actor->x - 1 >= 0) && (newTile->canMoveOne()) )
+		if (actor->x - 1 >= 0)
 		{
-			if(isPlayer)
+			newTile = &grid[actor->x - 1][actor->y];
+			if( newTile->canMoveOne() )
 			{
-				move(dynamic_cast<Fighter*>(actor), actor->x - 1, actor->y);
+				move(actor, actor->x - 1, actor->y);
+				actor->movesLeft--;
+				moved = true;
 			}
-			else
+			else if (newTile->isMonster() && isPlayer)
 			{
-				move(dynamic_cast<Monster*>(actor), actor->x - 1, actor->y);
+				actor->attack(newTile->getMonster());
+				actor->movesLeft = 0;
 			}
-			moved = true;
+			else if (newTile->isCharacter() && !isPlayer)
+			{
+				actor->attack(newTile->getCharacter());
+				actor->movesLeft = 0;
+			}
 		}
+	}
+
+	if (newTile != NULL && newTile->isMonster() && newTile->getMonster()->curHP <= 0)
+	{
+		std::cout << '\a';
+		Monster* m = newTile->getMonster();
+		for (size_t i = 0; i < actors.size(); i++)
+		{
+			if (actors[i] == m)
+			{
+				actors.erase(actors.begin() + i);
+				break;
+			}
+		}
+		delete m;
+		newTile->setState(Cell::EMPTY, NULL);
 	}
 
 	if (grid[startX][startY].isEmpty())
@@ -445,118 +481,6 @@ bool Grid::getMove(Character* actor, string dir, bool isPlayer)
 
 	return moved;
 }
-
-//bool Grid:: move(string direction) /////////This needs to be completely reworked
-//{
-//	//std::cout << (playerY < height);
-//
-//	GridContent* temp = grid[playerX][playerY].gc;
-//
-//	//******** Do Not erase Start & End Tiles*******
-//	if(playerX==startX && playerY==startY)
-//		grid[playerX][playerY].setState(Cell::state::START);
-//
-//	else if(playerX==endX && playerY==endY)
-//		grid[playerX][playerY].setState(Cell::state::EXIT);
-//
-//	else
-//		grid[playerX][playerY].setState(Cell::state::EMPTY);
-//	//**********************************************
-//
-//
-//
-//
-//	//*****Define What Happens With Each Input******
-//	if(direction== "up")
-//	{
-//		if((playerY-1) >= 0
-//			&& (grid[playerX][playerY-1].currentState == Cell::state::EMPTY
-//			|| grid[playerX][playerY-1].currentState == Cell::state::EXIT
-//			|| grid[playerX][playerY-1].currentState == Cell::state::START))
-//		{
-//			playerY=playerY-1;
-//			grid[playerX][playerY].gc = temp;
-//			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
-//		}
-//		else if (grid[playerX][playerY-1].currentState == Cell::state::CHEST)
-//		{
-//			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
-//			grid[playerX][playerY-1].setState(Cell::state::EMPTY);
-//			this->notify();
-//		}
-//	}
-//
-//	else if(direction== "right")
-//	{
-//		if(playerX+1<width
-//			&& 
-//			(grid[playerX+1][playerY].currentState == Cell::state::EMPTY
-//			|| grid[playerX+1][playerY].currentState == Cell::state::EXIT
-//			|| grid[playerX+1][playerY].currentState == Cell::state::START))
-//		{
-//			playerX=playerX+1;
-//			grid[playerX][playerY].gc = temp;
-//			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
-//		}
-//		else if (grid[playerX+1][playerY].currentState == Cell::state::CHEST)
-//		{
-//			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
-//			grid[playerX+1][playerY].setState(Cell::state::EMPTY);
-//			this->notify();
-//		}
-//	}
-//
-//	else if(direction== "down")
-//	{
-//		if(playerY+1<height
-//			&& ((grid[playerX][playerY+1].currentState == Cell::state::EMPTY)
-//			||(grid[playerX][playerY+1].currentState == Cell::state::EXIT)
-//			||(grid[playerX][playerY+1].currentState == Cell::state::START)))
-//		{
-//			playerY=playerY+1;
-//			grid[playerX][playerY].gc = temp;
-//			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
-//		}
-//		else if (grid[playerX][playerY+1].currentState == Cell::state::CHEST)
-//		{
-//			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
-//			grid[playerX][playerY+1].setState(Cell::state::EMPTY);
-//			this->notify();
-//		}
-//	}
-//
-//	else if(direction== "left")
-//	{
-//		if(playerX-1>=0
-//			&& (grid[playerX-1][playerY].currentState == Cell::state::EMPTY
-//			|| grid[playerX-1][playerY].currentState == Cell::state::EXIT
-//			|| grid[playerX-1][playerY].currentState == Cell::state::START))
-//		{
-//			playerX=playerX-1;
-//			grid[playerX][playerY].gc = temp;
-//			grid[playerX][playerY].setState(Cell::state::OCCUPIED);
-//		}
-//		else if (grid[playerX-1][playerY].currentState == Cell::state::CHEST)
-//		{
-//			dynamic_cast<Fighter*>(temp)->pickUp(new Equippable("Sword",Equippable::WEAPON));
-//			grid[playerX-1][playerY].setState(Cell::state::EMPTY);
-//			this->notify();
-//		}
-//	}
-//	//*************************************************
-//
-//	grid[playerX][playerY].gc = temp;
-//	grid[playerX][playerY].setState(Cell::state::OCCUPIED);
-//
-//	notify();
-//
-//
-//	if (playerX == endX && playerY == endY)
-//	{
-//		return true;
-//	}
-//	return false;
-//}
 
 bool Grid::saveMap()
 {
@@ -592,10 +516,10 @@ bool Grid::saveMap()
 	}
 }
 
-Grid* Grid::loadMap(std::string filename, int characterLevel)
+Grid* Grid::loadMap(int characterLevel)
 {
-	//std::string filename;
-	//puts("\n\nPlease enter filename of the map you'd like to load:");
+	std::string filename;
+	puts("\n\nPlease enter filename of the map you'd like to load:");
 	std::cin >> filename;
 	std::ifstream f(filename, std::ios::in);
 
@@ -606,16 +530,9 @@ Grid* Grid::loadMap(std::string filename, int characterLevel)
 
 		Grid* map = new Grid(width - 2, height - 2);
 
-		map->grid = new Cell*[width];
-
-		for (int i=0; i < width; i++)
-		{
-			map->grid[i] = new Cell[height];
-		}
-
 		f >> map->numMonsters;
 
-		int levelPerMonster = ceil(static_cast<float>(characterLevel) / map->numMonsters);
+		int levelPerMonster = static_cast<int>(ceil(static_cast<float>(characterLevel) / map->numMonsters));
 		int numM = 0;
 		Monster* m;
 
@@ -646,13 +563,12 @@ Grid* Grid::loadMap(std::string filename, int characterLevel)
 				case 'M':
 					m = new Monster("Rat", levelPerMonster);
 					map->grid[j][i].setState(Cell::state::MONSTER, m);
-					m->x = i;
-					m->y = j;
+					m->x = j;
+					m->y = i;
 					map->actors.push_back(m);
 					break;
 				case 'C':
 					map->grid[j][i].setState(Cell::state::CONTAINER, NULL); //THIS IS WHERE NEW CONT GETS GEN'D
-					//map->grid[j][i].it = new Equippable("Swrod", Equippable::WEAPON);
 					break;
 				}
 			}
@@ -669,7 +585,7 @@ Grid* Grid::loadMap(std::string filename, int characterLevel)
 
 bool Grid::inRange(int srcX, int srcY, int tarX, int tarY, int range)
 {
-	int d = floor(sqrt(((tarX - srcX) * (tarX - srcX)) + ((tarY - srcY) * (tarY - srcY))));
+	int d = static_cast<int>(floor(sqrt(((tarX - srcX) * (tarX - srcX)) + ((tarY - srcY) * (tarY - srcY)))));
 	std::cout << d << std::endl;
 	if (d <= range)
 	{
@@ -677,5 +593,3 @@ bool Grid::inRange(int srcX, int srcY, int tarX, int tarY, int range)
 	}
 	return false;
 }
-
-

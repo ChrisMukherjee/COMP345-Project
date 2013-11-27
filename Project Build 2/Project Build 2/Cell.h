@@ -38,6 +38,7 @@ public:
 	Character* getCharacter();
 	//Container* getContainer();
 
+	state getState() {return currentState;}
 	void setState(state s, GridContent* content);
 	void setImage();
 	char getImage() {return image;}

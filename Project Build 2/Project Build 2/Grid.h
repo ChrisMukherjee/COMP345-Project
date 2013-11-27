@@ -19,11 +19,9 @@ public:
 
 	bool setCell(int w, int h, char x);
 	void startGame(Character* c);
-	bool getMove(Character* actor, std::string direction, bool isPlayer);
+	bool tryMove(Character* actor, std::string direction, bool isPlayer);
 
-	void move(Fighter*, int, int);
-	void move(Monster*, int, int);
-
+	void move(Character*, int , int);
 
 	bool saveMap();
 	static Grid* loadMap(int characterLevel);

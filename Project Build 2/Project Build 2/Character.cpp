@@ -3,6 +3,8 @@
 #include <sstream>
 #include <fstream>
 
+#include "windows.h"
+
 // **********PUBLIC MEMBER FUNCTIONS**********//
 
 // Assign and initialize all the data members
@@ -274,12 +276,19 @@ void Character::attack(Character* target)
 {
 	for (size_t i = 0; i < baseAttackBonus.size(); i++)
 	{
-		if (roll(20, 1, baseAttackBonus[i]) > target->ac)
+		int r = roll(20, 1, baseAttackBonus[i] + modStr);
+		if (r >= target->ac)
 		{
-			//Do damage equal to current weapon
-			//We should also output info to the console, to let
-			//Joey know we are following the rules.
+			int d = roll(8, 1, modStr);
+			target->curHP -= d;
+			std::cout << "Rolled " << r << "and dealt " << d << " dmg!" << std::endl;
+			std::cout << target->curHP << "/" << target->maxHP << std::endl;
 		}
+		else
+		{
+			std::cout << "Rolled " << r << ", missed!" << std::endl;
+		}
+		Sleep(1000);
 	}
 }
 
