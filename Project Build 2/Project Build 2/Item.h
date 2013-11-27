@@ -6,7 +6,7 @@
 #include "Dice.h"
 #include "Observable.h"
 #include "GridContent.h"
-using namespace std;
+#include <fstream>
 
 //============================//
 //========ITEM CLASSES========//
@@ -15,51 +15,54 @@ using namespace std;
 class Item : public GridContent
 {
 public:
-	string getName();
-	void setName(string nm);
+	std::string getName();
+	void setName(std::string nm);
 	int getItemID();
 	void setItemID(int id);
+	int leveladjustmodficiation;
 
 private:
-	string name;
+	std::string name;
 	int itemID;
 };
 
 class Equippable: public Item
 {
-
 public:
 	enum ItemType
 	{
-		WEAPON, SHIELD, HELMET, ARMOR, BRACERS, BELT, BOOTS, RING
+		SWORD, BOW, SHIELD, HELMET, ARMOR, BRACERS, BELT, BOOTS, RING
 	};
-
-	enum ArmorMaterial
+	enum ArmorType
 	{
-		PADDED, LEATHER, STUDDED, CHAIN, BREASTPLATE, BANDED, HALFPLATE, FULLPLATE
+		NADEF, PADDED, LEATHER, STUDDEDLEATHER, CHAINSHIRT, BREASTPLATE, BANDEDMAIL, HALFPLATE, FULLPLATE
 	};
-
 	enum ShieldType
 	{
-		BUCKLER, HEAVY, TOWER
+		NSDEF, BUCKLER, HEAVYSHIELD, TOWERSHIELD
 	};
 
 	ItemType getIType();
 	void setIType(ItemType ityp);
-
-	ArmorMaterial getArmorMaterial() {return mat;}
-	void setArmorMaterial(ArmorMaterial m) {mat = m;}
-
-	ShieldType getShieldType() {return sType;}
-	void setShieldType(ShieldType s) {sType = s;}
+	ArmorType getArmType();
+	void setArmType(ArmorType armtyp);
+	ShieldType getShType();
+	void setShType(ShieldType shtyp);
 
 	bool getEqStatus();
 	void setEqStatus(bool eq);
 
-	
-
 	//--------------------------------------\\
 	
+	int getArmMod();
+	void setArmMod(int armmd);
+
+	int getShMod();
+	void setShMod(int shmd);
+
+
+	//--------------------------------------\\
+
 	int getArmBoost();
 	void setArmBoost(int arbst);
 	
@@ -87,32 +90,36 @@ public:
 	int getWisBoost();
 	void setWisBoost(int wbst);
 
-	static void getAllEnchantments(Equippable eqp);
+	static std::string getAllEnchantments(Equippable eqp);
 	
+	Equippable(std::string nm, ItemType itype);
+	Equippable(ItemType itype, int lvladj);
 
-	Equippable(ItemType type, int level);
+	bool saveEquippable(std::string filename);
+	bool loadEquippable(std::string filename);
+
 
 private:
 	bool equipped;
 	ItemType type;
-	ArmorMaterial mat;
-	ShieldType sType;
-	int armboost;
-	int wisboost;
-	int conboost;
-	int chaboost;
-	int strboost;
-	int intboost;
-	int dexboost;
-	int atkboost;
-	int dmgboost;
+	ArmorType armtype = NADEF;
+	ShieldType shtype = NSDEF;
+	int armormod = 0;
+	int shieldmod = 0;
+	int armboost = 0;
+	int wisboost = 0;
+	int conboost = 0;
+	int chaboost = 0;
+	int strboost = 0;
+	int intboost = 0;
+	int dexboost = 0;
+	int atkboost = 0;
+	int dmgboost = 0;
 	static int equipIDCTR;
 	//static int consumIDCTR;
 	//ENCHANTMENT RANDOMIZATION
 	int enchantChance;
 	int enchantAmount;
-
-	
 
 	/*
 	Depending on the type passed, roll dice to randomly generate a number associated with each enchantment seperately. BEFORE THIS, roll a die to see if
@@ -121,32 +128,56 @@ private:
 	*/
 };
 
-
-
 class Container : public Item, public Observable
 {
 public:
 
+	//TYPE RELATED FUNCTIONS
+	enum ContainerType
+	{
+		RANDOMIZED, ADJUSTED
+	};
 
-	void addEQtoContainer(Equippable eqp);
+	void setCType(ContainerType ct);
+	ContainerType getCType();
+
+	//ADD-REMOVE-GET EQ FROM CONTAINER
 	//void addCONtoBP();
-
+	//void remCONfromBP();
+	void addEQtoContainer(Equippable eqp);
 	void remEQfromContainer(int id);
-
 	Equippable getEQfromContainer(int id);
 
-	Container(string nm);
-
-	string output();
 
 
+	//Container Constructors
+	Container();
+	Container(std::string nm, ContainerType typ);
 
+	//OUTPUTTERS
+	std::string output();
+	/*
+	void open() const
+	{
+		cout << "Chest contains: " << endl;
+		for (int i = 0; i <= containervector.size(); i++)
+			cout << containervector[i].getName() << endl;
+	}
+	*/
 
 private:
-	vector<Equippable> containervector;
+	std::vector<Equippable> containervector;
+	ContainerType chtype;
 
 };
 
 
 
 
+/* Create new classes Chest, Chestbuilder, RandomChestBuilder and AdjustedChestbuilder. They all make new vector containers and new items depending on the type
+of of chest it will be. You may have to modify the item creator method to take into account a randomized stat item or a level adjusted stat item..Maybe by taking in
+an extra parameter which determines either random or adjusted item stats.
+
+The chest class can have a variable for its type: random or adjusted. Make the mutator/accessor methods for this variable
+
+It seems you need a manager for the chestbuilders... In the example it is the Director class*/
