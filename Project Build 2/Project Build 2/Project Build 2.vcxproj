@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5FB73CBD-B25F-4EAC-A8D5-461826783E94}</ProjectGuid>
+    <ProjectGuid>{E9B575A0-2177-4BA6-B013-698BD8BF8F49}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ProjectBuild2s</RootNamespace>
   </PropertyGroup>
@@ -80,6 +80,7 @@
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="CharacterObserver.cpp" />
+    <ClCompile Include="ContainerBuilder.cpp" />
     <ClCompile Include="ContainerObserver.cpp" />
     <ClCompile Include="Dice.cpp" />
     <ClCompile Include="Driver.cpp" />
@@ -101,6 +102,7 @@
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="CharacterObserver.h" />
+    <ClInclude Include="ContainerBuilder.h" />
     <ClInclude Include="ContainerObserver.h" />
     <ClInclude Include="Dice.h" />
     <ClInclude Include="Fighter.h" />

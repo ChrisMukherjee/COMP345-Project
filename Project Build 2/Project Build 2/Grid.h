@@ -33,7 +33,7 @@ public:
 	
 	std:: string output();
 
-	vector<Character*> actors;
+	std::vector <Character*> actors;
 	
 	bool isStart(int x, int y) {return x == startX && y == startY;}
 	bool isEnd(int x, int y) {return x == endX && y == endY;}

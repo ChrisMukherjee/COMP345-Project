@@ -13,6 +13,7 @@
 #include "Grid.h"
 #include "Fighter.h"
 #include "CharacterObserver.h"
+#include "Item.h"
 
 void play();
 void gameOver();
@@ -117,8 +118,8 @@ void play()
 	events.push_back(InputEvent("equip", 0x49));
 	events.push_back(InputEvent("unequip", 0x4F));
 
-	player->inv.push_back(new Equippable("Sword", Equippable::WEAPON, player->level));
-	//player->equip(*(player->inv[0]));
+	player->inv.push_back(new Equippable(Equippable::ItemType::SWORD, player->level));
+	player->equip(*(player->inv[0]));
 
 	while (!map->isEnd(player->x, player->y) || !allEnemiesDead)
 	{
@@ -203,7 +204,7 @@ void equipScreen()
 	std::cout << player->invToString();
 	std::cout << "Select an item ID to equip:\n";
 	int id;
-	cin >> id;
+	std::cin >> id;
 	for (size_t i = 0; i < player->inv.size(); i++)
 	{
 		if (player->inv[i]->getItemID() == id)
@@ -221,7 +222,7 @@ void unequipScreen()
 	std::cout << player->equipedToString();
 	std::cout << "Select a slot to unequip:\n";
 	int slot;
-	cin >> slot;
+	std::cin >> slot;
 	player->unequip(slot);
 	map->notify();
 }

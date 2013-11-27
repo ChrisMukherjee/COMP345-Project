@@ -14,7 +14,7 @@ int Equippable::equipIDCTR = 1000;
 
 
 //----------------------------\\
-  /* GENERAL ITEM FUNCTIONS */
+  // GENERAL ITEM FUNCTIONS //
 //-----------------------------\\
 
 /* ACCESSORS */
@@ -123,7 +123,7 @@ int Equippable::getWisBoost()
 {
 	return wisboost;
 }
-
+/*
 std::string Equippable::getAllEnchantments(Equippable eqp)
 {
 	std::ostringstream resultingString;
@@ -286,7 +286,7 @@ std::string Equippable::getAllEnchantments(Equippable eqp)
 	}
 	
 }
-
+/*
 
 /* MUTATORS */
 
@@ -432,9 +432,23 @@ Equippable::Equippable(ItemType itype, int lvladj)
 	setIType(itype);
 	setItemID(equipIDCTR++);
 	std::cout << "Equip ID: " << getItemID() << std::endl;
+	ItemType type;
+	ArmorType armtype = NADEF;
+	ShieldType shtype = NSDEF;
+	int armormod = 0;
+	int shieldmod = 0;
+	int armboost = 0;
+	int wisboost = 0;
+	int conboost = 0;
+	int chaboost = 0;
+	int strboost = 0;
+	int intboost = 0;
+	int dexboost = 0;
+	int atkboost = 0;
+	int dmgboost = 0;
 	
 	//LEVEL ADJUSTMENT MODIFIER DETERMINATION
-	int leveladjustmod;
+	int leveladjustmod = 0;
 	if (lvladj >= 0 && lvladj <= 5)
 		leveladjustmod = 0;
 	else if (lvladj > 5 && lvladj <= 10)
@@ -932,8 +946,7 @@ Container::Container()
 {
 	std::cout << "Generating a generic Container... " << std::endl;
 
-
-	std::vector<Equippable> containervector;
+	image = 'C';
 }
 
 Container::Container(std::string nm, Container::ContainerType typ)
@@ -976,7 +989,13 @@ void Container::remEQfromContainer(int id)
 
 	notify();
 }
+Equippable* Container::getEQfromContainer(int id)
+{
+	return &containervector[id];
+}
 
+
+/*
 Equippable Container::getEQfromContainer(int id)
 {
 	int getCTR = 0;
@@ -994,6 +1013,7 @@ Equippable Container::getEQfromContainer(int id)
 	}
 
 }
+*/
 
 std::string Container::output()
 {

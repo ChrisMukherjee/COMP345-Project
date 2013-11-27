@@ -6,6 +6,8 @@
 #include "Fighter.h"
 #include <cmath>
 #include <algorithm>
+#include "ContainerBuilder.h"
+
 
 using namespace std;
 
@@ -380,6 +382,20 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
 				actor->attack(newTile->getCharacter());
 				actor->movesLeft = 0;
 			}
+			else if (newTile -> isContainer() && isPlayer)
+			{
+				Container* cont = newTile->getContainer();
+				
+				for(int i=0; i<=cont->containervector.size(); i++)
+				{
+					(actor->inv).push_back(cont->getEQfromContainer(i));
+				}
+
+				move(actor, actor->x, actor->y - 1);
+				actor->movesLeft--;
+				moved = true;
+			}
+
 		}
 	}
 	else if (dir == "down")
@@ -402,6 +418,18 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
 			{
 				actor->attack(newTile->getCharacter());
 				actor->movesLeft = 0;
+			}
+			else if (newTile -> isContainer() && isPlayer)
+			{
+				Container* cont = newTile->getContainer();
+				
+				for(int i=0; i<=cont->containervector.size(); i++)
+				{
+					(actor->inv).push_back(cont->getEQfromContainer(i));
+				}
+				move(actor, actor->x, actor->y + 1);
+				actor->movesLeft--;
+				moved = true;
 			}
 		}
 	}
@@ -426,6 +454,18 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
 				actor->attack(newTile->getCharacter());
 				actor->movesLeft = 0;
 			}
+			else if (newTile -> isContainer() && isPlayer)
+			{
+				Container* cont = newTile->getContainer();
+				
+				for(int i=0; i<=cont->containervector.size(); i++)
+				{
+					(actor->inv).push_back(cont->getEQfromContainer(i));
+				}
+				move(actor, actor->x + 1, actor->y);
+				actor->movesLeft--;
+				moved = true;
+			}
 		}
 	}
 	else if (dir == "left")
@@ -448,6 +488,18 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
 			{
 				actor->attack(newTile->getCharacter());
 				actor->movesLeft = 0;
+			}
+			else if (newTile -> isContainer() && isPlayer)
+			{
+				Container* cont = newTile->getContainer();
+				
+				for(int i=0; i<=(cont->containervector.size()); i++)
+				{
+					(actor->inv).push_back(cont->getEQfromContainer(i));
+				}
+				move(actor, actor->x - 1, actor->y);
+				actor->movesLeft--;
+				moved = true;
 			}
 		}
 	}
@@ -568,7 +620,12 @@ Grid* Grid::loadMap(int characterLevel)
 					map->actors.push_back(m);
 					break;
 				case 'C':
-					map->grid[j][i].setState(Cell::state::CONTAINER, NULL); //THIS IS WHERE NEW CONT GETS GEN'D
+					Director director;
+					ContainerBuilder* adj_cb = new AdjustedContainerBuilder;
+					director.setContainerBuilder(adj_cb);
+					director.constructContainer();
+					Container* c= director.getContainer();
+					map->grid[j][i].setState(Cell::state::CONTAINER, c); 
 					break;
 				}
 			}

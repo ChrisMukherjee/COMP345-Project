@@ -102,19 +102,19 @@ public:
 private:
 	bool equipped;
 	ItemType type;
-	ArmorType armtype = NADEF;
-	ShieldType shtype = NSDEF;
-	int armormod = 0;
-	int shieldmod = 0;
-	int armboost = 0;
-	int wisboost = 0;
-	int conboost = 0;
-	int chaboost = 0;
-	int strboost = 0;
-	int intboost = 0;
-	int dexboost = 0;
-	int atkboost = 0;
-	int dmgboost = 0;
+	ArmorType armtype;
+	ShieldType shtype;
+	int armormod;
+	int shieldmod;
+	int armboost;
+	int wisboost;
+	int conboost;
+	int chaboost;
+	int strboost;
+	int intboost;
+	int dexboost;
+	int atkboost;
+	int dmgboost;
 	static int equipIDCTR;
 	//static int consumIDCTR;
 	//ENCHANTMENT RANDOMIZATION
@@ -131,6 +131,7 @@ private:
 class Container : public Item, public Observable
 {
 public:
+	std::vector<Equippable> containervector;
 
 	//TYPE RELATED FUNCTIONS
 	enum ContainerType
@@ -146,7 +147,7 @@ public:
 	//void remCONfromBP();
 	void addEQtoContainer(Equippable eqp);
 	void remEQfromContainer(int id);
-	Equippable getEQfromContainer(int id);
+	Equippable* getEQfromContainer(int id);
 
 
 
@@ -166,7 +167,7 @@ public:
 	*/
 
 private:
-	std::vector<Equippable> containervector;
+	
 	ContainerType chtype;
 
 };
