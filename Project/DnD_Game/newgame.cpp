@@ -45,6 +45,7 @@ void NewGame::on_okButton_clicked()
     mw->setChar(selectedChar.at(0)->text());
     selectedMap = ui->mapList->selectedItems();
     mw->setMap(selectedMap.at(0)->text());
+    mw->loaded = true;
     this->close();
 }
 

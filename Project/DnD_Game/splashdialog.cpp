@@ -2,9 +2,11 @@
 #include "ui_splashdialog.h"
 #include "mainwindow.h"
 #include "mapcreator.h"
+#include "charcreator.h"
 
 MainWindow *w;
 MapCreator *m;
+CharCreator *c;
 
 SplashDialog::SplashDialog(QWidget *parent) :
     QDialog(parent),
@@ -36,9 +38,9 @@ void SplashDialog::on_mapButton_clicked()
 
 void SplashDialog::on_characterButton_clicked()
 {
-    m = new MapCreator();
-    m->sp = this;
-    m->show();
+    c = new CharCreator();
+    c->sp = this;
+    c->show();
     this->hide();
 }
 

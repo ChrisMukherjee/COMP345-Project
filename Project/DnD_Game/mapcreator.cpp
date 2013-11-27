@@ -1,6 +1,5 @@
 #include "mapcreator.h"
 #include "ui_mapcreator.h"
-#include "splashdialog.h"
 #include <QFileDialog>
 #include <QLabel>
 #include <QGridLayout>
@@ -10,7 +9,6 @@
 #include <QMessageBox>
 #include "maphelpdialog.h"
 #include <QCloseEvent>
-#include <QDebug>
 
 MapCreator::MapCreator(QWidget *parent) :
     QMainWindow(parent),
@@ -23,7 +21,7 @@ MapCreator::MapCreator(QWidget *parent) :
     ui->templateCombo->addItem("Arena");
 //    ui->templateCombo->addItem("Maze");
     setupDefaults();
-    // Connected options to click signal
+    // Connect options to click signal
     connect(ui->wallImage, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->startImage, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->endImage, SIGNAL(clicked()), this, SLOT(change_selected()));
@@ -55,6 +53,7 @@ void MapCreator::setupDefaults()
     selectType = 'W';
     ui->wValue->setValue(5);
     ui->hValue->setValue(5);
+    ui->templateCombo->setCurrentIndex(0);
     map = NULL;
     mapChars = NULL;
 }

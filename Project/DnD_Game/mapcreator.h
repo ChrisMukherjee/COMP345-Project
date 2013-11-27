@@ -5,7 +5,7 @@
 #include <QtGui>
 #include <QtCore>
 #include "splashdialog.h"
-#include "ClickLabel.h"
+#include "clicklabel.h"
 #include <QWidget>
 #include <QList>
 
@@ -41,6 +41,8 @@ private slots:
 
     bool on_action_Save_triggered();
 
+    void on_action_New_triggered();
+
     void on_goButton_clicked();
 
     void on_action_Help_triggered();
@@ -48,8 +50,6 @@ private slots:
     void map_label_clicked();
 
     void change_selected();
-
-    void on_action_New_triggered();
 
 private:
     Ui::MapCreator *ui;

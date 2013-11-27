@@ -29,6 +29,8 @@ public:
     void setMonsterPic();
     void setFighterPic();
     void playGame();
+    void scale_images();
+    bool loaded;
 
 private slots:
     void on_actionE_xit_triggered();
@@ -45,6 +47,12 @@ private:
     QPixmap playerSkin;
     QPixmap monsterSkin;
     QPixmap monsterdeadSkin;
+    QPixmap wallSkin;
+    QPixmap mudSkin;
+    QPixmap chestSkin;
+    QPixmap chestemptySkin;
+    QPixmap startSkin;
+    QPixmap endSkin;
 };
 
 #endif // MAINWINDOW_H

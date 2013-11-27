@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     on_action_New_triggered();
     ui->gridLayout->setSpacing(0);
+    loaded = false;
     connect(n,SIGNAL(destroyed()), this, SLOT(start()));
 }
 
@@ -84,7 +85,7 @@ void MainWindow::displayMap()
         }
     }
 
-    QPixmap img;
+    scale_images();
 
     for (int i = 0; i < map->getWidth(); ++i)
     {
@@ -93,32 +94,30 @@ void MainWindow::displayMap()
             switch (testmap[i][j])
             {
             case '.':
-                img = QPixmap(":/images/mud.png");
+                labelmap[i][j]->setPixmap(mudSkin);
                 break;
             case 'S':
-                img = QPixmap(":/images/startdoor.png");
+                labelmap[i][j]->setPixmap(startSkin);
                 break;
             case 'E':
-                img = QPixmap(":/images/enddoor.png");
+                labelmap[i][j]->setPixmap(endSkin);
                 break;
             case '#':
-                img = QPixmap(":/images/wall.png");
+                labelmap[i][j]->setPixmap(wallSkin);
                 break;
             case 'M':
-                img = QPixmap(":/images/rat.png");
+                labelmap[i][j]->setPixmap(monsterSkin);
                 break;
             case 'C':
-                img = QPixmap(":/images/chest.png");
+                labelmap[i][j]->setPixmap(chestSkin);
                 break;
             case 'F':
-                img = playerSkin;
+                labelmap[i][j]->setPixmap(playerSkin);
                 break;
             default:
-                img = QPixmap(":/images/mud.png");
+                labelmap[i][j]->setPixmap(mudSkin);
                 break;
             }
-            img = img.scaled(labelmap[i][j]->width(), labelmap[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            labelmap[i][j]->setPixmap(img);
         }
     }
     playGame();
@@ -126,12 +125,14 @@ void MainWindow::displayMap()
 
 void MainWindow::start()
 {
-    setFighterPic();
-    setMonsterPic();
-    //    displayStats();
-    //    displayInv();
-    map->startGame(player);
-    displayMap();
+    if (loaded == true) {
+        setFighterPic();
+        setMonsterPic();
+        //    displayStats();
+        //    displayInv();
+        map->startGame(player);
+        displayMap();
+    }
 }
 
 // THIS DOES NOT WORK - FIX THIS ASAP
@@ -153,54 +154,55 @@ void MainWindow::playGame()
 
     std::string dir;
 
-//    while (dir != "quit") {
-//        qDebug()<<"in here";
-//        dir = InputManager::getInput(events);
-//        qDebug()<<"got event";
+    //    while (dir != "quit") {
+    //        qDebug()<<"in here";
 
-//        map->getMove(player, dir, true);
-//        qDebug()<<"moved";
+    //        char** testmap = map->getGrid();
+    //        QPixmap img;
 
-//        char** testmap = map->getGrid();
-//        QPixmap img;
+    //        for (int i = 0; i < map->getWidth(); ++i)
+    //        {
+    //            for (int j = 0; j < map->getHeight(); j++)
+    //            {
+    //                switch (testmap[i][j])
+    //                {
+    //                case '.':
+    //                    img = QPixmap(":/images/mud.png");
+    //                    break;
+    //                case 'S':
+    //                    img = QPixmap(":/images/startdoor.png");
+    //                    break;
+    //                case 'E':
+    //                    img = QPixmap(":/images/enddoor.png");
+    //                    break;
+    //                case '#':
+    //                    img = QPixmap(":/images/wall.png");
+    //                    break;
+    //                case 'M':
+    //                    img = QPixmap(":/images/rat.png");
+    //                    break;
+    //                case 'C':
+    //                    img = QPixmap(":/images/chest.png");
+    //                    break;
+    //                case 'F':
+    //                    img = playerSkin;
+    //                    break;
+    //                default:
+    //                    img = QPixmap(":/images/mud.png");
+    //                    break;
+    //                }
+    //                img = img.scaled(labelmap[i][j]->width(), labelmap[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    //                labelmap[i][j]->setPixmap(img);
+    //            }
+    //        }
+    //        dir = InputManager::getInput(events);
+    //        qDebug()<<"got event";
 
-//        for (int i = 0; i < map->getWidth(); ++i)
-//        {
-//            for (int j = 0; j < map->getHeight(); j++)
-//            {
-//                switch (testmap[i][j])
-//                {
-//                case '.':
-//                    img = QPixmap(":/images/mud.png");
-//                    break;
-//                case 'S':
-//                    img = QPixmap(":/images/startdoor.png");
-//                    break;
-//                case 'E':
-//                    img = QPixmap(":/images/enddoor.png");
-//                    break;
-//                case '#':
-//                    img = QPixmap(":/images/wall.png");
-//                    break;
-//                case 'M':
-//                    img = QPixmap(":/images/rat.png");
-//                    break;
-//                case 'C':
-//                    img = QPixmap(":/images/chest.png");
-//                    break;
-//                case 'F':
-//                    img = playerSkin;
-//                    break;
-//                default:
-//                    img = QPixmap(":/images/mud.png");
-//                    break;
-//                }
-//                img = img.scaled(labelmap[i][j]->width(), labelmap[i][j]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-//                labelmap[i][j]->setPixmap(img);
-//            }
-//        }
-//        qDebug()<<"end of loop";
-//    }
+    //        map->getMove(player, dir, true);
+    //        qDebug()<<"moved";
+
+    //        qDebug()<<"end of loop";
+    //    }
 }
 
 void MainWindow::setMonsterPic()
@@ -255,4 +257,36 @@ void MainWindow::setFighterPic()
         playerSkin = QPixmap(":/images/fighter_sword.png");
         break;
     }
+}
+
+void MainWindow::scale_images()
+{
+    QPixmap img;
+    img = QPixmap(":/images/mud.png");
+    img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    mudSkin = img;
+    img = QPixmap(":/images/wall.png");
+    img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    wallSkin = img;
+    img = QPixmap(":/images/chest.png");
+    img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    chestSkin = img;
+    img = QPixmap(":/images/chest_empty.png");
+    img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    chestemptySkin = img;
+    img = QPixmap(":/images/startdoor.png");
+    img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    startSkin = img;
+    img = QPixmap(":/images/enddoor.png");
+    img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    endSkin = img;
+    img = playerSkin;
+    img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    playerSkin = img;
+    img = monsterSkin;
+    img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    monsterSkin = img;
+    img = monsterdeadSkin;
+    img = img.scaled(labelmap[0][0]->width(), labelmap[0][0]->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    monsterdeadSkin = img;
 }
