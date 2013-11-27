@@ -17,8 +17,6 @@ public:
 
 protected:
 	Observable();
-
-private:
 	std::list<Observer*> views;
 };
 

@@ -20,8 +20,11 @@ CharacterObserver::CharacterObserver(Character& c)
 
 CharacterObserver::~CharacterObserver()
 {
-	subject->detach(this);
-	subject = NULL;
+	if (subject != NULL)
+	{
+		subject->detach(this);
+		subject = NULL;
+	}
 }
 
 void CharacterObserver::update(Observable* o)

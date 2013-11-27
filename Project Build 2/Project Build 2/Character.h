@@ -22,13 +22,13 @@ public:
 
 	// Equips an item into a specified slot. If it's a ring, it will automatically equip in ring slot 1. If you want
 	// to equip it in the other slot, you must specify ring slot 2
-	void equip(Equippable& item, int ringSlot = 1);
+	void equip(Equippable& item);
 
 	// Unequips an item and places it in your inventory
 	void unequip(int slotToUnequip);
 
-	void pickUp(Item* item);
-	void drop(Item* item);
+	void pickUp(Equippable* item);
+	void drop(Equippable* item);
 
 	// String representations of Character Sheet, equiped items, inv etc...
 	std::string characterSheetToString();
@@ -109,21 +109,21 @@ public:
 
 	int movesLeft;
 
-protected:
 	// Equipped Items
 	// 1: Weapon
 	// 2: Shield
 	// 3: Helmet
 	// 4: Armour
-	// 5. Belt
-	// 6. Boots
-	// 7. Ring
-	// 8. Misc
+	// 5: Bracers
+	// 6. Belt
+	// 7. Boots
+	// 8. Ring
 	std::vector<Equippable*> slot;
 
 	// Inventory - for unequipped items that he picks up
-	std::vector<Item*> inv;
+	std::vector<Equippable*> inv;
 
+protected:
 	// Calculates the ability score modifier
 	int calcModifier(int baseStat);
 

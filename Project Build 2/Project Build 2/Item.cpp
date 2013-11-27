@@ -10,7 +10,7 @@ using namespace std;
 
 //STATIC MEMBERS
 
-int Equippable::equipIDCTR = 1000;
+int Equippable::equipIDCTR = 1;
 
 
   //----------------------------\\
@@ -316,84 +316,89 @@ void Equippable::setWisBoost(int wbst)
 		wisboost = wbst;
 }
 
-Equippable::Equippable(string nm, ItemType itype)
+Equippable::Equippable(ItemType itype, int level)
 {
+	int chance = level * 5;
 	cout << "Generating equippable item..." << endl;
 	cout << endl;
-	setName(nm);
 	setIType(itype);
 	setItemID(equipIDCTR++);
-	cout << nm << endl;
+	//cout << nm << endl;
 	cout << "Equip ID: " << getItemID() << endl;
 
+	int chanceRoll;
 
 	if (itype == HELMET)
 	{
 		//INTELLIGENCE
-		if (roll(2) == 1)
+		setName("Helmet");
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setIntBoost(0);
 		else 
+		{
 			setIntBoost(roll(5));
+			setName(getName() + ", +" + std::to_string(intboost) + " intelligence");
+		}
 
 		//WISDOM
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setWisBoost(0);
 		else 
 			setWisBoost(roll(5));
 
 		//ARMOR CLASS
-		if (roll(2) == 1)
-			setArmBoost(0);
-		else 
-			setArmBoost(roll(5));
+		armboost = 1;
 	}
 
 	else if (itype == ARMOR)
 	{
-		//ARMOR CLASS
-		if (roll(2) == 1)
-			setArmBoost(0);
-		else 
-			setArmBoost(roll(5));
+		int type = rand() % 8;
+		mat = static_cast<Equippable::ArmorMaterial>(type);
+		armboost = type + 1;
 	}
 
 	else if (itype == SHIELD)
 	{
-		//SHIELD
-		if (roll(2) == 1)
-			setArmBoost(0);
-		else 
-			setArmBoost(roll(5));
+		int type = rand() % 3;
+		sType = static_cast<Equippable::ShieldType>(type);
+		armboost = type + 1;
 	}
 
 	else if (itype == RING)
 	{
 		//ARMOR CLASS
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setArmBoost(0);
 		else 
 			setArmBoost(roll(5));
 
 		//STRENGTH
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setStrBoost(0);
 		else 
 			setStrBoost(roll(5));
 
 		//CONSTITUTION
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setConBoost(0);
 		else 
 			setConBoost(roll(5));
 
 		//WISDOM
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setWisBoost(0);
 		else 
 			setWisBoost(roll(5));
 
 		//CHARISMA
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setChaBoost(0);
 		else 
 			setChaBoost(roll(5));
@@ -402,13 +407,15 @@ Equippable::Equippable(string nm, ItemType itype)
 	else if (itype == BELT)
 	{
 		//CONSTITUTION
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setConBoost(0);
 		else 
 			setConBoost(roll(5));
 
 		//STRENGTH
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setStrBoost(0);
 		else 
 			setStrBoost(roll(5));
@@ -417,13 +424,15 @@ Equippable::Equippable(string nm, ItemType itype)
 	else if (itype == BOOTS)
 	{
 		//ARMOR CLASS
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setArmBoost(0);
 		else 
 			setArmBoost(roll(5));
 
 		//DEXTERITY
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setDexBoost(0);
 		else 
 			setDexBoost(roll(5));
@@ -432,13 +441,15 @@ Equippable::Equippable(string nm, ItemType itype)
 	else if (itype == WEAPON)
 	{
 		//ATTACK
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setAtkBoost(0);
 		else 
 			setAtkBoost(roll(5));
 
 		//DAMAGE
-		if (roll(2) == 1)
+		chanceRoll = rand() % 100 + 1;
+		if (chanceRoll <= chance)
 			setDmgBoost(0);
 		else 
 			setDmgBoost(roll(5));

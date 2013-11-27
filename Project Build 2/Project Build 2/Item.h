@@ -31,11 +31,27 @@ class Equippable: public Item
 public:
 	enum ItemType
 	{
-		WEAPON, SHIELD, HELMET, ARMOR, BELT, BOOTS, RING
+		WEAPON, SHIELD, HELMET, ARMOR, BRACERS, BELT, BOOTS, RING
+	};
+
+	enum ArmorMaterial
+	{
+		PADDED, LEATHER, STUDDED, CHAIN, BREASTPLATE, BANDED, HALFPLATE, FULLPLATE
+	};
+
+	enum ShieldType
+	{
+		BUCKLER, HEAVY, TOWER
 	};
 
 	ItemType getIType();
 	void setIType(ItemType ityp);
+
+	ArmorMaterial getArmorMaterial() {return mat;}
+	void setArmorMaterial(ArmorMaterial m) {mat = m;}
+
+	ShieldType getShieldType() {return sType;}
+	void setShieldType(ShieldType s) {sType = s;}
 
 	bool getEqStatus();
 	void setEqStatus(bool eq);
@@ -74,11 +90,13 @@ public:
 	static void getAllEnchantments(Equippable eqp);
 	
 
-	Equippable(string nm, ItemType typ);
+	Equippable(ItemType type, int level);
 
 private:
 	bool equipped;
 	ItemType type;
+	ArmorMaterial mat;
+	ShieldType sType;
 	int armboost;
 	int wisboost;
 	int conboost;
