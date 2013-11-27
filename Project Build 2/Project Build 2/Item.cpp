@@ -432,20 +432,23 @@ Equippable::Equippable(ItemType itype, int lvladj)
 	setIType(itype);
 	setItemID(equipIDCTR++);
 	std::cout << "Equip ID: " << getItemID() << std::endl;
+	equipped = false;
 	ItemType type;
-	ArmorType armtype = NADEF;
-	ShieldType shtype = NSDEF;
-	int armormod = 0;
-	int shieldmod = 0;
-	int armboost = 0;
-	int wisboost = 0;
-	int conboost = 0;
-	int chaboost = 0;
-	int strboost = 0;
-	int intboost = 0;
-	int dexboost = 0;
-	int atkboost = 0;
-	int dmgboost = 0;
+	armtype = NADEF;
+	shtype = NSDEF;
+	armormod = 0;
+	shieldmod = 0;
+	armboost = 0;
+	wisboost = 0;
+	conboost = 0;
+	chaboost = 0;
+	strboost = 0;
+	intboost = 0;
+	dexboost = 0;
+	atkboost = 0;
+	dmgboost = 0;
+
+	leveladjustmodficiation = 0;
 	
 	//LEVEL ADJUSTMENT MODIFIER DETERMINATION
 	int leveladjustmod = 0;
@@ -505,7 +508,7 @@ Equippable::Equippable(ItemType itype, int lvladj)
 		
 		int typeroller = std::rand() % 6 + leveladjustmod;
 		setArmType((ArmorType)typeroller);
-		setName(getName() + " of type: " + std::to_string(getArmType()) + ".");
+		setName(getName() + " with an armor modifier of " + std::to_string(getArmMod()) + ".");
 	}
 
 	else if (itype == BRACERS)
@@ -546,7 +549,7 @@ Equippable::Equippable(ItemType itype, int lvladj)
 
 		int typeroller = std::rand() % 3;
 		setShType((ShieldType)typeroller);
-		setName(getName() + " of type: " + std::to_string(getArmType()) + ".");
+		setName(getName() + " with a shield modifier of " + std::to_string(getShMod()) + ".");
 	}
 
 	else if (itype == RING)
@@ -687,6 +690,7 @@ Equippable::Equippable(ItemType itype, int lvladj)
 		}
 	}
 }
+/*
 Equippable::Equippable(std::string nm, ItemType itype)
 {
 	std::cout << "Generating equippable item..." << std::endl;
@@ -851,7 +855,7 @@ Equippable::Equippable(std::string nm, ItemType itype)
 			setDmgBoost(roll(5));
 	}
 };
-
+*/
 bool Equippable::saveEquippable(std::string filename)
 {
 	std::ofstream f(filename, std::ios::out);

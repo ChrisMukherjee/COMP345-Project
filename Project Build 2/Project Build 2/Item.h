@@ -118,8 +118,7 @@ private:
 	static int equipIDCTR;
 	//static int consumIDCTR;
 	//ENCHANTMENT RANDOMIZATION
-	int enchantChance;
-	int enchantAmount;
+
 
 	/*
 	Depending on the type passed, roll dice to randomly generate a number associated with each enchantment seperately. BEFORE THIS, roll a die to see if
