@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>442</width>
-    <height>583</height>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -172,24 +172,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="levelLabel">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>270</y>
-      <width>81</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Starting Level:</string>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="statsBox">
     <property name="geometry">
      <rect>
       <x>25</x>
-      <y>300</y>
+      <y>360</y>
       <width>191</width>
       <height>221</height>
      </rect>
@@ -290,6 +277,9 @@
      <property name="text">
       <string>0</string>
      </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QLineEdit" name="dexValue">
      <property name="geometry">
@@ -305,6 +295,9 @@
      </property>
      <property name="text">
       <string>0</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLineEdit" name="conValue">
@@ -322,6 +315,9 @@
      <property name="text">
       <string>0</string>
      </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QLineEdit" name="intValue">
      <property name="geometry">
@@ -337,6 +333,9 @@
      </property>
      <property name="text">
       <string>0</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLineEdit" name="wisValue">
@@ -354,6 +353,9 @@
      <property name="text">
       <string>0</string>
      </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QLineEdit" name="chaValue">
      <property name="geometry">
@@ -369,6 +371,9 @@
      </property>
      <property name="text">
       <string>0</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </widget>
@@ -395,33 +400,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QSpinBox" name="levelValue">
-    <property name="geometry">
-     <rect>
-      <x>120</x>
-      <y>270</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="toolTip">
-     <string>Between 1 and 99</string>
-    </property>
-    <property name="minimum">
-     <number>1</number>
-    </property>
-    <property name="maximum">
-     <number>99</number>
-    </property>
-    <property name="value">
-     <number>1</number>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="statsBox_2">
     <property name="geometry">
      <rect>
       <x>225</x>
-      <y>300</y>
+      <y>360</y>
       <width>191</width>
       <height>221</height>
      </rect>
@@ -522,6 +505,9 @@
      <property name="text">
       <string>0</string>
      </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QLineEdit" name="dexValue_2">
      <property name="geometry">
@@ -537,6 +523,9 @@
      </property>
      <property name="text">
       <string>0</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLineEdit" name="conValue_2">
@@ -554,6 +543,9 @@
      <property name="text">
       <string>0</string>
      </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QLineEdit" name="intValue_2">
      <property name="geometry">
@@ -569,6 +561,9 @@
      </property>
      <property name="text">
       <string>0</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="QLineEdit" name="wisValue_2">
@@ -586,6 +581,9 @@
      <property name="text">
       <string>0</string>
      </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QLineEdit" name="chaValue_2">
      <property name="geometry">
@@ -602,19 +600,137 @@
      <property name="text">
       <string>0</string>
      </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
    </widget>
    <widget class="QPushButton" name="rollButton">
     <property name="geometry">
      <rect>
-      <x>185</x>
-      <y>530</y>
+      <x>140</x>
+      <y>590</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Roll Stats</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="levelButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>590</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Level Up!</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="levelLabel">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>280</y>
+      <width>51</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Level:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="maxHPLabel">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>320</y>
+      <width>51</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Max HP:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="atkbonusLabel">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>320</y>
+      <width>111</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Base Attack Bonus:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="levelValue">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>280</y>
+      <width>31</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="inputMask">
+     <string>##</string>
+    </property>
+    <property name="text">
+     <string>1</string>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="maxHPValue">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>320</y>
+      <width>31</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="inputMask">
+     <string>###</string>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+    <property name="maxLength">
+     <number>3</number>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="atkbonusValue">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>320</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="inputMask">
+     <string/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

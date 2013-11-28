@@ -8,6 +8,10 @@
 #include "GridContent.h"
 #include <fstream>
 
+//============================//
+//========ITEM CLASSES========//
+//============================//
+
 class Item : public GridContent
 {
 public:
@@ -94,8 +98,8 @@ public:
 	Equippable(std::string nm, ItemType itype);
 	Equippable(ItemType itype, int lvladj);
 
-	std::string saveEquippable();
-    static Equippable* loadEquippable(std::string strname);
+	bool saveEquippable(std::string filename);
+	bool loadEquippable(std::string filename);
 
 
 private:
@@ -140,18 +144,43 @@ public:
 	void setCType(ContainerType ct);
 	ContainerType getCType();
 
+	//ADD-REMOVE-GET EQ FROM CONTAINER
+	//void addCONtoBP();
+	//void remCONfromBP();
 	void addEQtoContainer(Equippable eqp);
 	void remEQfromContainer(int id);
 	Equippable* getEQfromContainer(int id);
 
+
+
+	//Container Constructors
 	Container();
 	Container(std::string nm, ContainerType typ);
 
 	//OUTPUTTERS
 	std::string output();
+	/*
+	void open() const
+	{
+		cout << "Chest contains: " << endl;
+		for (int i = 0; i <= containervector.size(); i++)
+			cout << containervector[i].getName() << endl;
+	}
+	*/
 
 private:
 	
 	ContainerType chtype;
 
 };
+
+
+
+
+/* Create new classes Chest, Chestbuilder, RandomChestBuilder and AdjustedChestbuilder. They all make new vector containers and new items depending on the type
+of of chest it will be. You may have to modify the item creator method to take into account a randomized stat item or a level adjusted stat item..Maybe by taking in
+an extra parameter which determines either random or adjusted item stats.
+
+The chest class can have a variable for its type: random or adjusted. Make the mutator/accessor methods for this variable
+
+It seems you need a manager for the chestbuilders... In the example it is the Director class*/

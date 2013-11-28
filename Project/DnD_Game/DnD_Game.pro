@@ -39,7 +39,8 @@ SOURCES +=\
     Grid.cpp \
     ContainerObserver.cpp \
     Driver.cpp \
-    main.cpp
+    main.cpp \
+    ContainerBuilder.cpp
 
 HEADERS  += mainwindow.h \
     splashdialog.h \
@@ -67,7 +68,8 @@ HEADERS  += mainwindow.h \
     Grid.h \
     ContainerObserver.h \
     Cell.h \
-    BullyFighterBuilder.h
+    BullyFighterBuilder.h \
+    ContainerBuilder.h
 
 FORMS    += mainwindow.ui \
     splashdialog.ui \

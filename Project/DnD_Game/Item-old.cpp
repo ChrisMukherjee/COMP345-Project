@@ -1,12 +1,23 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
 #include "Item.h"
 #include <sstream>
-#include <QDebug>
+
+
+
+//STATIC MEMBERS
 
 int Equippable::equipIDCTR = 1000;
+
+
+//----------------------------\\
+  // GENERAL ITEM FUNCTIONS //
+//-----------------------------\\
+
+/* ACCESSORS */
 
 std::string Item::getName()
 {
@@ -39,6 +50,34 @@ Equippable::ShieldType Equippable::getShType()
 	if (type = SHIELD)
 		return shtype;
 }
+
+/*INHERENT ARMOR AND SHIELD MODIFIER ACCESSORS AND MUTATORS*/
+
+int Equippable::getArmMod()
+{
+	if (type = ARMOR)
+		return armormod;
+}
+
+void Equippable::setArmMod(int armmd)
+{
+	if (type = ARMOR)
+		armormod = armmd;
+}
+
+int Equippable::getShMod()
+{
+	if (type = SHIELD)
+		return shieldmod;
+}
+
+void Equippable::setShMod(int shmd)
+{
+	if (type = SHIELD)
+		shieldmod = shmd;
+}
+
+/*ENCHANTMENT RELATED ACCESSORS*/
 
 int Equippable::getArmBoost()
 {
@@ -84,6 +123,172 @@ int Equippable::getWisBoost()
 {
 	return wisboost;
 }
+/*
+std::string Equippable::getAllEnchantments(Equippable eqp)
+{
+	std::ostringstream resultingString;
+	if (eqp.getIType() == HELMET)
+	{
+		resultingString << eqp.getName() << std::endl;
+		resultingString << "Enchantments: " << std::endl;
+		resultingString << "------------" << std::endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << std::endl;
+		}
+		if (eqp.getIntBoost() > 0)
+		{
+			resultingString << "Intelligence: " << eqp.getIntBoost() << std::endl;
+		}
+		if (eqp.getWisBoost() > 0)
+		{
+			resultingString << "Wisdom: " << eqp.getWisBoost() << std::endl;
+		}
+
+		return resultingString.str();
+	}
+
+	else if (eqp.getIType() == ARMOR)
+	{
+		resultingString << eqp.getName() << std::endl;
+		resultingString << "Enchantments: " << std::endl;
+		resultingString << "------------" << std::endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << std::endl;
+		}
+		return resultingString.str();
+	}
+
+	else if (eqp.getIType() == BRACERS)
+	{
+		resultingString << eqp.getName() << std::endl;
+		resultingString << "Enchantments: " << std::endl;
+		resultingString << "------------" << std::endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << std::endl;
+		}
+		if (eqp.getStrBoost() > 0)
+		{
+			resultingString << "Strength: " << eqp.getStrBoost() << std::endl;
+		}
+		return resultingString.str();
+	}
+
+	else if (eqp.getIType() == SHIELD)
+	{
+		resultingString << eqp.getName() << std::endl;
+		resultingString << "Enchantments: " << std::endl;
+		resultingString << "------------" << std::endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << std::endl;
+		}
+		return resultingString.str();
+	}
+
+	else if (eqp.getIType() == RING)
+	{
+		resultingString << eqp.getName() << std::endl;
+		resultingString << "Enchantments: " << std::endl;
+		resultingString << "------------" << std::endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << std::endl;
+		}
+		if (eqp.getIntBoost() > 0)
+		{
+			resultingString << "Intelligence: " << eqp.getIntBoost() << std::endl;
+		}
+		if (eqp.getWisBoost() > 0)
+		{
+			resultingString << "Wisdom: " << eqp.getWisBoost() << std::endl;
+		}
+		return resultingString.str();
+	}
+
+	else if (eqp.getIType() == BELT)
+	{
+		resultingString << eqp.getName() << std::endl;
+		resultingString << "Enchantments: " << std::endl;
+		resultingString << "------------" << std::endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << std::endl;
+		}
+		if (eqp.getStrBoost() > 0)
+		{
+			resultingString << "Strength: " << eqp.getStrBoost() << std::endl;
+		}
+		if (eqp.getConBoost() > 0)
+		{
+			resultingString << "Constitution: " << eqp.getConBoost() << std::endl;
+		}
+		if (eqp.getWisBoost() > 0)
+		{
+			resultingString << "Wisdom: " << eqp.getWisBoost() << std::endl;
+		}
+		if (eqp.getChaBoost() > 0)
+		{
+			resultingString << "Charisma: " << eqp.getChaBoost() << std::endl;
+		}
+		return resultingString.str();
+	}
+
+	else if (eqp.getIType() == BOOTS)
+	{
+		resultingString << eqp.getName() << std::endl;
+		resultingString << "Enchantments: " << std::endl;
+		resultingString << "------------" << std::endl;
+		if (eqp.getArmBoost() > 0)
+		{
+			resultingString << "Armor: " << eqp.getArmBoost() << std::endl;
+		}
+		if (eqp.getDexBoost() > 0)
+		{
+			resultingString << "Dexterity: " << eqp.getDexBoost() << std::endl;
+		}
+
+		return resultingString.str();
+	}
+
+	else if (eqp.getIType() == SWORD)
+	{
+		resultingString << eqp.getName() << std::endl;
+		resultingString << "Enchantments: " << std::endl;
+		resultingString << "------------" << std::endl;
+		if (eqp.getAtkBoost() > 0)
+		{
+			resultingString << "Attack: " << eqp.getAtkBoost() << std::endl;
+		}
+		if (eqp.getDmgBoost() > 0)
+		{
+			resultingString << "Damage: " << eqp.getDmgBoost() << std::endl;
+		}
+		return resultingString.str();
+	}
+
+	else if (eqp.getIType() == BOW)
+	{
+		resultingString << eqp.getName() << std::endl;
+		resultingString << "Enchantments: " << std::endl;
+		resultingString << "------------" << std::endl;
+		if (eqp.getAtkBoost() > 0)
+		{
+			resultingString << "Attack: " << eqp.getAtkBoost() << std::endl;
+		}
+		if (eqp.getDmgBoost() > 0)
+		{
+			resultingString << "Damage: " << eqp.getDmgBoost() << std::endl;
+		}
+		return resultingString.str();
+	}
+	
+}
+/*
+
+/* MUTATORS */
 
 void Item::setName(std::string nm)
 {
@@ -111,23 +316,23 @@ void Equippable::setArmType(ArmorType artyp)
 	{
 		armtype = artyp;
 		if (artyp == NADEF)
-			setArmBoost(getArmBoost() + 0);
+			setArmMod(0);
 		else if (artyp == PADDED)
-			setArmBoost(getArmBoost() + 1);
+			setArmMod(1);
 		else if (artyp == LEATHER)
-			setArmBoost(getArmBoost() + 2);
+			setArmMod(2);
 		else if (artyp == STUDDEDLEATHER)
-			setArmBoost(getArmBoost() + 3);
+			setArmMod(3);
 		else if (artyp == CHAINSHIRT)
-			setArmBoost(getArmBoost() + 4);
+			setArmMod(4);
 		else if (artyp == BREASTPLATE)
-			setArmBoost(getArmBoost() + 5);
+			setArmMod(5);
 		else if (artyp == BANDEDMAIL)
-			setArmBoost(getArmBoost() + 6);
+			setArmMod(6);
 		else if (artyp == HALFPLATE)
-			setArmBoost(getArmBoost() + 7);
+			setArmMod(7);
 		else if (artyp == FULLPLATE)
-			setArmBoost(getArmBoost() + 8);
+			setArmMod(8);
 	}
 }
 
@@ -137,13 +342,13 @@ void Equippable::setShType(ShieldType shtyp)
 	{
 		shtype = shtyp;
 		if (shtyp == NSDEF)
-			setArmBoost(getArmBoost() + 0);
+			setShMod(0);
 		else if (shtyp == BUCKLER)
-			setArmBoost(getArmBoost() + 1);
+			setShMod(1);
 		else if (shtyp == HEAVYSHIELD)
-			setArmBoost(getArmBoost() + 2);
+			setShMod(2);
 		else if (shtyp == TOWERSHIELD)
-			setArmBoost(getArmBoost() + 4);
+			setShMod(4);
 	}
 }
 
@@ -231,8 +436,8 @@ Equippable::Equippable(ItemType itype, int lvladj)
 	ItemType type;
 	armtype = NADEF;
 	shtype = NSDEF;
-	//armormod = 0;
-	//shieldmod = 0;
+	armormod = 0;
+	shieldmod = 0;
 	armboost = 0;
 	wisboost = 0;
 	conboost = 0;
@@ -302,7 +507,7 @@ Equippable::Equippable(ItemType itype, int lvladj)
 		
 		int typeroller = std::rand() % 6 + leveladjustmod;
 		setArmType((ArmorType)typeroller);
-		//setName(getName() + " with an armor modifier of " + std::to_string(getArmMod()) + ".");
+		setName(getName() + " with an armor modifier of " + std::to_string(getArmMod()) + ".");
 	}
 
 	else if (itype == BRACERS)
@@ -343,7 +548,7 @@ Equippable::Equippable(ItemType itype, int lvladj)
 
 		int typeroller = std::rand() % 3;
 		setShType((ShieldType)typeroller);
-		//setName(getName() + " with a shield modifier of " + std::to_string(getShMod()) + ".");
+		setName(getName() + " with a shield modifier of " + std::to_string(getShMod()) + ".");
 	}
 
 	else if (itype == RING)
@@ -484,210 +689,257 @@ Equippable::Equippable(ItemType itype, int lvladj)
 		}
 	}
 }
-
-std::string Equippable::saveEquippable()
+/*
+Equippable::Equippable(std::string nm, ItemType itype)
 {
-	std::ostringstream ostreamer;
+	std::cout << "Generating equippable item..." << std::endl;
+	std::cout << std::endl;
+	setName(nm);
+	setIType(itype);
+	setItemID(equipIDCTR++);
+	std::cout << nm << std::endl;
+	std::cout << "Equip ID: " << getItemID() << std::endl;
+
 	
-		ostreamer	<< Equippable::getName() << "$"
-				<< Equippable::getEqStatus() << "$"
-				<< type << "$"
-				<< armtype << "$"
-			/*	<< armormod << "$"	*/
-				<< shtype << "$"
-			/*	<< shieldmod << "$"	*/
-				<< armboost << "$"
-				<< wisboost << "$"
-				<< conboost << "$"
-				<< chaboost << "$"
-				<< strboost << "$"
-				<< intboost << "$"
-				<< dexboost << "$"
-				<< atkboost << "$"
-				<< dmgboost << "$"
-                << Equippable::getItemID();
-
-		return ostreamer.str();
-
-}
-
-Equippable* Equippable::loadEquippable(std::string strname)
-{
-	Equippable* ptr = new Equippable(Equippable::SWORD, 0);
-
-	std::string delimiter = "$";
-	size_t pos = 0;
-	std::string token;
-	int count = 0;
-	while ((pos = strname.find(delimiter)) != std::string::npos)
+	if (itype == HELMET)
 	{
-		
-		switch (count)
-		{
-		case 0:
-			{
-				token = strname.substr(0, pos);
-				ptr->setName(token);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 1:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setEqStatus(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 2:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setIType(static_cast<Equippable::ItemType>(value));
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 3:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setArmType(static_cast<Equippable::ArmorType>(value));
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 4:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setShType(static_cast<Equippable::ShieldType>(value));
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 5:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setArmBoost(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 6:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setWisBoost(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 7:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setConBoost(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 8:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setChaBoost(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 9:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setStrBoost(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			  }
-		case 10:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setIntBoost(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			   }
-		case 11:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setDexBoost(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			   }
-		case 12:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setAtkBoost(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			   }
-		case 13:
-			{
-				token = strname.substr(0, pos);
-				std::istringstream buffer(token);
-				int value;
-				buffer >> value;
-				ptr->setDmgBoost(value);
-				strname.erase(0, pos + delimiter.length());
-				count++;
-				break;
-			   }
-		}
+		//INTELLIGENCE
+		if (roll(2) == 1)
+			setIntBoost(0);
+		else 
+			setIntBoost(roll(2));
+
+		//WISDOM
+		if (roll(2) == 1)
+			setWisBoost(0);
+		else 
+			setWisBoost(roll(2));
+
+		//ARMOR CLASS
+		if (roll(2) == 1)
+			setArmBoost(0);
+		else 
+			setArmBoost(roll(2));
 	}
 
+	else if (itype == ARMOR)
+	{
+		//ARMOR CLASS
+		if (roll(2) == 1)
+			setArmBoost(0);
+		else 
+			setArmBoost(roll(2));
+
+		int typeroller = roll(9) - 1;
+		setArmType((ArmorType)typeroller);
+	}
+
+	else if (itype == BRACERS)
+	{
+		//ARMOR CLASS
+		if (roll(2) == 1)
+			setArmBoost(0);
+		else
+			setArmBoost(roll(2));
+
+		//STRENGTH
+		if (roll(2) == 1)
+			setStrBoost(0);
+		else
+			setStrBoost(roll(2));
+	}
+
+	else if (itype == SHIELD)
+	{
+		//SHIELD
+		if (roll(2) == 1)
+			setArmBoost(0);
+		else 
+			setArmBoost(roll(5));
+
+		int typeroller = roll(3) - 1;
+		setShType((ShieldType)typeroller);
+	}
+
+	else if (itype == RING)
+	{
+		//ARMOR CLASS
+		if (roll(2) == 1)
+			setArmBoost(0);
+		else 
+			setArmBoost(roll(5));
+
+		//STRENGTH
+		if (roll(2) == 1)
+			setStrBoost(0);
+		else 
+			setStrBoost(roll(5));
+
+		//CONSTITUTION
+		if (roll(2) == 1)
+			setConBoost(0);
+		else 
+			setConBoost(roll(5));
+
+		//WISDOM
+		if (roll(2) == 1)
+			setWisBoost(0);
+		else 
+			setWisBoost(roll(5));
+
+		//CHARISMA
+		if (roll(2) == 1)
+			setChaBoost(0);
+		else 
+			setChaBoost(roll(5));
+	}
+
+	else if (itype == BELT)
+	{
+		//CONSTITUTION
+		if (roll(2) == 1)
+			setConBoost(0);
+		else 
+			setConBoost(roll(5));
+
+		//STRENGTH
+		if (roll(2) == 1)
+			setStrBoost(0);
+		else 
+			setStrBoost(roll(5));
+	}
+
+	else if (itype == BOOTS)
+	{
+		//ARMOR CLASS
+		if (roll(2) == 1)
+			setArmBoost(0);
+		else 
+			setArmBoost(roll(5));
+
+		//DEXTERITY
+		if (roll(2) == 1)
+			setDexBoost(0);
+		else 
+			setDexBoost(roll(5));
+	}
+
+	else if (itype == SWORD)
+	{
+		//ATTACK
+		if (roll(2) == 1)
+			setAtkBoost(0);
+		else 
+			setAtkBoost(roll(5));
+
+		//DAMAGE
+		if (roll(2) == 1)
+			setDmgBoost(0);
+		else 
+			setDmgBoost(roll(5));
+	}
+
+	else if (itype == BOW)
+	{
+		//ATTACK
+		if (roll(2) == 1)
+			setAtkBoost(0);
+		else
+			setAtkBoost(roll(5));
+
+		//DAMAGE
+		if (roll(2) == 1)
+			setDmgBoost(0);
+		else
+			setDmgBoost(roll(5));
+	}
+};
+*/
+bool Equippable::saveEquippable(std::string filename)
+{
+	std::ofstream f(filename, std::ios::out);
+
+	if (f.is_open())
+	{
+		f	<< Equippable::getName() << std::endl
+			<< Equippable::getEqStatus() << std::endl
+			<< type << std::endl
+			<< armtype << std::endl
+			<< armormod << std::endl
+			<< shtype << std::endl
+			<< shieldmod << std::endl
+			<< armboost << std::endl
+			<< wisboost << std::endl
+			<< conboost << std::endl
+			<< chaboost << std::endl
+			<< strboost<< std::endl
+			<< intboost << std::endl
+			<< dexboost << std::endl
+			<< atkboost << std::endl
+			<< dmgboost << std::endl
+			<< Equippable::getItemID() << std::endl;
+		f.close();
+		std::cout << "SAVE COMPLETE" << std::endl;
+		system("PAUSE");
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Equippable::loadEquippable(std::string filename)
+{
+	//TEMP CRAP
+	std::string tempname;
+	bool tempeq;
+//	ItemType temptype;
+//	ArmorType temparmtype;
+	int temparmmod;
+//	ShieldType tempshtype;
+	int tempshmod;
+	int temparmboost;
+	int tempwisboost;
+	int tempconboost;
+	int tempchaboost;
+	int tempstrboost;
+	int tempintboost;
+	int tempdexboost;
+	int tempatkboost;
+	int tempdmgboost;
+	int tempitemid;
+
+	std::ifstream f(filename, std::ios::in);
 	
-	std::istringstream buffer(strname);
-	int value;
-	buffer >> value;
-	ptr->setItemID(value);
+	if (f.is_open())
+	{
+		f >> tempname;
+		Equippable::setName(tempname);
+		f >> tempeq;
+		Equippable::setEqStatus(tempeq);
+	//	f >> ITEMTYPE!?;
+	//	f >> ARMORTYPE!?;
+		f >> armormod;
+	//	f >> SHIELDTYPE!?;
+		f >> shieldmod;
+		f >> armboost;
+		f >> wisboost;
+		f >> conboost;
+		f >> chaboost;
+		f >> strboost;
+		f >> intboost;
+		f >> dexboost;
+		f >> atkboost;
+		f >> dmgboost;
+		f >> tempitemid;
+		Equippable::setItemID(tempitemid);
 
 
-
-	return ptr;
-
+		
+		
+		return true;
+	}
 }
 
 

@@ -15,6 +15,7 @@
 #include "GridObserver.h"
 #include <QCoreApplication>
 #include <QScrollBar>
+#include <ctime>
 
 NewGame *n;
 
@@ -23,13 +24,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    srand(static_cast<unsigned>(time(NULL)));
     this->setAttribute(Qt::WA_DeleteOnClose);
     on_action_New_triggered();
     ui->gridLayout->setSpacing(0);
     loaded = false;
     dead = false;
     connect(n,SIGNAL(destroyed()), this, SLOT(start()));
-    connect(ui->invList,SIGNAL(currentRowChanged(int)), this, SLOT(equip()));
+    connect(ui->invList,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(equip()));
 }
 
 MainWindow::~MainWindow()
@@ -155,8 +157,14 @@ void MainWindow::displayMap()
             case 'M':
                 labelmap[j][i]->setPixmap(monsterSkin);
                 break;
+            case 'm':
+                labelmap[j][i]->setPixmap(monsterdeadSkin);
+                break;
             case 'C':
                 labelmap[j][i]->setPixmap(chestSkin);
+                break;
+            case 'c':
+                labelmap[j][i]->setPixmap(chestemptySkin);
                 break;
             case 'F':
                 labelmap[j][i]->setPixmap(playerSkin);
@@ -176,8 +184,7 @@ void MainWindow::start()
     if (loaded == true) {
         setFighterPic();
         setMonsterPic();
-        //    displayStats();
-        //    displayInv();
+        ui->action_New->setEnabled(false);
         map->startGame(player);
         displayStart();
     }
@@ -203,18 +210,20 @@ void MainWindow::playGame()
     events.push_back(InputEvent("down", VK_DOWN));
     events.push_back(InputEvent("left", VK_LEFT));
     events.push_back(InputEvent("right", VK_RIGHT));
-    // This one should always be last
-    events.push_back(InputEvent("quit", VK_ESCAPE));
 
-    player->inv.push_back(new Equippable(Equippable::WEAPON, player->level));
+    player->inv.push_back(new Equippable(Equippable::SWORD, player->level));
     qDebug() << QString::fromStdString(player->inv[0]->getName());
 
-    while (!map->isEnd(player->x, player->y) && !dead)
+    ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
+    updateInvList();
+    while ((!map->isEnd(player->x, player->y) || !map->allEnemiesDead) && !dead)
     {
         ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
         updateInvList();
         for (size_t i = 0; i < map->actors.size(); i++)
         {
+            ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
+            updateInvList();
             Character* current = map->actors[i];
             current->movesLeft = 6;
             if (current->name != player->name)
@@ -246,7 +255,7 @@ void MainWindow::playGame()
                     {
                         dead = true;
                         QMessageBox::StandardButton err = QMessageBox::critical(this, "Game Over!", "You have died! Please play again.", QMessageBox::Ok);
-                        goto amdead;
+                        break;
                     }
                 }
                 if (current->attackinfo != "")
@@ -257,25 +266,32 @@ void MainWindow::playGame()
                 ui->textBrowser->append("\nYour turn!\n");
                 while (player->movesLeft > 0)
                 {
-                    //                    std::cout << current->movesLeft << std::endl;
                     playerTurn();
-                    if (map->actors.size() == 1 && map->actors[0] == player)
-                    {
-                        //                        allEnemiesDead = true;
+                    if (map->isEnd(player->x, player->y) && map->allEnemiesDead) {
+                        qDebug()<<map->allEnemiesDead;
+                        break;
                     }
+                    if (map->tryExit)
+                        ui->textBrowser->append("The exit is locked. Defeat all enemies to unlock it.");
+                    ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
+                    updateInvList();
                 }
                 if (current->attackinfo != "")
                     ui->textBrowser->append(QString::fromStdString(player->attackinfo));
             }
+            ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
+            updateInvList();
         }
     }
 
-    puts("Congratulations!\nYou have increased in strength!");
-    player->levelUp();
-    //    std::string fileName = charFName.toStdString();
-    //    player->saveCharacter(fileName);
+    if (!dead) {
+        QMessageBox::StandardButton info = QMessageBox::information(this, "Congratulations!", "You have beaten this level and LEVELED UP!", QMessageBox::Ok);
 
-    amdead:
+        player->levelUp();
+        std::string fileName = charFName.toStdString();
+        player->saveCharacter(fileName);
+    }
+
     this->close();
 }
 
@@ -284,30 +300,8 @@ void MainWindow::playerTurn()
     std::string move;
 
     move = InputManager::getInput(events);
-    if (move == "character")
-    {
-        //        for (size_t i = 0; i < map->actors.size(); i++)
-        //        {
-        //            std::cout << map->actors[i]->characterSheetToString();
-        //        }
-    }
-    else if (move == "map")
-    {
-        map->notify();
-    }
-    else if (move == "equip")
-    {
-        //		equipScreen();
-    }
-    else if (move == "unequip")
-    {
-        //		unequipScreen();
-    }
-    else
-    {
-        if (map->tryMove(player, move, true)) {
-            displayMap();
-        }
+    if (map->tryMove(player, move, true)) {
+        displayMap();
     }
 }
 
@@ -340,8 +334,8 @@ void MainWindow::setMonsterPic()
         map->monsterName = "Mage";
         break;
     default:
-//        monsterSkin = QPixmap(":/images/devil.png");
-//        monsterdeadSkin = QPixmap(":/images/devil_dead.png");
+        //        monsterSkin = QPixmap(":/images/devil.png");
+        //        monsterdeadSkin = QPixmap(":/images/devil_dead.png");
         map->monsterName = "Devil";
         break;
     }
@@ -409,13 +403,37 @@ void MainWindow::updateInvList()
     QStringList items;
     for (int i = 0; i < player->inv.size(); i++)
     {
-        items.push_back(QString::fromStdString(player->inv[i]->getName()));
+        std::string extra = "";
+        if (player->inv[i]->getEqStatus())
+        {
+            extra = " *";
+        }
+        items.push_back(QString::fromStdString(player->inv[i]->getName() + extra));
         ui->invList->addItem(items.at(i));
+    }
+    for (int i = 0; i < ui->invList->count(); i++)
+    {
+        if (player->inv[i]->getEqStatus())
+        {
+            ui->invList->item(i)->setTextColor(Qt::blue);
+        }
     }
 }
 
 void MainWindow::equip()
 {
     int row = ui->invList->currentRow();
-    player->equip(*player->inv[row]);
+    if (!player->inv[row]->getEqStatus())
+        player->equip(*player->inv[row]);
+    else
+    {
+        Equippable::ItemType t = player->inv[row]->getIType();
+        if (t > 0)
+        {
+            t = static_cast<Equippable::ItemType>(t - 1);
+        }
+        player->unequip(t);
+    }
+    updateInvList();
+    ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
 }

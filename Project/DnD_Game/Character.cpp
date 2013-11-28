@@ -2,10 +2,12 @@
 
 #include <sstream>
 #include <fstream>
+#include <QDebug>
 
 #include "windows.h"
 
 #include "CharacterObserver.h"
+#include "Fighter.h"
 
 // **********PUBLIC MEMBER FUNCTIONS**********//
 
@@ -21,21 +23,31 @@ Character::Character(std::string name, int level) :
         baseAttackBonus.push_back(level - 5);
         baseAttackBonus.push_back(level - 10);
         baseAttackBonus.push_back(level - 15);
+        attackBonus.push_back(level);
+        attackBonus.push_back(level - 5);
+        attackBonus.push_back(level - 10);
+        attackBonus.push_back(level - 15);
     }
     else if (level >= 11)
     {
         baseAttackBonus.push_back(level);
         baseAttackBonus.push_back(level - 5);
         baseAttackBonus.push_back(level - 10);
+        attackBonus.push_back(level);
+        attackBonus.push_back(level - 5);
+        attackBonus.push_back(level - 10);
     }
     else if (level >= 6)
     {
         baseAttackBonus.push_back(level);
         baseAttackBonus.push_back(level - 5);
+        attackBonus.push_back(level);
+        attackBonus.push_back(level - 5);
     }
     else
     {
         baseAttackBonus.push_back(level);
+        attackBonus.push_back(level);
     }
 }
 
@@ -50,19 +62,24 @@ Character::~Character()
 // Ringslot is defaulted to 1
 void Character::equip(Equippable& item)
 {
-    if(slot[item.getIType()] != NULL)
+    Equippable::ItemType t = item.getIType();
+    if (t > 0)
     {
-        unequip( item.getIType() );
+        t = static_cast<Equippable::ItemType>(t - 1);
     }
-    slot[item.getIType()] = &item;
+    if(slot[t] != NULL)
+    {
+        unequip( t );
+    }
+    slot[t] = &item;
 
     item.setName(item.getName());
     item.setEqStatus(true);
+    static_cast<Fighter*>(this)->recalculateAttributes();
 }
 
 void Character::unequip(int slotToUnequip)
 {
-    //Can't unequip a misc
     if( !(slotToUnequip > 8 || slotToUnequip < 0) )
     {
         //If there is nothing in the slot, there's nothing to unequip!
@@ -72,13 +89,12 @@ void Character::unequip(int slotToUnequip)
             slot[slotToUnequip] = NULL;
         }
     }
-    //notify(); //This should be uncommented when we have a GUI
+    static_cast<Fighter*>(this)->recalculateAttributes();
 }
 
 void Character::pickUp(Equippable* item)
 {
     inv.push_back(item);
-    //notify(); //This should be uncommented when we have a GUI
 }
 
 void Character::drop(Equippable* item)
@@ -90,7 +106,7 @@ void Character::drop(Equippable* item)
             inv.erase(inv.begin() + i);
             inv.shrink_to_fit();
             delete item;
-            break; //Found the thing to delete, no need to keep iterating.
+            break;
         }
     }
 }
@@ -161,12 +177,15 @@ std::string Character::otherAttributesToString()
     sstm << "HP: " << curHP << "/" << maxHP << std::endl
          << "Armour Class: " << ac << std::endl
          << "Attack Bonus: ";
-    for (size_t i = 0; i < baseAttackBonus.size() - 1; i++)
+    for (size_t i = 0; i < attackBonus.size() - 1; i++)
     {
-        sstm << baseAttackBonus[i] << "/";
+        sstm << attackBonus[i] << "/";
     }
-    sstm << baseAttackBonus[baseAttackBonus.size() - 1] << std::endl;
-    sstm << "Damage Bonus: " << meleeDmgBonus;
+    if (attackBonus.size() != 0)
+    {
+        sstm << attackBonus[attackBonus.size() - 1] << std::endl;
+    }
+    sstm << "Damage Bonus: " << meleeDmgBonus << std::endl;
 
     return sstm.str();
 }
@@ -204,11 +223,15 @@ bool Character::saveCharacter(std::string filename)
           << modWis << std::endl
           << modCha << std::endl
           << ac << std::endl
-          << meleeAttackBonus << std::endl
+          << baseAttackBonus[0] << std::endl
           << meleeDmgBonus << std::endl
           << maxHP << std::endl
           << curHP << std::endl
           << gold << std::endl;
+        for (size_t i = 0; i < inv.size(); i++)
+        {
+            f << inv[i]->saveEquippable() << std::endl;
+        }
         f.close();
         return true;
     }
@@ -247,11 +270,18 @@ bool Character::loadCharacter(std::string filename)
         f >> modWis;
         f >> modCha;
         f >> ac;
-        f >> meleeAttackBonus;
+        f >> baseAttackBonus[0];
         f >> meleeDmgBonus;
         f >> maxHP;
         f >> curHP;
         f >> gold;
+        std::string item;
+        while (std::getline(f, item)) {
+            if (item != "")
+            {
+                inv.push_back(Equippable::loadEquippable(item));
+            }
+        }
         f.close();
         return true;
     }
@@ -263,9 +293,9 @@ bool Character::loadCharacter(std::string filename)
 
 void Character::attack(Character* target)
 {
-    for (size_t i = 0; i < baseAttackBonus.size(); i++)
+    for (size_t i = 0; i < attackBonus.size(); i++)
     {
-        int r = roll(20, 1, baseAttackBonus[i] + modStr);
+        int r = roll(20, 1, attackBonus[i] + modStr);
         if (r >= target->ac)
         {
             int d = roll(8, 1, modStr);

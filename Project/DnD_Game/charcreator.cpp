@@ -16,27 +16,15 @@ CharCreator::CharCreator(QWidget *parent) :
     ui(new Ui::CharCreator)
 {
     ui->setupUi(this);
-    this->setAttribute(Qt::WA_DeleteOnClose);
     ui->templateCombo->addItem("None");
-    ui->strValue->setReadOnly(true);
-    ui->dexValue->setReadOnly(true);
-    ui->conValue->setReadOnly(true);
-    ui->intValue->setReadOnly(true);
-    ui->wisValue->setReadOnly(true);
-    ui->chaValue->setReadOnly(true);
-    ui->strValue_2->setReadOnly(true);
-    ui->dexValue_2->setReadOnly(true);
-    ui->conValue_2->setReadOnly(true);
-    ui->intValue_2->setReadOnly(true);
-    ui->wisValue_2->setReadOnly(true);
-    ui->chaValue_2->setReadOnly(true);
-    setupDefaults();
     // Connect options to click signal
     connect(ui->sprite1, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->sprite2, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->sprite3, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->sprite4, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->sprite5, SIGNAL(clicked()), this, SLOT(change_selected()));
+    c = new Fighter();
+    setupDefaults();
 }
 
 CharCreator::~CharCreator()
@@ -52,9 +40,13 @@ void CharCreator::setupDefaults()
     ui->sprite3->setStyleSheet("border: none");
     ui->sprite4->setStyleSheet("border: none");
     ui->sprite5->setStyleSheet("border: none");
+    ui->levelButton->setEnabled(false);
     selectImage = 1;
+    c->picture = 1;
     ui->nameValue->setText("");
-    ui->levelValue->setValue(1);
+    ui->levelValue->setText("1");
+    ui->maxHPValue->setText(QString::fromStdString(std::to_string(Fighter::HP_START)));
+    ui->atkbonusValue->setText("1");
     ui->templateCombo->setCurrentIndex(0);
     ui->strValue->setText("0");
     ui->dexValue->setText("0");
@@ -84,7 +76,7 @@ void CharCreator::on_actionE_xit_triggered()
 void CharCreator::on_action_Open_triggered()
 {
     // If user has edited character info
-    if (ui->nameValue->text() != "" || ui->levelValue->value() > 1 || rollClicked == true) {
+    if (ui->nameValue->text() != "" || ui->levelValue->text().toInt() > 1 || rollClicked == true) {
         // Display warning about unsaved info
         QMessageBox::StandardButton warn = QMessageBox::warning(this, "Save Character?", "Do you want to save the changes you have made to the current character?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
         if (warn == QMessageBox::Yes) {
@@ -105,12 +97,9 @@ void CharCreator::on_action_Open_triggered()
     }
     QString charName = QFileDialog::getOpenFileName(this, tr("Open Character"), "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters", tr("CHARACTER Files (*.dcchar)"));
     std::string fileName = charName.toStdString();
-    std::ifstream f(fileName, std::ios::in);
-    if (f.is_open())
-    {
-
-        f.close();
-    }
+    c->loadCharacter(fileName);
+    updateGUI();
+    ui->levelButton->setEnabled(true);
 }
 
 bool CharCreator::on_action_Save_triggered()
@@ -125,34 +114,30 @@ bool CharCreator::on_action_Save_triggered()
     }
     QString charName = QFileDialog::getSaveFileName(this, tr("Save Character"), "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters", tr("CHARACTER Files (*.dcchar)"));
     std::string fileName = charName.toStdString();
-    std::ofstream f(fileName, std::ios::out);
-    if (f.is_open())
-    {
-
-        f.close();
-    }
-    else {
-        return false;
-    }
+    c->name = ui->nameValue->text().toStdString();
+    c->picture = selectImage;
+    c->saveCharacter(fileName);
     return true;
 }
 
 void CharCreator::on_action_New_triggered()
 {
     // If user has edited character info
-    if (ui->nameValue->text() != "" || ui->levelValue->value() > 1 || rollClicked == true) {
+    if (ui->nameValue->text() != "" || ui->levelValue->text().toInt() > 1 || rollClicked == true) {
         // Display warning about unsaved info
         QMessageBox::StandardButton warn = QMessageBox::warning(this, "Save Character?", "Do you want to save the changes you have made to the current character?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
         if (warn == QMessageBox::Yes) {
             if (!on_action_Save_triggered()) {
                 return;
             }
+            c = new Fighter();
             setupDefaults();
         }
         else if (warn == QMessageBox::Cancel) {
             return;
         }
         else if (warn == QMessageBox::No) {
+            c = new Fighter();
             setupDefaults();
         }
     }
@@ -190,7 +175,7 @@ void CharCreator::change_selected()
 void CharCreator::closeEvent(QCloseEvent *event)
 {
     // If user has edited character info
-    if (ui->nameValue->text() != "" || ui->levelValue->value() > 1 || rollClicked == true) {
+    if (ui->nameValue->text() != "" || ui->levelValue->text().toInt() > 1 || rollClicked == true) {
         // Display warning about unsaved info
         QMessageBox::StandardButton warn = QMessageBox::warning(this, "Save Character?", "Do you want to save the changes you have made to the current character?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel, QMessageBox::Yes);
         if (warn == QMessageBox::Yes) {
@@ -217,5 +202,73 @@ void CharCreator::closeEvent(QCloseEvent *event)
 
 void CharCreator::on_rollButton_clicked()
 {
+    if (ui->nameValue->text() != "")
+        c->name = ui->nameValue->text().toStdString();
+    c->picture = selectImage;
+    c->baseStr = c->generateAbilityScore();
+    c->baseDex = c->generateAbilityScore();
+    c->baseCon = c->generateAbilityScore();
+    c->baseInt = c->generateAbilityScore();
+    c->baseWis = c->generateAbilityScore();
+    c->baseCha = c->generateAbilityScore();
+    c->recalculateAttributes();
     rollClicked = true;
+    ui->levelButton->setEnabled(true);
+    updateGUI();
+}
+
+void CharCreator::updateGUI()
+{
+    ui->nameValue->setText(QString::fromStdString(c->name));
+    selectImage = c->picture;
+    setPicture();
+    ui->strValue->setText(QString::fromStdString(std::to_string(c->baseStr)));
+    ui->dexValue->setText(QString::fromStdString(std::to_string(c->baseDex)));
+    ui->conValue->setText(QString::fromStdString(std::to_string(c->baseCon)));
+    ui->intValue->setText(QString::fromStdString(std::to_string(c->baseInt)));
+    ui->wisValue->setText(QString::fromStdString(std::to_string(c->baseWis)));
+    ui->chaValue->setText(QString::fromStdString(std::to_string(c->baseCha)));
+    ui->strValue_2->setText(QString::fromStdString(std::to_string(c->modStr)));
+    ui->dexValue_2->setText(QString::fromStdString(std::to_string(c->modDex)));
+    ui->conValue_2->setText(QString::fromStdString(std::to_string(c->modCon)));
+    ui->intValue_2->setText(QString::fromStdString(std::to_string(c->modInt)));
+    ui->wisValue_2->setText(QString::fromStdString(std::to_string(c->modWis)));
+    ui->chaValue_2->setText(QString::fromStdString(std::to_string(c->modCha)));
+
+    ui->levelValue->setText(QString::fromStdString(std::to_string(c->level)));
+    ui->maxHPValue->setText(QString::fromStdString(std::to_string(c->maxHP)));
+    std::string bonus = "";
+    for (size_t i = 0; i < c->baseAttackBonus.size() - 1; i++)
+    {
+        bonus += std::to_string(c->baseAttackBonus[i]) + "/";
+    }
+    bonus += std::to_string(c->baseAttackBonus[c->baseAttackBonus.size() - 1]);
+    ui->atkbonusValue->setText(QString::fromStdString(bonus));
+}
+
+void CharCreator::on_levelButton_clicked()
+{
+    c->levelUp();
+    updateGUI();
+}
+
+void CharCreator::setPicture()
+{
+    ui->sprite1->setStyleSheet("border: none");
+    ui->sprite2->setStyleSheet("border: none");
+    ui->sprite3->setStyleSheet("border: none");
+    ui->sprite4->setStyleSheet("border: none");
+    ui->sprite5->setStyleSheet("border: none");
+
+    if (selectImage == 1)
+        ui->sprite1->setStyleSheet("border: 2px solid red");
+    if (selectImage == 2)
+        ui->sprite2->setStyleSheet("border: 2px solid red");
+    if (selectImage == 3)
+        ui->sprite3->setStyleSheet("border: 2px solid red");
+    if (selectImage == 4)
+        ui->sprite4->setStyleSheet("border: 2px solid red");
+    if (selectImage == 5)
+        ui->sprite5->setStyleSheet("border: 2px solid red");
+
 }

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "splashdialog.h"
 #include "clicklabel.h"
+#include "Fighter.h"
 
 namespace Ui {
 class CharCreator;
@@ -18,6 +19,7 @@ public:
     ~CharCreator();
     void setupDefaults();
     void closeEvent(QCloseEvent *event);
+    void setPicture();
     SplashDialog *sp;
 
 private slots:
@@ -33,8 +35,13 @@ private slots:
 
     void on_rollButton_clicked();
 
+    void updateGUI();
+
+    void on_levelButton_clicked();
+
 private:
     Ui::CharCreator *ui;
+    Fighter* c;
     int selectImage;
     int currStr;
     int currDex;

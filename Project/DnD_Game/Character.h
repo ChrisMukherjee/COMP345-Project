@@ -97,6 +97,7 @@ public:
 	int meleeAttackBonus;
 
 	std::vector<int> baseAttackBonus;
+    std::vector<int> attackBonus;
 
 	// Damage bonus - The bonus that is applied to all damage dealt by this character
 	int meleeDmgBonus;
@@ -129,14 +130,14 @@ public:
 	// Inventory - for unequipped items that he picks up
 	std::vector<Equippable*> inv;
 
+    // Generate a random ability score between two bounds
+    int generateAbilityScore();
+
 protected:
 	// Calculates the ability score modifier
 	int calcModifier(int baseStat);
 
 private:
-	// Generate a random ability score between two bounds
-	int generateAbilityScore();
-
 	// Method to randomly generate the ability scores, assign them, and calculate the modifiers
 	void assignAbilityScores();
 }; // END Character

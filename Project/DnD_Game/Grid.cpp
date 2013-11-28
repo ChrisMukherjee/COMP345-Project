@@ -6,12 +6,14 @@
 #include "Fighter.h"
 #include <cmath>
 #include <algorithm>
+#include "ContainerBuilder.h"
 
 using namespace std;
 
 //Default Constructor
 Grid::Grid()
 {
+    allEnemiesDead = false;
     height = 5+2;
     width  = 5+2;
 
@@ -55,7 +57,7 @@ Grid::Grid()
 Grid::Grid(int w, int h)
 {
     numMonsters = 0;
-
+    allEnemiesDead = false;
     height = h+2;
     width  = w+2;
     startX = -1;
@@ -170,12 +172,6 @@ bool Grid:: isValid()
 
 
 }
-
-
-
-//Tile Setters
-//Since each type of tile has diiferent idetifiers on the map i decide to implement 
-//a method for each
 
 // Set cells to user defined value
 bool Grid::setCell(int x, int y, char a) {
@@ -363,13 +359,19 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
     Cell* newTile = NULL; //This will be the prospective tile to move to
 
     bool moved = false;
+    tryExit = false;
 
     if (dir == "up")
     {
         if (actor->y - 1 >= 0)
         {
             newTile = &grid[actor->x][actor->y - 1];
-            if( newTile->canMoveOne() )
+            if (newTile->isExit() && !allEnemiesDead)
+            {
+                moved = false;
+                tryExit = true;
+            }
+            else if( newTile->canMoveOne() )
             {
                 move(actor, actor->x, actor->y - 1);
                 actor->movesLeft--;
@@ -385,6 +387,17 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
                 actor->attack(newTile->getCharacter());
                 actor->movesLeft = 0;
             }
+            else if (newTile->isContainer() && isPlayer)
+            {
+                Container* cont = newTile->getContainer();
+                for (int i = 0; i < cont->containervector.size(); i++)
+                {
+                    actor->inv.push_back(cont->getEQfromContainer(i));
+                }
+                move(actor, actor->x, actor->y - 1);
+                actor->movesLeft--;
+                moved = true;
+            }
         }
     }
     else if (dir == "down")
@@ -392,7 +405,12 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
         if (actor->y + 1 < height)
         {
             newTile = &grid[actor->x][actor->y + 1];
-            if( newTile->canMoveOne() )
+            if (newTile->isExit() && !allEnemiesDead)
+            {
+                moved = false;
+                tryExit = true;
+            }
+            else if( newTile->canMoveOne() )
             {
                 move(actor, actor->x, actor->y + 1);
                 actor->movesLeft--;
@@ -408,6 +426,17 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
                 actor->attack(newTile->getCharacter());
                 actor->movesLeft = 0;
             }
+            else if (newTile->isContainer() && isPlayer)
+            {
+                Container* cont = newTile->getContainer();
+                for (size_t i = 0; i < cont->containervector.size(); i++)
+                {
+                    actor->inv.push_back(cont->getEQfromContainer(i));
+                }
+                move(actor, actor->x, actor->y + 1);
+                actor->movesLeft--;
+                moved = true;
+            }
         }
     }
     else if (dir == "right")
@@ -415,7 +444,12 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
         if (actor->x + 1 < width)
         {
             newTile = &grid[actor->x + 1][actor->y];
-            if( newTile->canMoveOne() )
+            if (newTile->isExit() && !allEnemiesDead)
+            {
+                moved = false;
+                tryExit = true;
+            }
+            else if( newTile->canMoveOne() )
             {
                 move(actor, actor->x + 1, actor->y);
                 actor->movesLeft--;
@@ -431,6 +465,17 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
                 actor->attack(newTile->getCharacter());
                 actor->movesLeft = 0;
             }
+            else if (newTile->isContainer() && isPlayer)
+            {
+                Container* cont = newTile->getContainer();
+                for (size_t i = 0; i < cont->containervector.size(); i++)
+                {
+                    actor->inv.push_back(cont->getEQfromContainer(i));
+                }
+                move(actor, actor->x + 1, actor->y);
+                actor->movesLeft--;
+                moved = true;
+            }
         }
     }
     else if (dir == "left")
@@ -438,7 +483,12 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
         if (actor->x - 1 >= 0)
         {
             newTile = &grid[actor->x - 1][actor->y];
-            if( newTile->canMoveOne() )
+            if (newTile->isExit() && !allEnemiesDead)
+            {
+                moved = false;
+                tryExit = true;
+            }
+            else if( newTile->canMoveOne() )
             {
                 move(actor, actor->x - 1, actor->y);
                 actor->movesLeft--;
@@ -453,6 +503,17 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
             {
                 actor->attack(newTile->getCharacter());
                 actor->movesLeft = 0;
+            }
+            else if (newTile->isContainer() && isPlayer)
+            {
+                Container* cont = newTile->getContainer();
+                for (size_t i = 0; i < cont->containervector.size(); i++)
+                {
+                    actor->inv.push_back(cont->getEQfromContainer(i));
+                }
+                move(actor, actor->x - 1, actor->y);
+                actor->movesLeft--;
+                moved = true;
             }
         }
     }
@@ -471,6 +532,10 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
         }
         delete m;
         newTile->setState(Cell::EMPTY, NULL);
+    }
+    if (actors.size() == 1)
+    {
+        allEnemiesDead = true;
     }
 
     if (grid[startX][startY].isEmpty())
@@ -570,7 +635,12 @@ Grid* Grid::loadMap(std::string filename, int characterLevel)
                     map->actors.push_back(m);
                     break;
                 case 'C':
-                    map->grid[j][i].setState(Cell::state::CONTAINER, NULL); //THIS IS WHERE NEW CONT GETS GEN'D
+                    Director director;
+                    ContainerBuilder* cb = new AdjustedContainerBuilder;
+                    director.setContainerBuilder(cb);
+                    director.constructContainer(characterLevel);
+                    Container* c = director.getContainer();
+                    map->grid[j][i].setState(Cell::state::CONTAINER, c);
                     break;
                 }
             }

@@ -15,7 +15,6 @@ MapCreator::MapCreator(QWidget *parent) :
     ui(new Ui::MapCreator)
 {
     ui->setupUi(this);
-    this->setAttribute(Qt::WA_DeleteOnClose);
     ui->loadingLabel->setVisible(false);
     ui->gridLayout->setSpacing(0);
     ui->templateCombo->addItem("None");

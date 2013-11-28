@@ -36,7 +36,7 @@ public:
 
 	Monster* getMonster();
 	Character* getCharacter();
-	//Container* getContainer();
+    Container* getContainer();
 
 	state getState() {return currentState;}
 	void setState(state s, GridContent* content);
