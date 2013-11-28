@@ -98,8 +98,8 @@ public:
 	Equippable(std::string nm, ItemType itype);
 	Equippable(ItemType itype, int lvladj);
 
-	bool saveEquippable(std::string filename);
-	bool loadEquippable(std::string filename);
+	std::string saveEquippable();
+	Equippable* loadEquippable(std::string strname);
 
 
 private:
