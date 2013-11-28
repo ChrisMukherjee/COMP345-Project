@@ -297,6 +297,7 @@ bool sortByDex(Character* i, Character* j) {return i->initiative > j->initiative
 
 void Grid::startGame(Character* c)
 {
+    onState = Cell::START;
     grid[startX][startY].setState(Cell::CHARACTER, c);
     c->x = startX;
     c->y = startY;

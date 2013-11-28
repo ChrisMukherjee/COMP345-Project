@@ -26,5 +26,7 @@
         <file>fighter_shield-profile.png</file>
         <file>fighter_sword.png</file>
         <file>fighter_sword-profile.png</file>
+        <file>dragon.png</file>
+        <file>dragon_dead.png</file>
     </qresource>
 </RCC>

@@ -252,15 +252,18 @@ void MainWindow::playGame()
                     if (player->curHP <= 0)
                     {
                         dead = true;
-                        QMessageBox::StandardButton err = QMessageBox::critical(this, "Game Over!", "You have died! Please play again.", QMessageBox::Ok);
                         break;
                     }
                 }
                 if (current->attackinfo != "")
                     ui->textBrowser->append(QString::fromStdString(current->attackinfo));
+                if (dead)
+                    break;
             }
             else
             {
+                if (dead)
+                    break;
                 ui->textBrowser->append("\nYour turn!\n");
                 while (player->movesLeft > 0)
                 {
@@ -288,7 +291,9 @@ void MainWindow::playGame()
         std::string fileName = charFName.toStdString();
         player->saveCharacter(fileName);
     }
-
+    else if (dead) {
+        QMessageBox::StandardButton err = QMessageBox::critical(this, "Game Over!", "You have died! Please play again.", QMessageBox::Ok);
+    }
     this->close();
 }
 
@@ -331,9 +336,9 @@ void MainWindow::setMonsterPic()
         map->monsterName = "Mage";
         break;
     default:
-        monsterSkin = QPixmap(":/images/devil.png");
-        monsterdeadSkin = QPixmap(":/images/devil_dead.png");
-        map->monsterName = "Devil";
+        monsterSkin = QPixmap(":/images/dragon.png");
+        monsterdeadSkin = QPixmap(":/images/dragon_dead.png");
+        map->monsterName = "Dragon";
         break;
     }
 }
