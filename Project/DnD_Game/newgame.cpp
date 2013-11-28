@@ -23,7 +23,7 @@ NewGame::~NewGame()
 void NewGame::populate_lists()
 {
     QStringList charFilter("*.dcchar");
-    QDir charDir("C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters");
+    QDir charDir("/characters");
     QStringList characters = charDir.entryList(charFilter);
     for (int i = 0; i < characters.size(); i++) {
         ui->charList->addItem(characters.at(i));
@@ -31,7 +31,7 @@ void NewGame::populate_lists()
     ui->charList->setCurrentRow(0);
 
     QStringList mapFilter("*.dcmap");
-    QDir mapDir("C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps");
+    QDir mapDir("/maps");
     QStringList maps = mapDir.entryList(mapFilter);
     for (int i = 0; i < maps.size(); i++) {
         ui->mapList->addItem(maps.at(i));

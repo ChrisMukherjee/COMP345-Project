@@ -59,7 +59,7 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::setChar(QString charName)
 {
-    charFName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters/" + charName;
+    charFName = "/characters/" + charName;
     std::string fileName = charFName.toStdString();
     player = new Fighter();
     player->loadCharacter(fileName);
@@ -67,7 +67,7 @@ void MainWindow::setChar(QString charName)
 
 void MainWindow::setMap(QString mapName)
 {
-    mapFName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps/" + mapName;
+    mapFName = "/maps/" + mapName;
     std::string fileName = mapFName.toStdString();
     map = Grid::loadMap(fileName, player->level);
 }
