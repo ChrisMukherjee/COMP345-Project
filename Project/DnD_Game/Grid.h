@@ -48,6 +48,7 @@ private:
 	Cell** grid;
 	int startX, startY, endX,endY;
 	int playerX,playerY;
+    Cell::state onState;
 
 	int numMonsters;
 

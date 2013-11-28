@@ -81,9 +81,15 @@ void Cell::setImage()
 	case MONSTER:
 		image = getMonster()->image;
 		break;
+    case MONSTERDEAD:
+        image = 'm';
+        break;
     case CONTAINER:
         image = getContainer()->image;
        // image = 'C';
         break;
-	}
+    case CONTAINEREMPTY:
+        image = 'c';
+        break;
+    }
 }

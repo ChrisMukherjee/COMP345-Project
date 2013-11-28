@@ -4,7 +4,6 @@
 #include <sstream>
 #include "Item.h"
 #include <sstream>
-#include <QDebug>
 
 int Equippable::equipIDCTR = 1000;
 
@@ -222,17 +221,12 @@ void Equippable::setWisBoost(int wbst)
 }
 Equippable::Equippable(ItemType itype, int lvladj)
 {
-	std::cout << "Generating level-adjusted equippable item..." << std::endl;
-	std::cout << std::endl;
 	setIType(itype);
 	setItemID(equipIDCTR++);
-	std::cout << "Equip ID: " << getItemID() << std::endl;
 	equipped = false;
 	ItemType type;
 	armtype = NADEF;
 	shtype = NSDEF;
-	//armormod = 0;
-	//shieldmod = 0;
 	armboost = 0;
 	wisboost = 0;
 	conboost = 0;
@@ -243,8 +237,6 @@ Equippable::Equippable(ItemType itype, int lvladj)
 	atkboost = 0;
 	dmgboost = 0;
 
-	
-	//LEVEL ADJUSTMENT MODIFIER DETERMINATION
 	int leveladjustmod = 0;
 	if (lvladj >= 0 && lvladj <= 5)
 		leveladjustmod = 0;
@@ -254,7 +246,6 @@ Equippable::Equippable(ItemType itype, int lvladj)
 		leveladjustmod = 2;
 	else if (lvladj > 20)
 		leveladjustmod = 3;
-
 
 	if (itype == HELMET)
 	{
@@ -267,7 +258,6 @@ Equippable::Equippable(ItemType itype, int lvladj)
 			setIntBoost(roll(2) + leveladjustmod);
 			setName(getName() + ": +" + std::to_string(getIntBoost()) + " Intelligence, ");
 		}
-
 
 		//WISDOM
 		if (roll(2) == 1)
@@ -298,8 +288,6 @@ Equippable::Equippable(ItemType itype, int lvladj)
 			setName(getName() + ": +" + std::to_string(getArmBoost()) + " Armor ");
 		}
 
-		//INHERENT ARMOR MODIFIER/TYPE ROLLS
-		
 		int typeroller = std::rand() % 6 + leveladjustmod;
 		setArmType((ArmorType)typeroller);
 		//setName(getName() + " with an armor modifier of " + std::to_string(getArmMod()) + ".");
@@ -338,8 +326,6 @@ Equippable::Equippable(ItemType itype, int lvladj)
 			setArmBoost(roll(2) + leveladjustmod);
 			setName(getName() + ": +" + std::to_string(getArmBoost()) + " Armor ");
 		}
-
-		//INHERENT SHIELD MODIFIER/TYPE ROLLS
 
 		int typeroller = std::rand() % 3;
 		setShType((ShieldType)typeroller);
@@ -684,25 +670,16 @@ Equippable* Equippable::loadEquippable(std::string strname)
 	buffer >> value;
 	ptr->setItemID(value);
 
-
-
 	return ptr;
-
 }
-
-
-//------------CONTAINER CLASS-------------------//
 
 Container::Container()
 {
-	std::cout << "Generating a generic Container... " << std::endl;
-
 	image = 'C';
 }
 
 Container::Container(std::string nm, Container::ContainerType typ)
 {
-	std::cout << "Generating a Container... " << nm << std::endl;
 	setName(nm);
 	Container::setCType(typ);
 
@@ -711,26 +688,21 @@ Container::Container(std::string nm, Container::ContainerType typ)
 
 void Container::addEQtoContainer(Equippable eqp)
 {
-	std::cout << "Inserting " << eqp.getName() << " to container." << std::endl;
 	containervector.push_back(eqp);
 
 	notify();
-
 };
 
 //void Container::addCOtoBP(Consumable cns){};
 
 void Container::remEQfromContainer(int id)
 {
-
-
 	int remCTR = 0;
 
 	for (size_t i = 0; i < containervector.size(); i++)
 	{
 		if (containervector[i].getItemID() == id)
 		{
-			std::cout << "Removing " << containervector[i].getName() << " from container." << std::endl;
 			containervector.erase(containervector.begin() + i);
 			remCTR++;
 		}
@@ -745,38 +717,15 @@ Equippable* Container::getEQfromContainer(int id)
 	return &containervector[id];
 }
 
-
-/*
-Equippable Container::getEQfromContainer(int id)
-{
-	int getCTR = 0;
-
-	for (int i = 0; i < containervector.size(); i++)
-	{
-		if (containervector[i].getItemID() == id)
-		{
-			return containervector[i];
-			getCTR++;
-		}
-
-		if (getCTR != 0)
-			break;
-	}
-
-}
-*/
-
 std::string Container::output()
 {
 	std::ostringstream streamer;
 
 	if (containervector.size() != 0)
 	{
-		//std::cout << "CONTAINER VECTOR SIZE IS NOT 0" << std::endl;
 		for (int i = 0; i < containervector.size(); i++)
 		{
 			streamer << ": " << containervector[i].getName() << std::endl;
-			//std::cout << "ITERATING THROUGH VECTOR TO OUTPUT ITEMS" << std::endl;
 		}
 		return streamer.str();
 	}

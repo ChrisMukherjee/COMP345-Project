@@ -345,7 +345,8 @@ void Grid::move(Character* c, int destX, int destY)
     Cell* oldTile = &grid[c->x][c->y];
     Cell* newTile = &grid[destX][destY];
     Cell::state s = oldTile->getState();
-    oldTile->setState(Cell::EMPTY, NULL);
+    oldTile->setState(onState, NULL);
+    onState = newTile->getState();
     newTile->setState(s, c);
     c->x = destX;
     c->y = destY;
@@ -394,7 +395,8 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
                 {
                     actor->inv.push_back(cont->getEQfromContainer(i));
                 }
-                move(actor, actor->x, actor->y - 1);
+                newTile->setState(Cell::CONTAINEREMPTY, NULL);
+//                move(actor, actor->x, actor->y - 1);
                 actor->movesLeft--;
                 moved = true;
             }
@@ -433,7 +435,8 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
                 {
                     actor->inv.push_back(cont->getEQfromContainer(i));
                 }
-                move(actor, actor->x, actor->y + 1);
+                newTile->setState(Cell::CONTAINEREMPTY, NULL);
+//                move(actor, actor->x, actor->y + 1);
                 actor->movesLeft--;
                 moved = true;
             }
@@ -472,7 +475,8 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
                 {
                     actor->inv.push_back(cont->getEQfromContainer(i));
                 }
-                move(actor, actor->x + 1, actor->y);
+                newTile->setState(Cell::CONTAINEREMPTY, NULL);
+//                move(actor, actor->x + 1, actor->y);
                 actor->movesLeft--;
                 moved = true;
             }
@@ -511,7 +515,8 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
                 {
                     actor->inv.push_back(cont->getEQfromContainer(i));
                 }
-                move(actor, actor->x - 1, actor->y);
+                newTile->setState(Cell::CONTAINEREMPTY, NULL);
+//                move(actor, actor->x - 1, actor->y);
                 actor->movesLeft--;
                 moved = true;
             }
@@ -531,7 +536,7 @@ bool Grid::tryMove(Character* actor, string dir, bool isPlayer)
             }
         }
         delete m;
-        newTile->setState(Cell::EMPTY, NULL);
+        newTile->setState(Cell::MONSTERDEAD, NULL);
     }
     if (actors.size() == 1)
     {

@@ -9,7 +9,6 @@
 #include <QCloseEvent>
 #include "newgame.h"
 #include <QMessageBox>
-#include <QDebug>
 #include "windows.h"
 #include "CharacterObserver.h"
 #include "GridObserver.h"
@@ -212,7 +211,6 @@ void MainWindow::playGame()
     events.push_back(InputEvent("right", VK_RIGHT));
 
     player->inv.push_back(new Equippable(Equippable::SWORD, player->level));
-    qDebug() << QString::fromStdString(player->inv[0]->getName());
 
     ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
     updateInvList();
@@ -268,7 +266,6 @@ void MainWindow::playGame()
                 {
                     playerTurn();
                     if (map->isEnd(player->x, player->y) && map->allEnemiesDead) {
-                        qDebug()<<map->allEnemiesDead;
                         break;
                     }
                     if (map->tryExit)
@@ -334,8 +331,8 @@ void MainWindow::setMonsterPic()
         map->monsterName = "Mage";
         break;
     default:
-        //        monsterSkin = QPixmap(":/images/devil.png");
-        //        monsterdeadSkin = QPixmap(":/images/devil_dead.png");
+        monsterSkin = QPixmap(":/images/devil.png");
+        monsterdeadSkin = QPixmap(":/images/devil_dead.png");
         map->monsterName = "Devil";
         break;
     }

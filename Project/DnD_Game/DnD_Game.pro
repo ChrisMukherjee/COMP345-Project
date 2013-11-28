@@ -35,12 +35,11 @@ SOURCES +=\
     BullyFighterBuilder.cpp \
     Item.cpp \
     GridObserver.cpp \
-    GridContent.cpp \
     Grid.cpp \
     ContainerObserver.cpp \
-    Driver.cpp \
     main.cpp \
-    ContainerBuilder.cpp
+    ContainerBuilder.cpp \
+    GridContent.cpp
 
 HEADERS  += mainwindow.h \
     splashdialog.h \
