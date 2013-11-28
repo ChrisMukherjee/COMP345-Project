@@ -39,6 +39,8 @@ private slots:
 
     void on_levelButton_clicked();
 
+    void buildTemplate();
+
 private:
     Ui::CharCreator *ui;
     Fighter* c;

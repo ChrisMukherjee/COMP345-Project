@@ -39,7 +39,9 @@ public:
 	std::string otherAttributesToString();
 	std::string goldToString();
 
-	// Save the Character to text file
+    void updateAttackBonus();
+
+    // Save the Character to text file
 	bool saveCharacter(std::string filename);
 
 	// Load a Character from text file

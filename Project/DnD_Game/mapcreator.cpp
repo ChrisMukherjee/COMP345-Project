@@ -15,6 +15,7 @@ MapCreator::MapCreator(QWidget *parent) :
     ui(new Ui::MapCreator)
 {
     ui->setupUi(this);
+    numMonsters = 0;
     ui->loadingLabel->setVisible(false);
     ui->gridLayout->setSpacing(0);
     ui->templateCombo->addItem("None");

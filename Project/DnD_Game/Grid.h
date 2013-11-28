@@ -48,8 +48,8 @@ private:
 	Cell** grid;
 	int startX, startY, endX,endY;
 	int playerX,playerY;
-    Cell::state onState;
-
+    std::vector<Cell::state> onState;
+    bool firstturn;
 	int numMonsters;
 
 	bool equals(Grid otherMap);

@@ -210,8 +210,6 @@ void MainWindow::playGame()
     events.push_back(InputEvent("left", VK_LEFT));
     events.push_back(InputEvent("right", VK_RIGHT));
 
-    player->inv.push_back(new Equippable(Equippable::SWORD, player->level));
-
     ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
     updateInvList();
     while ((!map->isEnd(player->x, player->y) || !map->allEnemiesDead) && !dead)

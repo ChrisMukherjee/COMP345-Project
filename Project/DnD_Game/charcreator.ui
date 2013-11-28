@@ -678,15 +678,15 @@
      <rect>
       <x>130</x>
       <y>280</y>
-      <width>31</width>
+      <width>41</width>
       <height>20</height>
      </rect>
     </property>
     <property name="inputMask">
-     <string>##</string>
+     <string/>
     </property>
     <property name="text">
-     <string>1</string>
+     <string/>
     </property>
     <property name="readOnly">
      <bool>true</bool>
@@ -697,7 +697,7 @@
      <rect>
       <x>130</x>
       <y>320</y>
-      <width>31</width>
+      <width>41</width>
       <height>20</height>
      </rect>
     </property>

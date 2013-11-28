@@ -10,6 +10,11 @@
 //#include "charhelpdialog.h"
 #include <QCloseEvent>
 #include <QSpinBox>
+#include "FighterDirector.h"
+#include "FighterBuilder.h"
+#include "BullyFighterBuilder.h"
+#include "NimbleFighterBuilder.h"
+#include "TankFighterBuilder.h"
 
 CharCreator::CharCreator(QWidget *parent) :
     QMainWindow(parent),
@@ -17,12 +22,16 @@ CharCreator::CharCreator(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->templateCombo->addItem("None");
+    ui->templateCombo->addItem("Bully");
+    ui->templateCombo->addItem("Nimble");
+    ui->templateCombo->addItem("Tank");
     // Connect options to click signal
     connect(ui->sprite1, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->sprite2, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->sprite3, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->sprite4, SIGNAL(clicked()), this, SLOT(change_selected()));
     connect(ui->sprite5, SIGNAL(clicked()), this, SLOT(change_selected()));
+    connect(ui->templateCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(buildTemplate()));
     c = new Fighter();
     setupDefaults();
 }
@@ -271,4 +280,26 @@ void CharCreator::setPicture()
     if (selectImage == 5)
         ui->sprite5->setStyleSheet("border: 2px solid red");
 
+}
+
+void CharCreator::buildTemplate()
+{
+    FighterDirector fd;
+    if (ui->templateCombo->currentIndex() != 0) {
+        if (ui->templateCombo->currentIndex() == 1) {
+            fd.setFighterBuilder(new BullyFighterBuilder);
+        }
+
+        if (ui->templateCombo->currentIndex() == 2) {
+            fd.setFighterBuilder(new NimbleFighterBuilder);
+        }
+
+        if (ui->templateCombo->currentIndex() == 3) {
+            fd.setFighterBuilder(new TankFighterBuilder);
+        }
+        fd.constructFighter();
+        c = fd.getFighter();
+        c->picture = selectImage;
+        updateGUI();
+    }
 }

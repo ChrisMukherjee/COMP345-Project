@@ -28,15 +28,15 @@ public:
 
 	
 
-	enum ItemType
+    static enum ItemType
 	{
 		SWORD, BOW, SHIELD, HELMET, ARMOR, BRACERS, BELT, BOOTS, RING
 	};
-	enum ArmorType
+    static enum ArmorType
 	{
 		NADEF, PADDED, LEATHER, STUDDEDLEATHER, CHAINSHIRT, BREASTPLATE, BANDEDMAIL, HALFPLATE, FULLPLATE
 	};
-	enum ShieldType
+    static enum ShieldType
 	{
 		NSDEF, BUCKLER, HEAVYSHIELD, TOWERSHIELD
 	};

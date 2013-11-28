@@ -5,6 +5,9 @@
 #include "Item.h"
 #include <sstream>
 
+#include <QDebug>
+#include <QString>
+
 int Equippable::equipIDCTR = 1000;
 
 std::string Item::getName()
@@ -477,10 +480,10 @@ std::string Equippable::saveEquippable()
 	
 		ostreamer	<< Equippable::getName() << "$"
 				<< Equippable::getEqStatus() << "$"
-				<< type << "$"
-				<< armtype << "$"
+                << Equippable::type << "$"
+                << Equippable::armtype << "$"
 			/*	<< armormod << "$"	*/
-				<< shtype << "$"
+                << Equippable::shtype << "$"
 			/*	<< shieldmod << "$"	*/
 				<< armboost << "$"
 				<< wisboost << "$"
@@ -499,13 +502,17 @@ std::string Equippable::saveEquippable()
 
 Equippable* Equippable::loadEquippable(std::string strname)
 {
-	Equippable* ptr = new Equippable(Equippable::SWORD, 0);
-
 	std::string delimiter = "$";
 	size_t pos = 0;
 	std::string token;
 	int count = 0;
-	while ((pos = strname.find(delimiter)) != std::string::npos)
+
+    if (!strname.find(delimiter)) {
+        return NULL;
+    }
+    Equippable* ptr = new Equippable(Equippable::SWORD, 0);
+
+    while ((pos = strname.find(delimiter)) != std::string::npos)
 	{
 		
 		switch (count)
@@ -514,7 +521,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 			{
 				token = strname.substr(0, pos);
 				ptr->setName(token);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -525,7 +532,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setEqStatus(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -535,8 +542,38 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				std::istringstream buffer(token);
 				int value;
 				buffer >> value;
-				ptr->setIType(static_cast<Equippable::ItemType>(value));
-				strname.erase(0, pos + delimiter.length());
+                ItemType t;
+                switch (value) {
+                case 0:
+                    t = SWORD;
+                    break;
+                case 1:
+                    t = BOW;
+                    break;
+                case 2:
+                    t = SHIELD;
+                    break;
+                case 3:
+                    t = HELMET;
+                    break;
+                case 4:
+                    t = ARMOR;
+                    break;
+                case 5:
+                    t = BRACERS;
+                    break;
+                case 6:
+                    t = BELT;
+                    break;
+                case 7:
+                    t = BOOTS;
+                    break;
+                case 8:
+                    t = RING;
+                    break;
+                }
+                ptr->setIType(t);
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -546,8 +583,38 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				std::istringstream buffer(token);
 				int value;
 				buffer >> value;
-				ptr->setArmType(static_cast<Equippable::ArmorType>(value));
-				strname.erase(0, pos + delimiter.length());
+//                ArmorType t;
+//                switch (value) {
+//                case 0:
+//                    t = NADEF;
+//                    break;
+//                case 1:
+//                    t = PADDED;
+//                    break;
+//                case 2:
+//                    t = LEATHER;
+//                    break;
+//                case 3:
+//                    t = STUDDEDLEATHER;
+//                    break;
+//                case 4:
+//                    t = ARMOR;
+//                    break;
+//                case 5:
+//                    t = BRACERS;
+//                    break;
+//                case 6:
+//                    t = BELT;
+//                    break;
+//                case 7:
+//                    t = BOOTS;
+//                    break;
+//                case 8:
+//                    t = RING;
+//                    break;
+//                }
+                ptr->setArmType(static_cast<ArmorType>(value));
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -557,8 +624,8 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				std::istringstream buffer(token);
 				int value;
 				buffer >> value;
-				ptr->setShType(static_cast<Equippable::ShieldType>(value));
-				strname.erase(0, pos + delimiter.length());
+                ptr->setShType(static_cast<ShieldType>(value));
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -569,7 +636,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setArmBoost(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -580,7 +647,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setWisBoost(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -591,7 +658,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setConBoost(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -602,7 +669,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setChaBoost(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -613,7 +680,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setStrBoost(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			  }
@@ -624,7 +691,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setIntBoost(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			   }
@@ -635,7 +702,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setDexBoost(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			   }
@@ -646,7 +713,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setAtkBoost(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			   }
@@ -657,7 +724,7 @@ Equippable* Equippable::loadEquippable(std::string strname)
 				int value;
 				buffer >> value;
 				ptr->setDmgBoost(value);
-				strname.erase(0, pos + delimiter.length());
+                strname.erase(0, pos + delimiter.length());
 				count++;
 				break;
 			   }

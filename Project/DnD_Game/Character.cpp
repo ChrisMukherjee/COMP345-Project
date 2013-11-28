@@ -3,6 +3,8 @@
 #include <sstream>
 #include <fstream>
 
+#include <QDebug>
+
 #include "windows.h"
 
 #include "CharacterObserver.h"
@@ -16,6 +18,21 @@ Character::Character(std::string name, int level) :
     name(name)
 {
     assignAbilityScores();
+    updateAttackBonus();
+}
+
+Character::~Character()
+{
+    for (size_t i = 0; i < inv.size(); i++)
+    {
+        delete inv.at(i);
+    }
+}
+
+void Character::updateAttackBonus()
+{
+    baseAttackBonus.clear();
+    attackBonus.clear();
     if (level >= 16)
     {
         baseAttackBonus.push_back(level);
@@ -47,14 +64,6 @@ Character::Character(std::string name, int level) :
     {
         baseAttackBonus.push_back(level);
         attackBonus.push_back(level);
-    }
-}
-
-Character::~Character()
-{
-    for (size_t i = 0; i < inv.size(); i++)
-    {
-        delete inv.at(i);
     }
 }
 
@@ -222,7 +231,7 @@ bool Character::saveCharacter(std::string filename)
           << modWis << std::endl
           << modCha << std::endl
           << ac << std::endl
-          << baseAttackBonus[0] << std::endl
+             //          << baseAttackBonus[0] << std::endl
           << meleeDmgBonus << std::endl
           << maxHP << std::endl
           << curHP << std::endl
@@ -269,19 +278,22 @@ bool Character::loadCharacter(std::string filename)
         f >> modWis;
         f >> modCha;
         f >> ac;
-        f >> baseAttackBonus[0];
+        //        f >> baseAttackBonus[0];
         f >> meleeDmgBonus;
         f >> maxHP;
         f >> curHP;
         f >> gold;
         std::string item;
         while (std::getline(f, item)) {
-            if (item != "")
-            {
-                inv.push_back(Equippable::loadEquippable(item));
+            if (item != "") {
+                Equippable* temp = Equippable::loadEquippable(item);
+                inv.push_back(temp);
+                if (temp->getEqStatus())
+                    equip(*temp);
             }
         }
         f.close();
+        updateAttackBonus();
         return true;
     }
     else

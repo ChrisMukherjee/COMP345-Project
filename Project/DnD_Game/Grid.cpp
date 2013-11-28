@@ -13,6 +13,7 @@ using namespace std;
 //Default Constructor
 Grid::Grid()
 {
+    firstturn = true;
     allEnemiesDead = false;
     height = 5+2;
     width  = 5+2;
@@ -57,6 +58,7 @@ Grid::Grid()
 Grid::Grid(int w, int h)
 {
     numMonsters = 0;
+    firstturn = true;
     allEnemiesDead = false;
     height = h+2;
     width  = w+2;
@@ -297,7 +299,6 @@ bool sortByDex(Character* i, Character* j) {return i->initiative > j->initiative
 
 void Grid::startGame(Character* c)
 {
-    onState = Cell::START;
     grid[startX][startY].setState(Cell::CHARACTER, c);
     c->x = startX;
     c->y = startY;
@@ -346,8 +347,13 @@ void Grid::move(Character* c, int destX, int destY)
     Cell* oldTile = &grid[c->x][c->y];
     Cell* newTile = &grid[destX][destY];
     Cell::state s = oldTile->getState();
-    oldTile->setState(onState, NULL);
-    onState = newTile->getState();
+    int currActor = 0;
+    for (size_t i = 0; i < actors.size(); i++) {
+        if (c == actors[i])
+            currActor = i;
+    }
+    oldTile->setState(onState[currActor], NULL);
+    onState[currActor] = newTile->getState();
     newTile->setState(s, c);
     c->x = destX;
     c->y = destY;
@@ -608,7 +614,6 @@ Grid* Grid::loadMap(std::string filename, int characterLevel)
         int levelPerMonster = static_cast<int>(ceil(static_cast<float>(characterLevel) / map->numMonsters));
         int numM = 0;
         Monster* m;
-
         for (int i = 0; i < height; ++i)
         {
             for (int j = 0; j < width; j++)
@@ -639,6 +644,7 @@ Grid* Grid::loadMap(std::string filename, int characterLevel)
                     m->x = j;
                     m->y = i;
                     map->actors.push_back(m);
+                    map->onState.push_back(Cell::EMPTY);
                     break;
                 case 'C':
                     Director director;
@@ -651,6 +657,7 @@ Grid* Grid::loadMap(std::string filename, int characterLevel)
                 }
             }
         }
+        map->onState.push_back(Cell::EMPTY);
         f.close();
         return map;
     }
