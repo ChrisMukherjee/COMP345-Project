@@ -623,7 +623,7 @@ Grid* Grid::loadMap(int characterLevel)
 					Director director;
 					ContainerBuilder* adj_cb = new AdjustedContainerBuilder;
 					director.setContainerBuilder(adj_cb);
-					director.constructContainer();
+					director.constructContainer(characterLevel);
 					Container* c= director.getContainer();
 					map->grid[j][i].setState(Cell::state::CONTAINER, c); 
 					break;

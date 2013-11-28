@@ -448,7 +448,6 @@ Equippable::Equippable(ItemType itype, int lvladj)
 	atkboost = 0;
 	dmgboost = 0;
 
-	leveladjustmodficiation = 0;
 	
 	//LEVEL ADJUSTMENT MODIFIER DETERMINATION
 	int leveladjustmod = 0;
@@ -535,7 +534,7 @@ Equippable::Equippable(ItemType itype, int lvladj)
 
 	else if (itype == SHIELD)
 	{
-		setName("Sheild");
+		setName("Shield");
 		//SHIELD
 		if (roll(2) == 1)
 			setArmBoost(0);

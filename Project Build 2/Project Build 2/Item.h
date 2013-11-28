@@ -19,7 +19,7 @@ public:
 	void setName(std::string nm);
 	int getItemID();
 	void setItemID(int id);
-	int leveladjustmodficiation;
+	
 
 private:
 	std::string name;
@@ -29,6 +29,9 @@ private:
 class Equippable: public Item
 {
 public:
+
+	
+
 	enum ItemType
 	{
 		SWORD, BOW, SHIELD, HELMET, ARMOR, BRACERS, BELT, BOOTS, RING

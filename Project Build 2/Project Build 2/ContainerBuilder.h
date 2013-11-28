@@ -11,7 +11,7 @@ public:
 	Container* getContainer();
 	void createNewContainer();
 
-	virtual void fillCVector() = 0;
+	virtual void fillCVector(int charlevel) = 0;
 	virtual void buildCType() = 0;
 
 
@@ -30,7 +30,7 @@ public:
 		m_container->setCType(RANDOMIZED);
 	}
 
-	virtual void ContainerBuilder::fillCVector()
+	virtual void ContainerBuilder::fillCVector(int charlevel)
 	{
 		int itemTypeRoller = roll(9) - 1;
 		switch (itemTypeRoller)
@@ -101,12 +101,12 @@ public:
 		m_container->setCType(ADJUSTED);
 	}
 
-	virtual void ContainerBuilder::fillCVector()
+	virtual void ContainerBuilder::fillCVector(int charlevel)
 	{
 		/* static cast fix by aiden -- working and compiles
 		for (int i = 1; i <= roll(3); i++)
 		{
-			m_container->addEQtoContainer(Equippable(ContainerBuilder::static_cast<Equippable::ItemType>(roll(8, 1, -1)) , leveladjustmodficiation));
+			m_container->addEQtoContainer(Equippable(ContainerBuilder::static_cast<Equippable::ItemType>(roll(8, 1, -1)) , charlevel));
 		}
 		*/
 
@@ -116,55 +116,55 @@ public:
 		case 0:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::SWORD, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::SWORD, charlevel));
 			}
 			break;
 		case 1:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::BOW, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::BOW, charlevel));
 			}
 			break;
 		case 2:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::SHIELD, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::SHIELD, charlevel));
 			}
 			break;
 		case 3:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::HELMET, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::HELMET, charlevel));
 			}
 			break;
 		case 4:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::ARMOR, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::ARMOR, charlevel));
 			}
 			break;
 		case 5:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::BRACERS, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::BRACERS, charlevel));
 			}
 			break;
 		case 6:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::BELT, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::BELT, charlevel));
 			}
 			break;
 		case 7:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::BOOTS, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::BOOTS, charlevel));
 			}
 			break;
 		case 8:
 			for (int i = 1; i <= roll(3); i++)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::RING, leveladjustmodficiation));
+				m_container->addEQtoContainer(Equippable(Equippable::RING, charlevel));
 			}
 			break;
 		}
@@ -184,11 +184,11 @@ public:
 		return m_containerBuilder->getContainer();
 	}
 
-	void constructContainer()
+	void constructContainer(int charlevel)
 	{
 		m_containerBuilder->createNewContainer();
 		m_containerBuilder->buildCType();
-		m_containerBuilder->fillCVector();
+		m_containerBuilder->fillCVector(charlevel);
 
 	}
 
