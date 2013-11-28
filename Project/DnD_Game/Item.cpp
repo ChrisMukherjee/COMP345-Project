@@ -153,73 +153,55 @@ void Equippable::setShType(ShieldType shtyp)
 
 void Equippable::setArmBoost(int arbst)
 {
-	if (arbst < 0 || arbst > 5)
-		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
-	else
+    if (arbst > 0 && arbst < 5)
 		armboost = arbst;	
 }
 
 void Equippable::setAtkBoost(int atbst)
 {
-	if (atbst < 0 || atbst > 5)
-		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
-	else
+    if (atbst > 0 || atbst < 5)
 		atkboost = atbst;
 }
 
 void Equippable::setChaBoost(int chbst)
 {
-	if (chbst < 0 || chbst > 5)
-		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
-	else
+    if (chbst > 0 || chbst < 5)
 		chaboost = chbst;
 }
 
 void Equippable::setConBoost(int cobst)
 {
-	if (cobst < 0 || cobst > 5)
-		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
-	else
+    if (cobst > 0 || cobst < 5)
 		conboost = cobst;
 }
 
 void Equippable::setDexBoost(int debst)
 {
-	if (debst < 0 || debst > 5)
-		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
-	else
+    if (debst > 0 || debst < 5)
 		dexboost = debst;
 }
 
 void Equippable::setDmgBoost(int dmbst)
 {
-	if (dmbst < 0 || dmbst > 5)
-		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
-	else
+    if (dmbst > 0 || dmbst < 5)
 		dmgboost = dmbst;
 }
 
 void Equippable::setIntBoost(int ibst)
 {
-	if (ibst < 0 || ibst > 5)
-		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
-	else
+    if (ibst > 0 || ibst < 5)
 		intboost = ibst;
 }
 
 void Equippable::setStrBoost(int sbst)
 {
-	if (sbst < 0 || sbst > 5)
-		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
-	else
+    if (sbst > 0 || sbst < 5)
 		strboost = sbst;
 }
 
 void Equippable::setWisBoost(int wbst)
 {
-	if (wbst < 0 || wbst > 5)
-		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
-	else
+    if (wbst > 0 || wbst < 5)
 		wisboost = wbst;
 }
 Equippable::Equippable(ItemType itype, int lvladj)

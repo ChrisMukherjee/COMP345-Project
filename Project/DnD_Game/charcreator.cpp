@@ -49,6 +49,7 @@ void CharCreator::setupDefaults()
     ui->sprite3->setStyleSheet("border: none");
     ui->sprite4->setStyleSheet("border: none");
     ui->sprite5->setStyleSheet("border: none");
+    rollClicked = false;
     ui->levelButton->setEnabled(false);
     selectImage = 1;
     c->picture = 1;
@@ -93,18 +94,24 @@ void CharCreator::on_action_Open_triggered()
                 return;
             }
             setupDefaults();
+            rollClicked = true;
+            ui->levelButton->setEnabled(true);
         }
         else if (warn == QMessageBox::Cancel) {
             return;
         }
         else if (warn == QMessageBox::No) {
             setupDefaults();
+            rollClicked = true;
+            ui->levelButton->setEnabled(true);
         }
     }
     else {
         setupDefaults();
+        rollClicked = true;
+        ui->levelButton->setEnabled(true);
     }
-    QString charName = QFileDialog::getOpenFileName(this, tr("Open Character"), "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters", tr("CHARACTER Files (*.dcchar)"));
+    QString charName = QFileDialog::getOpenFileName(this, tr("Open Character"), "/characters", tr("CHARACTER Files (*.dcchar)"));
     std::string fileName = charName.toStdString();
     c->loadCharacter(fileName);
     updateGUI();
@@ -117,11 +124,11 @@ bool CharCreator::on_action_Save_triggered()
         QMessageBox::StandardButton err = QMessageBox::critical(this, "Invalid Character!", "This character is not valid. Please enter a name for your character.", QMessageBox::Ok);
         return false;
     }
-    else if (rollClicked == false) {
+    else if (rollClicked != true) {
         QMessageBox::StandardButton err = QMessageBox::critical(this, "Invalid Character!", "This character is not valid. Please click the roll button to generate the character\'s stats.", QMessageBox::Ok);
         return false;
     }
-    QString charName = QFileDialog::getSaveFileName(this, tr("Save Character"), "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters", tr("CHARACTER Files (*.dcchar)"));
+    QString charName = QFileDialog::getSaveFileName(this, tr("Save Character"), "/characters", tr("CHARACTER Files (*.dcchar)"));
     std::string fileName = charName.toStdString();
     c->name = ui->nameValue->text().toStdString();
     c->picture = selectImage;
@@ -299,7 +306,12 @@ void CharCreator::buildTemplate()
         }
         fd.constructFighter();
         c = fd.getFighter();
+
+        if (ui->nameValue->text() != "")
+            c->name = ui->nameValue->text().toStdString();
         c->picture = selectImage;
+        rollClicked = true;
+        ui->levelButton->setEnabled(true);
         updateGUI();
     }
 }
