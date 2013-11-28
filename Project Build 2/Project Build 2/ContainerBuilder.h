@@ -106,67 +106,62 @@ public:
 		/* static cast fix by aiden -- working and compiles
 		for (int i = 1; i <= roll(3); i++)
 		{
-			m_container->addEQtoContainer(Equippable(ContainerBuilder::static_cast<Equippable::ItemType>(roll(8, 1, -1)) , charlevel));
+		m_container->addEQtoContainer(Equippable(ContainerBuilder::static_cast<Equippable::ItemType>(roll(8, 1, -1)) , charlevel));
 		}
 		*/
-
-		int itemTypeRoller = roll(9) - 1;
-		switch (itemTypeRoller)
+		int numberofitems = roll(3);
+		for (int i = 0; i <= numberofitems; i++)
 		{
-		case 0:
-			for (int i = 1; i <= roll(3); i++)
+
+			int itemTypeRoller = roll(9) - 1;
+			switch (itemTypeRoller)
 			{
-				m_container->addEQtoContainer(Equippable(Equippable::SWORD, charlevel));
+			case 0:
+				{
+					m_container->addEQtoContainer(Equippable(Equippable::SWORD, charlevel));
+					break;
+				  }
+			case 1:
+				{
+					m_container->addEQtoContainer(Equippable(Equippable::BOW, charlevel));
+					break;
+				  }
+			case 2:
+				{
+					m_container->addEQtoContainer(Equippable(Equippable::SHIELD, charlevel));
+					break;
+				  }
+			case 3:
+				{
+					m_container->addEQtoContainer(Equippable(Equippable::HELMET, charlevel));
+					break;
+				  }
+			case 4:
+				{
+					m_container->addEQtoContainer(Equippable(Equippable::ARMOR, charlevel));
+					break;
+				  }
+			case 5:
+				{
+					m_container->addEQtoContainer(Equippable(Equippable::BRACERS, charlevel));
+					break;
+				  }
+			case 6:
+				{
+					m_container->addEQtoContainer(Equippable(Equippable::BELT, charlevel));
+					break;
+				  }
+			case 7:
+				{
+					m_container->addEQtoContainer(Equippable(Equippable::BOOTS, charlevel));
+					break;
+				  }
+			case 8:
+				{
+					m_container->addEQtoContainer(Equippable(Equippable::RING, charlevel));
+					break;
+				  }
 			}
-			break;
-		case 1:
-			for (int i = 1; i <= roll(3); i++)
-			{
-				m_container->addEQtoContainer(Equippable(Equippable::BOW, charlevel));
-			}
-			break;
-		case 2:
-			for (int i = 1; i <= roll(3); i++)
-			{
-				m_container->addEQtoContainer(Equippable(Equippable::SHIELD, charlevel));
-			}
-			break;
-		case 3:
-			for (int i = 1; i <= roll(3); i++)
-			{
-				m_container->addEQtoContainer(Equippable(Equippable::HELMET, charlevel));
-			}
-			break;
-		case 4:
-			for (int i = 1; i <= roll(3); i++)
-			{
-				m_container->addEQtoContainer(Equippable(Equippable::ARMOR, charlevel));
-			}
-			break;
-		case 5:
-			for (int i = 1; i <= roll(3); i++)
-			{
-				m_container->addEQtoContainer(Equippable(Equippable::BRACERS, charlevel));
-			}
-			break;
-		case 6:
-			for (int i = 1; i <= roll(3); i++)
-			{
-				m_container->addEQtoContainer(Equippable(Equippable::BELT, charlevel));
-			}
-			break;
-		case 7:
-			for (int i = 1; i <= roll(3); i++)
-			{
-				m_container->addEQtoContainer(Equippable(Equippable::BOOTS, charlevel));
-			}
-			break;
-		case 8:
-			for (int i = 1; i <= roll(3); i++)
-			{
-				m_container->addEQtoContainer(Equippable(Equippable::RING, charlevel));
-			}
-			break;
 		}
 	}
 };
