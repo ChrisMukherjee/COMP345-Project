@@ -4,6 +4,8 @@
 #include <sstream>
 #include "Item.h"
 #include <sstream>
+
+#include <QDebug>
 #include <QString>
 
 int Equippable::equipIDCTR = 1000;
@@ -151,55 +153,73 @@ void Equippable::setShType(ShieldType shtyp)
 
 void Equippable::setArmBoost(int arbst)
 {
-    if (arbst > 0 && arbst < 5)
+	if (arbst < 0 || arbst > 5)
+		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+	else
 		armboost = arbst;	
 }
 
 void Equippable::setAtkBoost(int atbst)
 {
-    if (atbst > 0 || atbst < 5)
+	if (atbst < 0 || atbst > 5)
+		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+	else
 		atkboost = atbst;
 }
 
 void Equippable::setChaBoost(int chbst)
 {
-    if (chbst > 0 || chbst < 5)
+	if (chbst < 0 || chbst > 5)
+		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+	else
 		chaboost = chbst;
 }
 
 void Equippable::setConBoost(int cobst)
 {
-    if (cobst > 0 || cobst < 5)
+	if (cobst < 0 || cobst > 5)
+		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+	else
 		conboost = cobst;
 }
 
 void Equippable::setDexBoost(int debst)
 {
-    if (debst > 0 || debst < 5)
+	if (debst < 0 || debst > 5)
+		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+	else
 		dexboost = debst;
 }
 
 void Equippable::setDmgBoost(int dmbst)
 {
-    if (dmbst > 0 || dmbst < 5)
+	if (dmbst < 0 || dmbst > 5)
+		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+	else
 		dmgboost = dmbst;
 }
 
 void Equippable::setIntBoost(int ibst)
 {
-    if (ibst > 0 || ibst < 5)
+	if (ibst < 0 || ibst > 5)
+		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+	else
 		intboost = ibst;
 }
 
 void Equippable::setStrBoost(int sbst)
 {
-    if (sbst > 0 || sbst < 5)
+	if (sbst < 0 || sbst > 5)
+		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+	else
 		strboost = sbst;
 }
 
 void Equippable::setWisBoost(int wbst)
 {
-    if (wbst > 0 || wbst < 5)
+	if (wbst < 0 || wbst > 5)
+		std::cout << "Can only buff with values between 0 and 5, inclusively." << std::endl;
+	else
 		wisboost = wbst;
 }
 Equippable::Equippable(ItemType itype, int lvladj)

@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="images.qrc">
-    <normaloff>:/images/dungeoncrawler.png</normaloff>:/images/dungeoncrawler.png</iconset>
-  </property>
   <widget class="QLabel" name="titleText">
    <property name="geometry">
     <rect>
@@ -46,7 +42,7 @@
   <widget class="QPushButton" name="okButton">
    <property name="geometry">
     <rect>
-     <x>145</x>
+     <x>140</x>
      <y>500</y>
      <width>75</width>
      <height>23</height>
@@ -85,8 +81,6 @@ p, li { white-space: pre-wrap; }
    </property>
   </widget>
  </widget>
- <resources>
-  <include location="images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Dungeon Crawler</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="images.qrc">
-    <normaloff>:/images/dungeoncrawler.png</normaloff>:/images/dungeoncrawler.png</iconset>
-  </property>
   <widget class="QLabel" name="titleText">
    <property name="geometry">
     <rect>
@@ -100,8 +96,6 @@
   <tabstop>newButton</tabstop>
   <tabstop>mapButton</tabstop>
  </tabstops>
- <resources>
-  <include location="images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

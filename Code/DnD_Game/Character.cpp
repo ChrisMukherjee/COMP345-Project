@@ -1,9 +1,16 @@
 #include "Character.h"
-#include "CharacterObserver.h"
-#include "Fighter.h"
+
 #include <sstream>
 #include <fstream>
+
+#include <QDebug>
+
 #include "windows.h"
+
+#include "CharacterObserver.h"
+#include "Fighter.h"
+
+// **********PUBLIC MEMBER FUNCTIONS**********//
 
 // Assign and initialize all the data members
 Character::Character(std::string name, int level) :

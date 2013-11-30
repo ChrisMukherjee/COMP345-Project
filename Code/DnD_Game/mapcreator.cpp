@@ -89,7 +89,7 @@ void MapCreator::on_action_Open_triggered()
         deleteMap();
         setupDefaults();
     }
-    QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), QCoreApplication::applicationDirPath() + "/maps/", tr("MAP Files (*.dcmap)"));
+    QString mapName = QFileDialog::getOpenFileName(this, tr("Open Map"), "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps", tr("MAP Files (*.dcmap)"));
     std::string fileName = mapName.toStdString();
     std::ifstream f(fileName, std::ios::in);
     if (f.is_open())
@@ -161,7 +161,7 @@ void MapCreator::on_action_Open_triggered()
 bool MapCreator::on_action_Save_triggered()
 {
     if (validateMap()) {
-        QString mapName = QFileDialog::getSaveFileName(this, tr("Save Map"), QCoreApplication::applicationDirPath() + "/maps/", tr("MAP Files (*.dcmap)"));
+        QString mapName = QFileDialog::getSaveFileName(this, tr("Save Map"), "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps", tr("MAP Files (*.dcmap)"));
         std::string fileName = mapName.toStdString();
         std::ofstream f(fileName, std::ios::out);
         if (f.is_open())

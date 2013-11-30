@@ -29,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->gridLayout->setSpacing(0);
     loaded = false;
     dead = false;
-    inLoop = false;
     connect(n,SIGNAL(destroyed()), this, SLOT(start()));
     connect(ui->invList,SIGNAL(doubleClicked(QModelIndex)), this, SLOT(equip()));
 }
@@ -46,13 +45,9 @@ void MainWindow::on_actionE_xit_triggered()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    quit = true;
-    if (inLoop)
-        event->ignore();
-    else {
-        this->sp->show();
-        event->accept();
-    }
+    dead = true;
+    this->sp->show();
+    event->accept();
 }
 
 void MainWindow::on_action_New_triggered()
@@ -64,7 +59,7 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::setChar(QString charName)
 {
-    mapFName = QCoreApplication::applicationDirPath() + "/characters/" + charName;
+    charFName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/characters/" + charName;
     std::string fileName = charFName.toStdString();
     player = new Fighter();
     player->loadCharacter(fileName);
@@ -72,7 +67,7 @@ void MainWindow::setChar(QString charName)
 
 void MainWindow::setMap(QString mapName)
 {
-    mapFName = QCoreApplication::applicationDirPath() + "/maps/" + mapName;
+    mapFName = "C:/Users/chris/Documents/Visual Studio 2012/Projects/DnD_Game/maps/" + mapName;
     std::string fileName = mapFName.toStdString();
     map = Grid::loadMap(fileName, player->level);
 }
@@ -217,17 +212,12 @@ void MainWindow::playGame()
 
     ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
     updateInvList();
-    while ((!map->isEnd(player->x, player->y) || !map->allEnemiesDead) && !dead && !quit)
+    while ((!map->isEnd(player->x, player->y) || !map->allEnemiesDead) && !dead)
     {
-        if (quit)
-            break;
-        inLoop = true;
         ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
         updateInvList();
         for (size_t i = 0; i < map->actors.size(); i++)
         {
-            if (quit)
-                break;
             ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
             updateInvList();
             Character* current = map->actors[i];
@@ -236,8 +226,6 @@ void MainWindow::playGame()
             {
                 while (current->movesLeft > 0)
                 {
-                    if (quit)
-                        break;
                     int d = roll(4);
                     if (d == 1) {
                         if (map->tryMove(current, "up", false) == true) {
@@ -259,8 +247,6 @@ void MainWindow::playGame()
                             displayMap();
                         }
                     }
-                    if (quit)
-                        break;
                     if (player->curHP <= 0)
                     {
                         dead = true;
@@ -269,20 +255,16 @@ void MainWindow::playGame()
                 }
                 if (current->attackinfo != "")
                     ui->textBrowser->append(QString::fromStdString(current->attackinfo));
-                if (quit)
-                    break;
                 if (dead)
                     break;
             }
             else
             {
-                if (quit)
+                if (dead)
                     break;
                 ui->textBrowser->append("\nYour turn!\n");
                 while (player->movesLeft > 0)
                 {
-                    if (quit)
-                        break;
                     playerTurn();
                     if (map->isEnd(player->x, player->y) && map->allEnemiesDead) {
                         break;
@@ -291,32 +273,15 @@ void MainWindow::playGame()
                         ui->textBrowser->append("The exit is locked. Defeat all enemies to unlock it.");
                     ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
                     updateInvList();
-                    if (quit)
-                        break;
                 }
                 if (current->attackinfo != "")
                     ui->textBrowser->append(QString::fromStdString(player->attackinfo));
-                if (quit)
-                    break;
             }
             ui->statBrowser->setText(QString::fromStdString(player->characterSheetToString()));
             updateInvList();
-            if (dead)
-                break;
-            if (quit)
-                break;
         }
-        if (dead)
-            break;
-        if (quit)
-            break;
     }
 
-    inLoop = false;
-
-    if (quit) {
-        this->close();
-    }
     if (!dead) {
         QMessageBox::StandardButton info = QMessageBox::information(this, "Congratulations!", "You have beaten this level and LEVELED UP!", QMessageBox::Ok);
 
@@ -334,11 +299,9 @@ void MainWindow::playerTurn()
 {
     std::string move;
 
-    if (ui->gridLayoutWidget->hasFocus()) {
-        move = InputManager::getInput(events);
-        if (map->tryMove(player, move, true)) {
-            displayMap();
-        }
+    move = InputManager::getInput(events);
+    if (map->tryMove(player, move, true)) {
+        displayMap();
     }
 }
 

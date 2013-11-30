@@ -28,6 +28,5 @@
         <file>fighter_sword-profile.png</file>
         <file>dragon.png</file>
         <file>dragon_dead.png</file>
-        <file>dungeoncrawler.png</file>
     </qresource>
 </RCC>

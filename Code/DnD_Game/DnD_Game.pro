@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = DnD_Game
 TEMPLATE = app
 
+
 SOURCES +=\
         mainwindow.cpp \
     splashdialog.cpp \
@@ -38,8 +39,7 @@ SOURCES +=\
     ContainerObserver.cpp \
     main.cpp \
     ContainerBuilder.cpp \
-    GridContent.cpp \
-    charhelpdialog.cpp
+    GridContent.cpp
 
 HEADERS  += mainwindow.h \
     splashdialog.h \
@@ -68,16 +68,14 @@ HEADERS  += mainwindow.h \
     ContainerObserver.h \
     Cell.h \
     BullyFighterBuilder.h \
-    ContainerBuilder.h \
-    charhelpdialog.h
+    ContainerBuilder.h
 
 FORMS    += mainwindow.ui \
     splashdialog.ui \
     mapcreator.ui \
     maphelpdialog.ui \
     newgame.ui \
-    charcreator.ui \
-    charhelpdialog.ui
+    charcreator.ui
 
 RESOURCES += \
     images.qrc

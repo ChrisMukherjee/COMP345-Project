@@ -16,10 +16,6 @@
   <property name="windowTitle">
    <string>New Game</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="images.qrc">
-    <normaloff>:/images/dungeoncrawler.png</normaloff>:/images/dungeoncrawler.png</iconset>
-  </property>
   <widget class="QLabel" name="charLabel">
    <property name="geometry">
     <rect>
@@ -106,8 +102,6 @@
    </property>
   </widget>
  </widget>
- <resources>
-  <include location="images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Map Creator</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="images.qrc">
-    <normaloff>:/images/dungeoncrawler.png</normaloff>:/images/dungeoncrawler.png</iconset>
-  </property>
   <property name="toolTip">
    <string/>
   </property>

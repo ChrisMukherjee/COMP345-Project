@@ -65,8 +65,6 @@ private:
     QString charFName;
     std::vector<InputEvent> events;
     bool dead;
-    bool quit;
-    bool inLoop;
 };
 
 #endif // MAINWINDOW_H
